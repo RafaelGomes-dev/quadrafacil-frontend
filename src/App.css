@@ -1,0 +1,458 @@
+/**
+ * Estilos de layout e componentes do QuadraFacil. Mobile-first: o estilo
+ * base é para telas pequenas e cada @media abaixo adiciona ajustes para
+ * telas maiores, nos breakpoints 480px, 768px, 1024px e 1440px.
+ */
+
+/* ===== Layout geral ===== */
+
+.conteudo-principal {
+  flex: 1;
+}
+
+/* ===== Cabeçalho e navegação ===== */
+
+.cabecalho {
+  background-color: var(--cor-escura);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.cabecalho-conteudo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--espaco-sm);
+  padding-bottom: var(--espaco-sm);
+}
+
+.logo {
+  color: #fff;
+  font-size: var(--fonte-tamanho-lg);
+  font-weight: 700;
+}
+
+.logo span {
+  color: var(--cor-primaria-clara);
+}
+
+.botao-hamburguer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.botao-hamburguer span {
+  display: block;
+  height: 2px;
+  background-color: #fff;
+  border-radius: 1px;
+}
+
+.lista-navegacao {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--cor-escura);
+  flex-direction: column;
+  padding: var(--espaco-md);
+  gap: var(--espaco-md);
+}
+
+.lista-navegacao-aberta {
+  display: flex;
+}
+
+.lista-navegacao a {
+  color: #fff;
+}
+
+.lista-navegacao .link-ativo {
+  color: var(--cor-primaria-clara);
+  font-weight: 600;
+}
+
+/* ===== Rodapé ===== */
+
+.rodape {
+  background-color: var(--cor-escura);
+  color: #cfd6cd;
+  padding: var(--espaco-lg) 0;
+  text-align: center;
+  font-size: var(--fonte-tamanho-sm);
+}
+
+/* ===== Hero (Home) ===== */
+
+.hero {
+  background: linear-gradient(135deg, var(--cor-primaria-escura), var(--cor-primaria));
+  color: #fff;
+  padding: var(--espaco-xl) 0;
+}
+
+.hero-conteudo h1 {
+  color: #fff;
+  font-size: var(--fonte-tamanho-xl);
+}
+
+.hero-conteudo p {
+  margin-bottom: var(--espaco-md);
+}
+
+.status-api {
+  margin-top: var(--espaco-md);
+  font-size: var(--fonte-tamanho-sm);
+  font-weight: 600;
+}
+
+.status-api-online {
+  color: #c8f5c8;
+}
+
+.status-api-offline {
+  color: #ffd1d1;
+}
+
+.secao-destaques {
+  padding: var(--espaco-xl) 0;
+}
+
+/* ===== Formulários e filtros ===== */
+
+.filtro-busca {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espaco-md);
+  background-color: var(--cor-fundo-card);
+  padding: var(--espaco-md);
+  border-radius: var(--raio-borda-lg);
+  color: var(--cor-texto);
+}
+
+.campo-formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-xs);
+  font-size: var(--fonte-tamanho-sm);
+  font-weight: 600;
+  color: var(--cor-texto);
+}
+
+.campo-formulario input,
+.campo-formulario select,
+.campo-formulario textarea {
+  padding: var(--espaco-sm);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-borda);
+  font-weight: 400;
+}
+
+.formulario-reserva,
+.formulario-cadastro,
+.formulario-contato {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-md);
+  max-width: 480px;
+}
+
+.opcoes-pagamento,
+.opcoes-estrutura {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-md);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-borda);
+  padding: var(--espaco-md);
+}
+
+.lista-erros {
+  margin: 0;
+  padding: 0;
+}
+
+.mensagem-erro {
+  color: var(--cor-erro);
+}
+
+.mensagem-sucesso {
+  color: var(--cor-sucesso);
+}
+
+.mensagem-vazia {
+  color: var(--cor-texto-claro);
+}
+
+/* ===== Botões ===== */
+
+.botao {
+  display: inline-block;
+  padding: var(--espaco-sm) var(--espaco-md);
+  border-radius: var(--raio-borda);
+  border: 2px solid transparent;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.botao:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.botao-primary {
+  background-color: var(--cor-primaria);
+  color: #fff;
+}
+
+.botao-primary:hover:not(:disabled) {
+  background-color: var(--cor-primaria-escura);
+}
+
+.botao-secondary {
+  background-color: var(--cor-escura);
+  color: #fff;
+}
+
+.botao-outline {
+  background-color: transparent;
+  border-color: var(--cor-erro);
+  color: var(--cor-erro);
+}
+
+/* ===== Cards e grade de quadras ===== */
+
+.card {
+  background-color: var(--cor-fundo-card);
+  border-radius: var(--raio-borda-lg);
+  box-shadow: var(--sombra-card);
+  overflow: hidden;
+}
+
+.grade-quadras {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espaco-md);
+  margin-top: var(--espaco-md);
+}
+
+.quadra-card-link {
+  color: var(--cor-texto);
+  display: block;
+}
+
+.quadra-card-link:hover {
+  text-decoration: none;
+}
+
+.quadra-card:hover {
+  box-shadow: var(--sombra-card-hover);
+}
+
+.quadra-card-corpo {
+  padding: var(--espaco-md);
+}
+
+.quadra-card-local {
+  color: var(--cor-texto-claro);
+  font-size: var(--fonte-tamanho-sm);
+}
+
+.etiqueta-esporte {
+  display: inline-block;
+  background-color: var(--cor-primaria-clara);
+  color: var(--cor-escura);
+  border-radius: 999px;
+  padding: var(--espaco-xs) var(--espaco-sm);
+  font-size: var(--fonte-tamanho-sm);
+  margin: var(--espaco-xs) 0;
+}
+
+.quadra-card-preco {
+  font-size: var(--fonte-tamanho-lg);
+  font-weight: 700;
+  color: var(--cor-primaria-escura);
+}
+
+/* ===== Spinner ===== */
+
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espaco-sm);
+  padding: var(--espaco-lg) 0;
+  color: var(--cor-texto-claro);
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 4px solid var(--cor-borda);
+  border-top-color: var(--cor-primaria);
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== Grade de horários ===== */
+
+.grade-horarios {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--espaco-sm);
+  margin: var(--espaco-md) 0;
+}
+
+.horario-slot {
+  padding: var(--espaco-sm);
+  border-radius: var(--raio-borda);
+  border: 2px solid var(--cor-borda);
+  background-color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.horario-livre:hover {
+  border-color: var(--cor-primaria);
+}
+
+.horario-ocupado {
+  background-color: var(--cor-borda);
+  color: var(--cor-texto-claro);
+  cursor: not-allowed;
+}
+
+.horario-selecionado {
+  background-color: var(--cor-primaria);
+  border-color: var(--cor-primaria-escura);
+  color: #fff;
+}
+
+/* ===== Lista de estrutura (detalhe da quadra) ===== */
+
+.lista-estrutura li {
+  padding: var(--espaco-xs) 0;
+}
+
+/* ===== Painel do gestor ===== */
+
+.tabela-reservas {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--espaco-md);
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.tabela-reservas th,
+.tabela-reservas td {
+  text-align: left;
+  padding: var(--espaco-sm);
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.etiqueta-status {
+  padding: var(--espaco-xs) var(--espaco-sm);
+  border-radius: 999px;
+  font-size: var(--fonte-tamanho-sm);
+  font-weight: 600;
+  color: #fff;
+}
+
+.etiqueta-status-pendente {
+  background-color: var(--cor-pendente);
+}
+
+.etiqueta-status-confirmada {
+  background-color: var(--cor-sucesso);
+}
+
+.etiqueta-status-cancelada {
+  background-color: var(--cor-texto-claro);
+}
+
+/* ===== Páginas institucionais / confirmação / 404 ===== */
+
+.pagina-institucional,
+.pagina-nao-encontrada,
+.cartao-confirmacao {
+  padding: var(--espaco-xl) var(--espaco-md);
+}
+
+.pagina-quadra-detalhe,
+.pagina-quadras,
+.pagina-reserva,
+.pagina-cadastrar-quadra,
+.pagina-painel-gestor {
+  padding: var(--espaco-lg) var(--espaco-md);
+}
+
+/* ===== Breakpoints ===== */
+
+@media (min-width: 480px) {
+  .grade-quadras {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .botao-hamburguer {
+    display: none;
+  }
+
+  .lista-navegacao {
+    display: flex;
+    position: static;
+    flex-direction: row;
+    background-color: transparent;
+    padding: 0;
+    gap: var(--espaco-lg);
+  }
+
+  .filtro-busca {
+    grid-template-columns: repeat(2, 1fr);
+    align-items: end;
+  }
+
+  .grade-horarios {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grade-quadras {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .filtro-busca {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .grade-horarios {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media (min-width: 1440px) {
+  .grade-quadras {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
