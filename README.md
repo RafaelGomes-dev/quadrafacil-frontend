@@ -73,7 +73,6 @@ quadrafacil-frontend/
 ├── src/
 │   ├── main.jsx                 → monta o React na div#root e importa os estilos globais
 │   ├── App.jsx                  → BrowserRouter com todas as rotas da aplicação
-│   ├── App.css                  → estilos de layout e dos componentes, mobile-first
 │   ├── components/              → componentes compartilhados entre páginas
 │   │   ├── Header.jsx, Footer.jsx, Navigation.jsx
 │   │   ├── APITest.jsx          → mostra se a API está online (usado na Home)
@@ -89,7 +88,8 @@ quadrafacil-frontend/
 │   │   └── pagamentoService.js   → processamento do pagamento simulado
 │   └── styles/
 │       ├── variables.css         → tokens de cor, espaçamento e tipografia
-│       └── globals.css           → reset e estilos base do documento
+│       ├── globals.css           → reset e estilos base do documento
+│       └── App.css               → estilos de layout e dos componentes, mobile-first
 ├── .env.example                   → modelo de variáveis de ambiente (versionado)
 ├── .env                           → variáveis reais (NÃO versionado)
 └── .prettierrc                     → regras de formatação
