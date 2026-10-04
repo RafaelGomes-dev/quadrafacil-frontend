@@ -1,0 +1,53 @@
+/**
+ * Tokens de design do QuadraFacil: paleta verde-gramado/escuro, espaçamentos
+ * e tipografia usados em todo o app. Mobile-first — breakpoints em
+ * 480px, 768px, 1024px e 1440px são aplicados nos próprios componentes.
+ */
+
+:root {
+  /* Cores - verde-gramado */
+  --cor-primaria: #2e7d32;
+  --cor-primaria-clara: #4caf50;
+  --cor-primaria-escura: #1b5e20;
+
+  /* Cores - escuro (textos, cabeçalho, rodapé) */
+  --cor-escura: #1a1f1a;
+  --cor-escura-clara: #2c332c;
+
+  /* Cores neutras */
+  --cor-fundo: #f5f7f4;
+  --cor-fundo-card: #ffffff;
+  --cor-texto: #1a1f1a;
+  --cor-texto-claro: #5a6358;
+  --cor-borda: #d8ded4;
+
+  /* Cores de estado */
+  --cor-sucesso: #2e7d32;
+  --cor-alerta: #f9a825;
+  --cor-erro: #c62828;
+  --cor-pendente: #ef6c00;
+
+  /* Espaçamentos */
+  --espaco-xs: 0.25rem;
+  --espaco-sm: 0.5rem;
+  --espaco-md: 1rem;
+  --espaco-lg: 1.5rem;
+  --espaco-xl: 2.5rem;
+
+  /* Tipografia */
+  --fonte-base: 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  --fonte-tamanho-sm: 0.875rem;
+  --fonte-tamanho-md: 1rem;
+  --fonte-tamanho-lg: 1.25rem;
+  --fonte-tamanho-xl: 1.75rem;
+  --fonte-tamanho-xxl: 2.25rem;
+
+  /* Bordas e sombras */
+  --raio-borda: 8px;
+  --raio-borda-lg: 16px;
+  --sombra-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --sombra-card-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
+
+  /* Container */
+  --largura-maxima-conteudo: 1200px;
+}
