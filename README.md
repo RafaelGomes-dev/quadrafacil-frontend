@@ -130,6 +130,6 @@ refactor: extrai lógica de busca para quadraService
 
 | Nome        | Função          | GitHub        |
 | ----------- | --------------- | ------------- |
-| [PREENCHER] | [PREENCHER]      | [PREENCHER]    |
-| [PREENCHER] | [PREENCHER]      | [PREENCHER]    |
+| Rafael Maluf | Trello      | RafaMaluf    |
+| Henry Mendes | Protótipo      | HenryMendesr    |
 | [PREENCHER] | [PREENCHER]      | [PREENCHER]    |
