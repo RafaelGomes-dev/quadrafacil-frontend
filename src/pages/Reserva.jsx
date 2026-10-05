@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Button from '../components/common/Button';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import CampoTelefone from '../components/CampoTelefone';
 import { buscarQuadraPorId } from '../services/quadraService';
 import { criarReserva } from '../services/reservaService';
 import { processarPagamento } from '../services/pagamentoService';
@@ -85,7 +86,9 @@ function Reserva() {
       setPagamentoAprovado(pagamento);
     } catch (erro) {
       console.error('Falha ao processar pagamento:', erro);
-      setMensagemDeErro('Não foi possível processar o pagamento. Tente novamente.');
+      setMensagemDeErro(
+        erro.response?.data?.error || 'Não foi possível processar o pagamento. Tente novamente.'
+      );
     } finally {
       setEstaProcessando(false);
     }
@@ -174,19 +177,7 @@ function Reserva() {
           />
         </label>
 
-        <label className="campo-formulario">
-          Telefone
-          <input
-            type="tel"
-            required
-            inputMode="numeric"
-            autoComplete="tel"
-            maxLength="16"
-            placeholder="(41) 99999-9999"
-            value={telefoneCliente}
-            onChange={(evento) => setTelefoneCliente(evento.target.value)}
-          />
-        </label>
+        <CampoTelefone value={telefoneCliente} onChange={setTelefoneCliente} />
 
         {mensagemDeErro && (
           <p className="mensagem-erro" role="alert" aria-live="polite">
