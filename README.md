@@ -31,11 +31,7 @@ Esta interface React consome a [QuadraFacil API](../quadrafacil-api) e permite q
 
 ```bash
 npm install
-```
-
-## Comandos para rodar localmente
-
-```bash
+Comandos para rodar localmente
 # ambiente de desenvolvimento (http://localhost:5173)
 npm run dev
 
@@ -47,89 +43,76 @@ npm run preview
 
 # lint
 npm run lint
-```
+A QuadraFacil API precisa estar rodando em http://localhost:3001 (ou na URL
+configurada em VITE_API_URL) para que as páginas que consomem dados funcionem.
 
-> A [QuadraFacil API](../quadrafacil-api) precisa estar rodando em `http://localhost:3001` (ou na URL
-> configurada em `VITE_API_URL`) para que as páginas que consomem dados funcionem.
+Variáveis de ambiente
+Copie .env.example para .env:
+Variável	Descrição	Valor padrão
+VITE_API_URL	URL base da QuadraFacil API	http://localhost:3001/api
 
-## Variáveis de ambiente
 
-Copie `.env.example` para `.env`:
-
-| Variável       | Descrição                         | Valor padrão                     |
-| -------------- | ---------------------------------- | ---------------------------------- |
-| `VITE_API_URL` | URL base da QuadraFacil API         | `http://localhost:3001/api`         |
-
-**Atenção ao prefixo**: o enunciado da disciplina usa `REACT_APP_` porque foi escrito pensando no
-Create React App (CRA). Este projeto usa **Vite**, e o Vite só expõe ao código do navegador variáveis
-de ambiente cujo nome começa com `VITE_` — por isso usamos `VITE_API_URL` em vez de `REACT_APP_API_URL`.
-Isso é lido em `src/services/api.js` via `import.meta.env.VITE_API_URL`.
-
-## Estrutura de pastas
-
-```
+Atenção ao prefixo: o enunciado da disciplina usa REACT_APP_ porque foi escrito pensando no
+Create React App (CRA). Este projeto usa Vite, e o Vite só expõe ao código do navegador variáveis
+de ambiente cujo nome começa com VITE_ — por isso usamos VITE_API_URL em vez de REACT_APP_API_URL.
+Isso é lido em src/services/api.js via import.meta.env.VITE_API_URL.
+Estrutura de pastas
 quadrafacil-frontend/
 ├── index.html                  → ponto de entrada HTML carregado pelo Vite
 ├── src/
-│   ├── main.jsx                 → monta o React na div#root e importa os estilos globais
-│   ├── App.jsx                  → BrowserRouter com todas as rotas da aplicação
-│   ├── components/              → componentes compartilhados entre páginas
+│   ├── main.jsx                → monta o React e importa os estilos globais
+│   ├── App.jsx                 → BrowserRouter com todas as rotas
+│   ├── components/             → componentes compartilhados
 │   │   ├── Header.jsx, Footer.jsx, Navigation.jsx
-│   │   ├── APITest.jsx          → mostra se a API está online (usado na Home)
-│   │   ├── QuadraCard.jsx       → card de resumo de uma quadra
-│   │   ├── FiltroBusca.jsx      → formulário de busca/filtros reutilizável
-│   │   ├── SeletorHorario.jsx   → grade de horários livres/ocupados
-│   │   └── common/              → Button, Card, LoadingSpinner (componentes genéricos de UI)
-│   ├── pages/                   → uma página por rota (ver tabela de rotas abaixo)
-│   ├── services/                → toda chamada HTTP fica aqui, fora dos componentes
-│   │   ├── api.js                → instância axios com a baseURL da API
-│   │   ├── quadraService.js      → busca, detalhe, horários e cadastro de quadras
-│   │   ├── reservaService.js     → listagem, criação e cancelamento de reservas
-│   │   └── pagamentoService.js   → processamento do pagamento simulado
+│   │   ├── APITest.jsx         → mostra se a API está online
+│   │   ├── QuadraCard.jsx      → card de resumo de uma quadra
+│   │   ├── FiltroBusca.jsx     → formulário de busca e filtros
+│   │   ├── SeletorHorario.jsx  → grade de horários livres e ocupados
+│   │   └── common/             → Button, Card e LoadingSpinner
+│   ├── pages/                  → uma página por rota
+│   ├── services/               → chamadas HTTP e integração com a API
+│   │   ├── api.js
+│   │   ├── quadraService.js
+│   │   ├── reservaService.js
+│   │   └── pagamentoService.js
 │   └── styles/
-│       ├── variables.css         → tokens de cor, espaçamento e tipografia
-│       ├── globals.css           → reset e estilos base do documento
-│       └── App.css               → estilos de layout e dos componentes, mobile-first
-├── .env.example                   → modelo de variáveis de ambiente (versionado)
-├── .env                           → variáveis reais (NÃO versionado)
-└── .prettierrc                     → regras de formatação
-```
+│       ├── variables.css       → tokens de cor, espaçamento e tipografia
+│       ├── globals.css         → estilos globais
+│       └── App.css             → layout e estilos responsivos
+├── .env.example                → modelo de variáveis de ambiente
+├── .env                        → variáveis locais, não versionadas
+└── .prettierrc                 → regras de formatação
+Rotas da aplicação
+Rota	Página	Descrição
+/	Home	Busca rápida, destaques e status da API
+/quadras	Quadras	Listagem de quadras com filtros
+/quadras/:id	QuadraDetalhe	Perfil da quadra e horários
+/reserva	Reserva	Dados do cliente, pagamento e confirmação
+/painel-gestor	PainelGestor	Reservas, status e cancelamentos
+/cadastrar-quadra	CadastrarQuadra	Formulário de cadastro de quadra
+/sobre	About	Informações sobre o projeto
+/contato	Contact	Formulário de contato demonstrativo
+*	NotFound	Página 404
 
-## Rotas da aplicação
 
-| Rota                | Página            | Descrição                                               |
-| -------------------- | ----------------- | ---------------------------------------------------------- |
-| `/`                  | Home               | Hero com busca rápida + quadras em destaque + status da API |
-| `/quadras`           | Quadras            | Listagem com filtros completos                              |
-| `/quadras/:id`       | QuadraDetalhe      | Perfil da quadra e grade de horários                         |
-| `/reserva`           | Reserva            | Resumo, dados do cliente, pagamento (Pix/cartão) e confirmação |
-| `/painel-gestor`     | PainelGestor       | Lista de reservas, status e cancelamento                     |
-| `/cadastrar-quadra`  | CadastrarQuadra    | Formulário de cadastro de quadra                              |
-| `/sobre`             | About              | Sobre o projeto                                                |
-| `/contato`           | Contact            | Formulário de contato (mock)                                   |
-| `*`                  | NotFound           | Página 404                                                     |
+Protótipo de baixa fidelidade
+Fotos das telas desenhadas à mão:
+- Link para as imagens: [COLE AQUI O LINK COMPARTILHÁVEL]
+- Senha de acesso, se necessária: [NÃO COLOQUE UMA SENHA REAL NESTE README PÚBLICO]
+Este repositório é público. Compartilhe qualquer senha necessária separadamente, por um canal privado. Se possível, configure o Drive como “Qualquer pessoa com o link — Leitor” para não exigir senha.
 
-## Fluxo de branches e padrão de commits
-
-- `main`: código estável, pronto para entrega.
-- `develop`: integração das features antes de ir para `main`.
-- `feat/<nome-da-feature>`, `style/<assunto>`, `docs/<assunto>`: branches de trabalho, sempre a partir
-  de `develop`, mescladas de volta com `merge --no-ff`.
-
-Commits seguem [Conventional Commits](https://www.conventionalcommits.org/) em português:
-
-```
+Fluxo de branches e padrão de commits
+- main: código estável, pronto para entrega.
+- develop: integração das features antes de irem para main.
+- feat/<nome-da-feature>, style/<assunto> e docs/<assunto>: branches criadas a partir de develop e enviadas de volta por Pull Request.
+Commits seguem Conventional Commits em português:
 feat: adiciona página de listagem de quadras
 fix: corrige filtro de preço mínimo
 docs: atualiza README com variáveis de ambiente
 style: ajusta responsividade do menu mobile
 refactor: extrai lógica de busca para quadraService
-```
-
-## Equipe
-
-| Nome        | Função          | GitHub        |
-| ----------- | --------------- | ------------- |
-| [PREENCHER] | [PREENCHER]      | [PREENCHER]    |
-| [PREENCHER] | [PREENCHER]      | [PREENCHER]    |
-| [PREENCHER] | [PREENCHER]      | [PREENCHER]    |
+Equipe
+Nome	Função	GitHub
+[PREENCHER]	[PREENCHER]	[PREENCHER]
+[PREENCHER]	[PREENCHER]	[PREENCHER]
+[PREENCHER]	[PREENCHER]	[PREENCHER]
