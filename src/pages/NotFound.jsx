@@ -5,7 +5,7 @@ function NotFound() {
   return (
     <div className="container pagina-nao-encontrada">
       <h1>404</h1>
-      <p>Página não encontrada.</p>
+      <p>Ops! Essa página não existe ou foi removida.</p>
       <Link to="/">Voltar para a Home</Link>
     </div>
   );

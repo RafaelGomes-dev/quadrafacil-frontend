@@ -1,135 +1,140 @@
 # QuadraFacil — Frontend
 
-Frontend do **QuadraFacil**, um "Airbnb de quadras esportivas": conecta jogadores/organizadores que
-querem reservar uma quadra (society, futsal, campo, vôlei, beach tennis, basquete) a gestores/proprietários
-que administram a agenda e os pagamentos dessas quadras.
+Frontend do **QuadraFacil**, um "Airbnb de quadras esportivas": conecta jogadores e organizadores que querem reservar quadras de society, futsal, campo, vôlei, beach tennis e basquete aos gestores que administram agendas e pagamentos.
 
 ## Descrição do projeto
 
 Esta interface React consome a [QuadraFacil API](../quadrafacil-api) e permite que:
 
-- **Jogadores/organizadores** busquem quadras por cidade, bairro, esporte, preço, data e horário,
-  vejam o perfil de cada quadra com sua estrutura (vestiário, estacionamento, iluminação, cobertura),
-  escolham um horário livre, façam uma reserva e paguem (pagamento simulado nesta etapa).
-- **Gestores/proprietários** cadastrem novas quadras e acompanhem as reservas e o status de pagamento
-  em um painel, podendo cancelar reservas (o que libera o horário novamente).
+- Jogadores busquem quadras por cidade, bairro, esporte, preço, data e horário, consultem detalhes e disponibilidade, façam reservas e usem o pagamento simulado.
+- Gestores cadastrem quadras, acompanhem reservas e pagamentos e cancelem reservas.
 
-## Stack utilizada
+## Tecnologias
 
-- React 19 + Vite (JavaScript puro, sem TypeScript)
-- react-router-dom (roteamento)
-- axios (chamadas HTTP)
-- CSS puro, mobile-first, com tokens de design (`src/styles/variables.css`)
-- oxlint (lint)
+- React 19 e Vite
+- JavaScript
+- React Router
+- Axios
+- CSS mobile-first
+- Oxlint
 
 ## Pré-requisitos
 
 - Node.js 18 ou superior
 - npm 9 ou superior
 
-## Instalação de dependências
+## Instalação
 
 ```bash
 npm install
 ```
 
-## Comandos para rodar localmente
+## Executar localmente
 
 ```bash
-# ambiente de desenvolvimento (http://localhost:5173)
 npm run dev
+```
 
-# build de produção
+O frontend será iniciado em `http://localhost:5173`.
+
+Para gerar e visualizar o build de produção:
+
+```bash
 npm run build
-
-# pré-visualização do build de produção
 npm run preview
+```
 
-# lint
+Para executar o lint:
+
+```bash
 npm run lint
 ```
 
-> A [QuadraFacil API](../quadrafacil-api) precisa estar rodando em `http://localhost:3001` (ou na URL
-> configurada em `VITE_API_URL`) para que as páginas que consomem dados funcionem.
+A [QuadraFacil API](../quadrafacil-api) também precisa estar rodando em `http://localhost:3001`.
 
 ## Variáveis de ambiente
 
 Copie `.env.example` para `.env`:
 
-| Variável       | Descrição                         | Valor padrão                     |
-| -------------- | ---------------------------------- | ---------------------------------- |
-| `VITE_API_URL` | URL base da QuadraFacil API         | `http://localhost:3001/api`         |
+```env
+VITE_API_URL=http://localhost:3001/api
+```
 
-**Atenção ao prefixo**: o enunciado da disciplina usa `REACT_APP_` porque foi escrito pensando no
-Create React App (CRA). Este projeto usa **Vite**, e o Vite só expõe ao código do navegador variáveis
-de ambiente cujo nome começa com `VITE_` — por isso usamos `VITE_API_URL` em vez de `REACT_APP_API_URL`.
-Isso é lido em `src/services/api.js` via `import.meta.env.VITE_API_URL`.
+O projeto usa Vite, por isso a variável começa com `VITE_`. O prefixo `REACT_APP_` é usado em projetos Create React App.
 
 ## Estrutura de pastas
 
-```
+```text
 quadrafacil-frontend/
-├── index.html                  → ponto de entrada HTML carregado pelo Vite
+├── index.html
 ├── src/
-│   ├── main.jsx                 → monta o React na div#root e importa os estilos globais
-│   ├── App.jsx                  → BrowserRouter com todas as rotas da aplicação
-│   ├── components/              → componentes compartilhados entre páginas
-│   │   ├── Header.jsx, Footer.jsx, Navigation.jsx
-│   │   ├── APITest.jsx          → mostra se a API está online (usado na Home)
-│   │   ├── QuadraCard.jsx       → card de resumo de uma quadra
-│   │   ├── FiltroBusca.jsx      → formulário de busca/filtros reutilizável
-│   │   ├── SeletorHorario.jsx   → grade de horários livres/ocupados
-│   │   └── common/              → Button, Card, LoadingSpinner (componentes genéricos de UI)
-│   ├── pages/                   → uma página por rota (ver tabela de rotas abaixo)
-│   ├── services/                → toda chamada HTTP fica aqui, fora dos componentes
-│   │   ├── api.js                → instância axios com a baseURL da API
-│   │   ├── quadraService.js      → busca, detalhe, horários e cadastro de quadras
-│   │   ├── reservaService.js     → listagem, criação e cancelamento de reservas
-│   │   └── pagamentoService.js   → processamento do pagamento simulado
-│   └── styles/
-│       ├── variables.css         → tokens de cor, espaçamento e tipografia
-│       ├── globals.css           → reset e estilos base do documento
-│       └── App.css               → estilos de layout e dos componentes, mobile-first
-├── .env.example                   → modelo de variáveis de ambiente (versionado)
-├── .env                           → variáveis reais (NÃO versionado)
-└── .prettierrc                     → regras de formatação
+│   ├── components/
+│   │   ├── common/
+│   │   ├── APITest.jsx
+│   │   ├── FiltroBusca.jsx
+│   │   ├── Footer.jsx
+│   │   ├── Header.jsx
+│   │   ├── Navigation.jsx
+│   │   ├── QuadraCard.jsx
+│   │   └── SeletorHorario.jsx
+│   ├── pages/
+│   ├── services/
+│   │   ├── api.js
+│   │   ├── quadraService.js
+│   │   ├── reservaService.js
+│   │   └── pagamentoService.js
+│   ├── styles/
+│   │   ├── variables.css
+│   │   ├── globals.css
+│   │   └── App.css
+│   ├── App.jsx
+│   └── main.jsx
+├── .env.example
+├── .gitignore
+├── package.json
+└── README.md
 ```
 
-## Rotas da aplicação
+## Páginas e rotas
 
-| Rota                | Página            | Descrição                                               |
-| -------------------- | ----------------- | ---------------------------------------------------------- |
-| `/`                  | Home               | Hero com busca rápida + quadras em destaque + status da API |
-| `/quadras`           | Quadras            | Listagem com filtros completos                              |
-| `/quadras/:id`       | QuadraDetalhe      | Perfil da quadra e grade de horários                         |
-| `/reserva`           | Reserva            | Resumo, dados do cliente, pagamento (Pix/cartão) e confirmação |
-| `/painel-gestor`     | PainelGestor       | Lista de reservas, status e cancelamento                     |
-| `/cadastrar-quadra`  | CadastrarQuadra    | Formulário de cadastro de quadra                              |
-| `/sobre`             | About              | Sobre o projeto                                                |
-| `/contato`           | Contact            | Formulário de contato (mock)                                   |
-| `*`                  | NotFound           | Página 404                                                     |
+| Rota                | Página                | Descrição                                         |
+| ------------------- | --------------------- | ------------------------------------------------- |
+| `/`                 | Home                  | Busca rápida, quadras em destaque e status da API |
+| `/quadras`          | Quadras               | Listagem de quadras com filtros                   |
+| `/quadras/:id`      | Detalhes da quadra    | Informações e horários disponíveis                |
+| `/reserva`          | Reserva               | Dados do cliente, pagamento e confirmação         |
+| `/painel-gestor`    | Painel do gestor      | Reservas, status e cancelamentos                  |
+| `/cadastrar-quadra` | Cadastro de quadra    | Formulário para cadastrar uma quadra              |
+| `/sobre`            | Sobre                 | Informações sobre o projeto                       |
+| `/contato`          | Contato               | Formulário demonstrativo de contato               |
+| `*`                 | Página não encontrada | Página 404                                        |
 
-## Fluxo de branches e padrão de commits
+## Protótipo
 
-- `main`: código estável, pronto para entrega.
-- `develop`: integração das features antes de ir para `main`.
-- `feat/<nome-da-feature>`, `style/<assunto>`, `docs/<assunto>`: branches de trabalho, sempre a partir
-  de `develop`, mescladas de volta com `merge --no-ff`.
+As fotos do protótipo desenhado à mão estão na pasta \Protótipo_QF/`.`
 
-Commits seguem [Conventional Commits](https://www.conventionalcommits.org/) em português:
+## Branches e commits
 
-```
+- `main`: versão estável do projeto.
+- `develop`: integração das alterações da equipe.
+- Crie branches de funcionalidade a partir de `develop` e envie Pull Requests de volta para `develop`.
+
+Use mensagens de commit descritivas, seguindo Conventional Commits:
+
+```text
 feat: adiciona página de listagem de quadras
 fix: corrige filtro de preço mínimo
-docs: atualiza README com variáveis de ambiente
+docs: atualiza README
 style: ajusta responsividade do menu mobile
 refactor: extrai lógica de busca para quadraService
 ```
 
 ## Equipe
 
-| Nome        | Função          | GitHub        |
-| ----------- | --------------- | ------------- |
-| Rafael Maluf | Trello      | RafaMaluf    |
-| Henry Mendes | Protótipo      | HenryMendesr    |
-| [PREENCHER] | [PREENCHER]      | [PREENCHER]    |
+| Nome             | Função                                                       | GitHub           |
+| ---------------- | ------------------------------------------------------------ | ---------------- |
+| Rafael Gomes     | Front-end, roteamento, integração com a API e responsividade | RafaelGomes-dev  |
+| Rafael Maluf     | Organização do Trello, validações e testes                   | RafaMaluf        |
+| Henry Mendes     | Protótipo e documentação                                     | HenryMendesr     |
+| Tiago Dagnoluzzo | Testes e documentação                                        | tiago-dagnoluzzo |
+| Erick Meister    | Documentação e ajustes de interface                          | Minimeister05    |
