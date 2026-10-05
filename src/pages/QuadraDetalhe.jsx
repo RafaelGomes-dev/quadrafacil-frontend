@@ -5,6 +5,7 @@ import Button from '../components/common/Button';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { buscarHorariosDaQuadra, buscarQuadraPorId } from '../services/quadraService';
 import { formatarDataLocalISO } from '../utils/data';
+import { formatarPreco } from '../utils/formatadores';
 
 const ITENS_DE_ESTRUTURA = [
   { chave: 'vestiario', rotulo: 'Vestiário' },
@@ -96,7 +97,7 @@ function QuadraDetalhe() {
 
       <p>{quadra.descricao}</p>
       <p className="quadra-card-preco">
-        R$ {quadra.precoHora.toFixed(2)} <small>/hora</small>
+        {formatarPreco(quadra.precoHora)} <small>/hora</small>
       </p>
 
       <h2>Estrutura</h2>

@@ -6,6 +6,7 @@ import { buscarQuadraPorId } from '../services/quadraService';
 import { criarReserva } from '../services/reservaService';
 import { processarPagamento } from '../services/pagamentoService';
 import { normalizarTelefone, validarDadosDoCliente } from '../utils/reserva';
+import { formatarData, formatarPreco } from '../utils/formatadores';
 
 /** Resumo da reserva, escolha de pagamento e confirmação. */
 function Reserva() {
@@ -95,7 +96,7 @@ function Reserva() {
       <div className="container cartao-confirmacao">
         <h1>Reserva confirmada!</h1>
         <p>
-          {quadra?.nome} em {state.data} às {state.horario}.
+          {quadra?.nome} em {formatarData(state.data)} às {state.horario}.
         </p>
         <p>Pagamento aprovado via {pagamentoAprovado.metodo === 'pix' ? 'Pix' : 'cartão'}.</p>
         <Link to="/painel-gestor">Ver no painel do gestor</Link>
@@ -108,8 +109,8 @@ function Reserva() {
       <div className="container pagina-reserva">
         <h1>Pagamento</h1>
         <p>
-          Reserva #{reservaCriada.id} em {state.data} às {state.horario} —{' '}
-          {quadra ? `R$ ${quadra.precoHora.toFixed(2)}` : ''}
+          Reserva #{reservaCriada.id} em {formatarData(state.data)} às {state.horario} —{' '}
+          {quadra ? formatarPreco(quadra.precoHora) : ''}
         </p>
 
         <fieldset className="opcoes-pagamento">
@@ -153,7 +154,8 @@ function Reserva() {
       <h1>Confirmar reserva</h1>
       {quadra ? (
         <p>
-          {quadra.nome} em {state.data} às {state.horario} — R$ {quadra.precoHora.toFixed(2)}
+          {quadra.nome} em {formatarData(state.data)} às {state.horario} —{' '}
+          {formatarPreco(quadra.precoHora)}
         </p>
       ) : (
         <LoadingSpinner mensagem="Carregando resumo..." />

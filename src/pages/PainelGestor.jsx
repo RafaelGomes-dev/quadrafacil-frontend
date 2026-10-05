@@ -3,6 +3,7 @@ import Button from '../components/common/Button';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { listarQuadras } from '../services/quadraService';
 import { cancelarReserva, listarReservas } from '../services/reservaService';
+import { formatarData } from '../utils/formatadores';
 
 const ROTULOS_DE_STATUS = {
   pendente: 'Pendente',
@@ -73,7 +74,7 @@ function PainelGestor() {
             <tr key={reserva.id}>
               <td>{quadrasPorId[reserva.quadraId]?.nome || `Quadra #${reserva.quadraId}`}</td>
               <td>{reserva.nomeCliente}</td>
-              <td>{reserva.data}</td>
+              <td>{formatarData(reserva.data)}</td>
               <td>{reserva.horario}</td>
               <td>
                 <span className={`etiqueta-status etiqueta-status-${reserva.status}`}>
