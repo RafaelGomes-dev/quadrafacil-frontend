@@ -109,13 +109,8 @@ quadrafacil-frontend/
 | `/contato` | Contato | Formulário demonstrativo de contato |
 | `*` | Página não encontrada | Página 404 |
 
-## Protótipo de baixa fidelidade
-
-Fotos das telas desenhadas à mão:
-
-Link para as imagens: 
-https://phronesisinvestimentos-my.sharepoint.com/:f:/g/personal/henryr_phronesisinvestimentos_com_br/IgDT1KKF9iG2RasOb-73JFXzASKq9hSTrU5Jof1Oy5Pn4tc?e=aNnorr
-
+## Protótipo
+As fotos do protótipo desenhado à mão estão na pasta \Protótipo_QF/`.`
 
 ## Branches e commits
 
@@ -137,6 +132,6 @@ refactor: extrai lógica de busca para quadraService
 
 | Nome | Função | GitHub |
 |---|---|---|
-| [PREENCHER] | [PREENCHER] | [PREENCHER] |
+| Rafael Maluf | Trello | RafaMaluf |
 | Henry Mendes  | Protótipo | HenryMendesr |
 | [PREENCHER] | [PREENCHER] | [PREENCHER] |
