@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom';
 import FiltroBusca from '../components/FiltroBusca';
 import QuadraCard from '../components/QuadraCard';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import Button from '../components/common/Button';
 import { listarQuadras } from '../services/quadraService';
 
 /** Página de listagem de quadras com filtros de busca. */
@@ -41,32 +40,18 @@ function Quadras() {
 
       {estaCarregando && <LoadingSpinner mensagem="Buscando quadras..." />}
 
-      {!estaCarregando && mensagemDeErro && (
-        <div className="estado-busca-erro">
-          <p className="mensagem-erro" role="alert">
-            {mensagemDeErro}
-          </p>
-          <Button onClick={() => buscarQuadras(filtrosAtivos)}>Tentar novamente</Button>
-        </div>
-      )}
+      {!estaCarregando && mensagemDeErro && <p className="mensagem-erro">{mensagemDeErro}</p>}
 
       {!estaCarregando && !mensagemDeErro && quadras.length === 0 && (
-        <p className="mensagem-vazia" role="status" aria-live="polite">
-          Nenhuma quadra encontrada para esses filtros.
-        </p>
+        <p className="mensagem-vazia">Nenhuma quadra encontrada para esses filtros.</p>
       )}
 
       {!estaCarregando && !mensagemDeErro && quadras.length > 0 && (
-        <>
-          <p className="resumo-resultados" role="status" aria-live="polite">
-            {quadras.length} {quadras.length === 1 ? 'quadra encontrada' : 'quadras encontradas'}.
-          </p>
-          <div className="grade-quadras">
-            {quadras.map((quadra) => (
-              <QuadraCard key={quadra.id} quadra={quadra} />
-            ))}
-          </div>
-        </>
+        <div className="grade-quadras">
+          {quadras.map((quadra) => (
+            <QuadraCard key={quadra.id} quadra={quadra} />
+          ))}
+        </div>
       )}
     </div>
   );
