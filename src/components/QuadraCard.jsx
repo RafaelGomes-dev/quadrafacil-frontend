@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Card from './common/Card';
+import { formatarPreco } from '../utils/formatadores';
 
 /**
  * Cartão de resumo de uma quadra, usado na listagem de busca.
@@ -21,7 +22,7 @@ function QuadraCard({ quadra }) {
           </p>
           <span className="etiqueta-esporte">{quadra.esporte}</span>
           <p className="quadra-card-preco">
-            R$ {quadra.precoHora.toFixed(2)} <small>/hora</small>
+            {formatarPreco(quadra.precoHora)} <small>/hora</small>
           </p>
         </div>
       </Link>

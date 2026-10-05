@@ -97,19 +97,20 @@ quadrafacil-frontend/
 
 ## Páginas e rotas
 
-| Rota | Página | Descrição |
-|---|---|---|
-| `/` | Home | Busca rápida, quadras em destaque e status da API |
-| `/quadras` | Quadras | Listagem de quadras com filtros |
-| `/quadras/:id` | Detalhes da quadra | Informações e horários disponíveis |
-| `/reserva` | Reserva | Dados do cliente, pagamento e confirmação |
-| `/painel-gestor` | Painel do gestor | Reservas, status e cancelamentos |
-| `/cadastrar-quadra` | Cadastro de quadra | Formulário para cadastrar uma quadra |
-| `/sobre` | Sobre | Informações sobre o projeto |
-| `/contato` | Contato | Formulário demonstrativo de contato |
-| `*` | Página não encontrada | Página 404 |
+| Rota                | Página                | Descrição                                         |
+| ------------------- | --------------------- | ------------------------------------------------- |
+| `/`                 | Home                  | Busca rápida, quadras em destaque e status da API |
+| `/quadras`          | Quadras               | Listagem de quadras com filtros                   |
+| `/quadras/:id`      | Detalhes da quadra    | Informações e horários disponíveis                |
+| `/reserva`          | Reserva               | Dados do cliente, pagamento e confirmação         |
+| `/painel-gestor`    | Painel do gestor      | Reservas, status e cancelamentos                  |
+| `/cadastrar-quadra` | Cadastro de quadra    | Formulário para cadastrar uma quadra              |
+| `/sobre`            | Sobre                 | Informações sobre o projeto                       |
+| `/contato`          | Contato               | Formulário demonstrativo de contato               |
+| `*`                 | Página não encontrada | Página 404                                        |
 
 ## Protótipo
+
 As fotos do protótipo desenhado à mão estão na pasta \Protótipo_QF/`.`
 
 ## Branches e commits
@@ -130,10 +131,10 @@ refactor: extrai lógica de busca para quadraService
 
 ## Equipe
 
-| Nome | Função | GitHub |
-|---|---|---|
-| Rafael Maluf | Trello | RafaMaluf |
-| Henry Mendes  | Protótipo | HenryMendesr |
-| Rafael Gomes | Front-end: estrutura do projeto, roteamento, páginas, integração com a API e layout responsivo | RafaelGomes-dev |
-| Erick Meister  | Documentação e alterações | Minimeister05 |
-
+| Nome             | Função                                                       | GitHub           |
+| ---------------- | ------------------------------------------------------------ | ---------------- |
+| Rafael Gomes     | Front-end, roteamento, integração com a API e responsividade | RafaelGomes-dev  |
+| Rafael Maluf     | Organização do Trello, validações e testes                   | RafaMaluf        |
+| Henry Mendes     | Protótipo e documentação                                     | HenryMendesr     |
+| Tiago Dagnoluzzo | Testes e documentação                                        | tiago-dagnoluzzo |
+| Erick Meister    | Documentação e ajustes de interface                          | Minimeister05    |

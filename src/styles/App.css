@@ -168,7 +168,8 @@
 }
 
 .opcoes-pagamento,
-.opcoes-estrutura {
+.opcoes-estrutura,
+.opcoes-horario {
   display: flex;
   flex-wrap: wrap;
   gap: var(--espaco-md);
