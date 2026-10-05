@@ -5,6 +5,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import { buscarQuadraPorId } from '../services/quadraService';
 import { criarReserva } from '../services/reservaService';
 import { processarPagamento } from '../services/pagamentoService';
+import { normalizarTelefone, validarDadosDoCliente } from '../utils/reserva';
 
 /** Resumo da reserva, escolha de pagamento e confirmação. */
 function Reserva() {
@@ -40,13 +41,20 @@ function Reserva() {
   async function confirmarReserva(evento) {
     evento.preventDefault();
     setMensagemDeErro('');
+
+    const erroDeValidacao = validarDadosDoCliente(nomeCliente, telefoneCliente);
+    if (erroDeValidacao) {
+      setMensagemDeErro(erroDeValidacao);
+      return;
+    }
+
     setEstaProcessando(true);
 
     try {
       const reserva = await criarReserva({
         quadraId: state.quadraId,
-        nomeCliente,
-        telefoneCliente,
+        nomeCliente: nomeCliente.trim(),
+        telefoneCliente: normalizarTelefone(telefoneCliente),
         data: state.data,
         horario: state.horario,
       });
@@ -127,7 +135,11 @@ function Reserva() {
           </label>
         </fieldset>
 
-        {mensagemDeErro && <p className="mensagem-erro">{mensagemDeErro}</p>}
+        {mensagemDeErro && (
+          <p className="mensagem-erro" role="alert" aria-live="polite">
+            {mensagemDeErro}
+          </p>
+        )}
 
         <Button disabled={estaProcessando} onClick={confirmarPagamento}>
           {estaProcessando ? 'Processando...' : 'Pagar agora'}
@@ -153,6 +165,8 @@ function Reserva() {
           <input
             type="text"
             required
+            minLength="3"
+            autoComplete="name"
             value={nomeCliente}
             onChange={(evento) => setNomeCliente(evento.target.value)}
           />
@@ -163,12 +177,20 @@ function Reserva() {
           <input
             type="tel"
             required
+            inputMode="numeric"
+            autoComplete="tel"
+            maxLength="16"
+            placeholder="(41) 99999-9999"
             value={telefoneCliente}
             onChange={(evento) => setTelefoneCliente(evento.target.value)}
           />
         </label>
 
-        {mensagemDeErro && <p className="mensagem-erro">{mensagemDeErro}</p>}
+        {mensagemDeErro && (
+          <p className="mensagem-erro" role="alert" aria-live="polite">
+            {mensagemDeErro}
+          </p>
+        )}
 
         <Button type="submit" disabled={estaProcessando}>
           {estaProcessando ? 'Enviando...' : 'Continuar para pagamento'}
