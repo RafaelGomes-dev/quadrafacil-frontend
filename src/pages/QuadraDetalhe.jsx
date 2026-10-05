@@ -4,6 +4,7 @@ import SeletorHorario from '../components/SeletorHorario';
 import Button from '../components/common/Button';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { buscarHorariosDaQuadra, buscarQuadraPorId } from '../services/quadraService';
+import { formatarDataLocalISO } from '../utils/data';
 
 const ITENS_DE_ESTRUTURA = [
   { chave: 'vestiario', rotulo: 'Vestiário' },
@@ -12,31 +13,30 @@ const ITENS_DE_ESTRUTURA = [
   { chave: 'coberta', rotulo: 'Quadra coberta' },
 ];
 
-function obterDataDeHoje() {
-  return new Date().toISOString().slice(0, 10);
-}
-
 /** Perfil da quadra: estrutura, fotos e grade de horários para reserva. */
 function QuadraDetalhe() {
   const { id } = useParams();
   const navegar = useNavigate();
+  const dataMinima = formatarDataLocalISO();
 
   const [quadra, setQuadra] = useState(null);
-  const [dataEscolhida, setDataEscolhida] = useState(obterDataDeHoje());
+  const [dataEscolhida, setDataEscolhida] = useState(dataMinima);
   const [horarios, setHorarios] = useState({ horariosLivres: [], horariosOcupados: [] });
   const [horarioSelecionado, setHorarioSelecionado] = useState('');
   const [estaCarregando, setEstaCarregando] = useState(true);
-  const [mensagemDeErro, setMensagemDeErro] = useState('');
+  const [erroDaQuadra, setErroDaQuadra] = useState('');
+  const [erroDosHorarios, setErroDosHorarios] = useState('');
 
   useEffect(() => {
     let cancelado = false;
+    setErroDaQuadra('');
     buscarQuadraPorId(id)
       .then((quadraEncontrada) => {
         if (!cancelado) setQuadra(quadraEncontrada);
       })
       .catch((erro) => {
         console.error('Falha ao carregar quadra:', erro);
-        if (!cancelado) setMensagemDeErro('Quadra não encontrada.');
+        if (!cancelado) setErroDaQuadra('Quadra não encontrada.');
       });
     return () => {
       cancelado = true;
@@ -46,6 +46,7 @@ function QuadraDetalhe() {
   useEffect(() => {
     let cancelado = false;
     setEstaCarregando(true);
+    setErroDosHorarios('');
     setHorarioSelecionado('');
 
     buscarHorariosDaQuadra(id, dataEscolhida)
@@ -54,7 +55,7 @@ function QuadraDetalhe() {
       })
       .catch((erro) => {
         console.error('Falha ao carregar horários:', erro);
-        if (!cancelado) setMensagemDeErro('Não foi possível carregar os horários desta data.');
+        if (!cancelado) setErroDosHorarios('Não foi possível carregar os horários desta data.');
       })
       .finally(() => {
         if (!cancelado) setEstaCarregando(false);
@@ -71,8 +72,12 @@ function QuadraDetalhe() {
     });
   }
 
-  if (mensagemDeErro && !quadra) {
-    return <p className="container mensagem-erro">{mensagemDeErro}</p>;
+  if (erroDaQuadra && !quadra) {
+    return (
+      <p className="container mensagem-erro" role="alert">
+        {erroDaQuadra}
+      </p>
+    );
   }
 
   if (!quadra) {
@@ -108,12 +113,18 @@ function QuadraDetalhe() {
         Data
         <input
           type="date"
+          min={dataMinima}
+          required
           value={dataEscolhida}
           onChange={(evento) => setDataEscolhida(evento.target.value)}
         />
       </label>
 
-      {estaCarregando ? (
+      {erroDosHorarios ? (
+        <p className="mensagem-erro" role="alert">
+          {erroDosHorarios}
+        </p>
+      ) : estaCarregando ? (
         <LoadingSpinner mensagem="Carregando horários..." />
       ) : (
         <SeletorHorario
@@ -124,7 +135,10 @@ function QuadraDetalhe() {
         />
       )}
 
-      <Button disabled={!horarioSelecionado} onClick={irParaReserva}>
+      <Button
+        disabled={!horarioSelecionado || estaCarregando || Boolean(erroDosHorarios)}
+        onClick={irParaReserva}
+      >
         Reservar horário {horarioSelecionado}
       </Button>
     </div>
