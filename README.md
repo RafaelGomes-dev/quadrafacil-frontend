@@ -27,20 +27,44 @@ Esta interface React consome a [QuadraFacil API](../quadrafacil-api) e permite q
 
 ```bash
 npm install
-Executar localmente
+```
+
+## Executar localmente
+
+```bash
 npm run dev
-O frontend será iniciado em http://localhost:5173.
+```
+
+O frontend será iniciado em `http://localhost:5173`.
+
 Para gerar e visualizar o build de produção:
+
+```bash
 npm run build
 npm run preview
+```
+
 Para executar o lint:
+
+```bash
 npm run lint
-A QuadraFacil API também precisa estar rodando em http://localhost:3001.
-Variáveis de ambiente
-Copie .env.example para .env:
+```
+
+A [QuadraFacil API](../quadrafacil-api) também precisa estar rodando em `http://localhost:3001`.
+
+## Variáveis de ambiente
+
+Copie `.env.example` para `.env`:
+
+```env
 VITE_API_URL=http://localhost:3001/api
-O projeto usa Vite, por isso a variável começa com VITE_. O prefixo REACT_APP_ é usado em projetos Create React App.
-Estrutura de pastas
+```
+
+O projeto usa Vite, por isso a variável começa com `VITE_`. O prefixo `REACT_APP_` é usado em projetos Create React App.
+
+## Estrutura de pastas
+
+```text
 quadrafacil-frontend/
 ├── index.html
 ├── src/
@@ -69,37 +93,50 @@ quadrafacil-frontend/
 ├── .gitignore
 ├── package.json
 └── README.md
-Páginas e rotas
-Rota	Página	Descrição
-/	Home	Busca rápida, quadras em destaque e status da API
-/quadras	Quadras	Listagem de quadras com filtros
-/quadras/:id	Detalhes da quadra	Informações e horários disponíveis
-/reserva	Reserva	Dados do cliente, pagamento e confirmação
-/painel-gestor	Painel do gestor	Reservas, status e cancelamentos
-/cadastrar-quadra	Cadastro de quadra	Formulário para cadastrar uma quadra
-/sobre	Sobre	Informações sobre o projeto
-/contato	Contato	Formulário demonstrativo de contato
-*	Página não encontrada	Página 404
+```
 
+## Páginas e rotas
 
-Protótipo de baixa fidelidade
+| Rota | Página | Descrição |
+|---|---|---|
+| `/` | Home | Busca rápida, quadras em destaque e status da API |
+| `/quadras` | Quadras | Listagem de quadras com filtros |
+| `/quadras/:id` | Detalhes da quadra | Informações e horários disponíveis |
+| `/reserva` | Reserva | Dados do cliente, pagamento e confirmação |
+| `/painel-gestor` | Painel do gestor | Reservas, status e cancelamentos |
+| `/cadastrar-quadra` | Cadastro de quadra | Formulário para cadastrar uma quadra |
+| `/sobre` | Sobre | Informações sobre o projeto |
+| `/contato` | Contato | Formulário demonstrativo de contato |
+| `*` | Página não encontrada | Página 404 |
+
+## Protótipo de baixa fidelidade
+
 Fotos das telas desenhadas à mão:
-- Link para as imagens: [COLE AQUI O LINK COMPARTILHÁVEL]
-- Senha, se necessária: [NÃO COLOQUE A SENHA REAL NESTE README PÚBLICO]
-Este repositório é público. Envie qualquer senha necessária separadamente para a equipe e o professor por um canal privado. Se possível, configure o Drive como “Qualquer pessoa com o link — Leitor”.
-Branches e commits
-- main: versão estável do projeto.
-- develop: integração das alterações da equipe.
-- Crie branches de funcionalidade a partir de develop e envie Pull Requests de volta para develop.
+
+Link para as imagens: 
+https://phronesisinvestimentos-my.sharepoint.com/:f:/g/personal/henryr_phronesisinvestimentos_com_br/IgDT1KKF9iG2RasOb-73JFXzASKq9hSTrU5Jof1Oy5Pn4tc?e=aNnorr
+
+
+## Branches e commits
+
+- `main`: versão estável do projeto.
+- `develop`: integração das alterações da equipe.
+- Crie branches de funcionalidade a partir de `develop` e envie Pull Requests de volta para `develop`.
+
 Use mensagens de commit descritivas, seguindo Conventional Commits:
+
+```text
 feat: adiciona página de listagem de quadras
 fix: corrige filtro de preço mínimo
 docs: atualiza README
 style: ajusta responsividade do menu mobile
 refactor: extrai lógica de busca para quadraService
-Equipe
-Nome	Função	GitHub
-[PREENCHER]	[PREENCHER]	[PREENCHER]
-[PREENCHER]	[PREENCHER]	[PREENCHER]
-[PREENCHER]	[PREENCHER]	[PREENCHER]
 ```
+
+## Equipe
+
+| Nome | Função | GitHub |
+|---|---|---|
+| [PREENCHER] | [PREENCHER] | [PREENCHER] |
+| Henry Mendes  | Protótipo | HenryMendesr |
+| [PREENCHER] | [PREENCHER] | [PREENCHER] |
