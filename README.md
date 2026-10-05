@@ -134,4 +134,5 @@ refactor: extrai lógica de busca para quadraService
 |---|---|---|
 | Rafael Maluf | Trello | RafaMaluf |
 | Henry Mendes  | Protótipo | HenryMendesr |
-| [PREENCHER] | [PREENCHER] | [PREENCHER] |
+| Rafael Gomes | Front-end: estrutura do projeto, roteamento, páginas, integração com a API e layout responsivo | RafaelGomes-dev |
+
