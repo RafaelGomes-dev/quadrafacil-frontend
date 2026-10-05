@@ -92,6 +92,12 @@ function QuadraDetalhe() {
         {quadra.endereco} — {quadra.bairro ? `${quadra.bairro}, ` : ''}
         {quadra.cidade}
       </p>
+      {quadra.horarioFuncionamento && (
+        <p className="quadra-card-local">
+          Aberta das {quadra.horarioFuncionamento.abertura} às{' '}
+          {quadra.horarioFuncionamento.fechamento}
+        </p>
+      )}
 
       {quadra.fotos?.[0] && <img src={quadra.fotos[0]} alt={`Foto da quadra ${quadra.nome}`} />}
 

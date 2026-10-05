@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/common/Button';
 import { cadastrarQuadra } from '../services/quadraService';
+import { validarHorarioDeFuncionamento } from '../utils/quadra';
 
 const VALORES_INICIAIS = {
   nome: '',
@@ -12,6 +13,7 @@ const VALORES_INICIAIS = {
   precoHora: '',
   descricao: '',
   estrutura: { vestiario: false, estacionamento: false, iluminacao: false, coberta: false },
+  horarioFuncionamento: { abertura: '08:00', fechamento: '22:00' },
 };
 
 /** Valida no front os mesmos campos obrigatórios exigidos pela API. */
@@ -24,6 +26,8 @@ function validarFormulario(dadosDoFormulario) {
   if (!dadosDoFormulario.precoHora || Number(dadosDoFormulario.precoHora) <= 0) {
     erros.push('O preço por hora precisa ser maior que zero.');
   }
+  const erroDeHorario = validarHorarioDeFuncionamento(dadosDoFormulario.horarioFuncionamento);
+  if (erroDeHorario) erros.push(erroDeHorario);
   return erros;
 }
 
@@ -42,6 +46,13 @@ function CadastrarQuadra() {
     setDadosDoFormulario((dadosAtuais) => ({
       ...dadosAtuais,
       estrutura: { ...dadosAtuais.estrutura, [chave]: !dadosAtuais.estrutura[chave] },
+    }));
+  }
+
+  function atualizarHorario(chave, valor) {
+    setDadosDoFormulario((dadosAtuais) => ({
+      ...dadosAtuais,
+      horarioFuncionamento: { ...dadosAtuais.horarioFuncionamento, [chave]: valor },
     }));
   }
 
@@ -138,6 +149,26 @@ function CadastrarQuadra() {
             onChange={(evento) => atualizarCampo('precoHora', evento.target.value)}
           />
         </label>
+
+        <fieldset className="opcoes-horario">
+          <legend>Horário de funcionamento</legend>
+          <label className="campo-formulario">
+            Abre às
+            <input
+              type="time"
+              value={dadosDoFormulario.horarioFuncionamento.abertura}
+              onChange={(evento) => atualizarHorario('abertura', evento.target.value)}
+            />
+          </label>
+          <label className="campo-formulario">
+            Fecha às
+            <input
+              type="time"
+              value={dadosDoFormulario.horarioFuncionamento.fechamento}
+              onChange={(evento) => atualizarHorario('fechamento', evento.target.value)}
+            />
+          </label>
+        </fieldset>
 
         <label className="campo-formulario">
           Descrição
