@@ -293,7 +293,16 @@ export default function Configuracoes() {
             className="g-form"
             onSubmit={(e) => {
               e.preventDefault();
-              atualizar((d) => ({ ...d, estabelecimento }));
+              atualizar((d) => ({
+                ...d,
+                estabelecimento,
+                quadras: d.quadras.map((q) => ({
+                  ...q,
+                  endereco: estabelecimento.endereco,
+                  bairro: estabelecimento.bairro,
+                  cidade: estabelecimento.cidade,
+                })),
+              }));
               notify('Informações atualizadas.');
             }}
           >

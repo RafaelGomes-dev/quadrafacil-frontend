@@ -322,18 +322,22 @@ export default function ReservaDrawer({ selecao, onClose, notify }) {
               Bloquear horário
             </button>
           </div>
-          <label className="g-field">
-            Quadra
-            <select value={form.quadraId} onChange={(e) => mudar('quadraId', e.target.value)}>
-              {dados.quadras
-                .filter((q) => q.ativa !== false)
-                .map((q) => (
-                  <option key={q.id} value={q.id}>
-                    {q.nome}
-                  </option>
-                ))}
-            </select>
-          </label>
+          {dados.quadras.filter((q) => q.ativa !== false).length > 1 ? (
+            <label className="g-field">
+              Quadra
+              <select value={form.quadraId} onChange={(e) => mudar('quadraId', e.target.value)}>
+                {dados.quadras
+                  .filter((q) => q.ativa !== false)
+                  .map((q) => (
+                    <option key={q.id} value={q.id}>
+                      {q.nome}
+                    </option>
+                  ))}
+              </select>
+            </label>
+          ) : (
+            <p className="g-info-banner">{quadra?.nome}</p>
+          )}
           <label className="g-field">
             Data
             <input
