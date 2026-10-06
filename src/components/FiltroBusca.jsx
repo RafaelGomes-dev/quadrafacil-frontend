@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import Button from './common/Button';
+import Icon from './common/Icon';
+import { formatarDataLocalISO } from '../utils/data';
 
 const OPCOES_DE_ESPORTE = [
   { valor: '', rotulo: 'Todos os esportes' },
@@ -12,30 +13,22 @@ const OPCOES_DE_ESPORTE = [
 ];
 
 const FILTROS_PADRAO = {
-  cidade: '',
   bairro: '',
   esporte: '',
-  precoMin: '',
-  precoMax: '',
   data: '',
   horario: '',
+  coberta: '',
+  precoMin: '',
+  precoMax: '',
 };
 
-/**
- * Formulário de busca de quadras. Permite restringir quais campos aparecem
- * via `camposVisiveis`, para reutilização tanto no hero da Home (versão
- * compacta) quanto na página de listagem (versão completa).
- * @param {object} props
- * @param {string[]} [props.camposVisiveis]
- * @param {object} [props.valoresIniciais]
- * @param {(filtros: object) => void} props.onBuscar
- */
-function FiltroBusca({
-  camposVisiveis = Object.keys(FILTROS_PADRAO),
-  valoresIniciais = {},
-  onBuscar,
-}) {
+/** Busca principal com opções avançadas recolhidas para manter a tela leve. */
+function FiltroBusca({ valoresIniciais = {}, onBuscar, variant = 'hero' }) {
   const [filtros, setFiltros] = useState({ ...FILTROS_PADRAO, ...valoresIniciais });
+  const [maisFiltrosAbertos, setMaisFiltrosAbertos] = useState(false);
+  const filtrosExtrasAtivos = ['horario', 'coberta', 'precoMin', 'precoMax'].filter(
+    (campo) => filtros[campo]
+  ).length;
 
   function atualizarCampo(nomeDoCampo, valor) {
     setFiltros((filtrosAtuais) => ({ ...filtrosAtuais, [nomeDoCampo]: valor }));
@@ -47,94 +40,113 @@ function FiltroBusca({
   }
 
   return (
-    <form className="filtro-busca" onSubmit={lidarComEnvio}>
-      {camposVisiveis.includes('cidade') && (
-        <label className="campo-formulario">
-          Cidade
-          <input
-            type="text"
-            value={filtros.cidade}
-            placeholder="Ex: Curitiba"
-            onChange={(evento) => atualizarCampo('cidade', evento.target.value)}
-          />
+    <form className={`busca-form busca-form-${variant}`} onSubmit={lidarComEnvio}>
+      <div className="busca-campos-principais">
+        <label className="busca-campo">
+          <span>Onde jogar</span>
+          <span className="busca-campo-controle">
+            <Icon name="local" size={19} />
+            <input
+              type="text"
+              value={filtros.bairro}
+              placeholder="Bairro ou região"
+              onChange={(evento) => atualizarCampo('bairro', evento.target.value)}
+            />
+          </span>
         </label>
-      )}
 
-      {camposVisiveis.includes('bairro') && (
-        <label className="campo-formulario">
-          Bairro
-          <input
-            type="text"
-            value={filtros.bairro}
-            placeholder="Ex: Batel"
-            onChange={(evento) => atualizarCampo('bairro', evento.target.value)}
-          />
+        <label className="busca-campo">
+          <span>Data</span>
+          <span className="busca-campo-controle">
+            <Icon name="calendario" size={19} />
+            <input
+              type="date"
+              min={formatarDataLocalISO()}
+              value={filtros.data}
+              onInput={(evento) => atualizarCampo('data', evento.currentTarget.value)}
+              onChange={(evento) => atualizarCampo('data', evento.target.value)}
+            />
+          </span>
         </label>
-      )}
 
-      {camposVisiveis.includes('esporte') && (
-        <label className="campo-formulario">
-          Esporte
-          <select
-            value={filtros.esporte}
-            onChange={(evento) => atualizarCampo('esporte', evento.target.value)}
-          >
-            {OPCOES_DE_ESPORTE.map((opcao) => (
-              <option key={opcao.valor} value={opcao.valor}>
-                {opcao.rotulo}
-              </option>
-            ))}
-          </select>
+        <label className="busca-campo">
+          <span>Esporte</span>
+          <span className="busca-campo-controle">
+            <select
+              value={filtros.esporte}
+              onChange={(evento) => atualizarCampo('esporte', evento.target.value)}
+            >
+              {OPCOES_DE_ESPORTE.map((opcao) => (
+                <option key={opcao.valor} value={opcao.valor}>
+                  {opcao.rotulo}
+                </option>
+              ))}
+            </select>
+          </span>
         </label>
-      )}
 
-      {camposVisiveis.includes('data') && (
-        <label className="campo-formulario">
-          Data
-          <input
-            type="date"
-            value={filtros.data}
-            onChange={(evento) => atualizarCampo('data', evento.target.value)}
-          />
-        </label>
-      )}
+        <button className="busca-enviar" type="submit">
+          <Icon name="busca" size={20} />
+          <span>Buscar quadras</span>
+        </button>
+      </div>
 
-      {camposVisiveis.includes('horario') && (
-        <label className="campo-formulario">
-          Horário
-          <input
-            type="time"
-            value={filtros.horario}
-            onChange={(evento) => atualizarCampo('horario', evento.target.value)}
-          />
-        </label>
-      )}
+      <div className="busca-rodape">
+        <button
+          className="busca-mais-filtros"
+          type="button"
+          aria-expanded={maisFiltrosAbertos}
+          onClick={() => setMaisFiltrosAbertos((abertos) => !abertos)}
+        >
+          <Icon name="filtros" size={17} />
+          Mais filtros{filtrosExtrasAtivos > 0 ? ` · ${filtrosExtrasAtivos}` : ''}
+        </button>
+        <span>Encontre o espaço certo para o seu jogo.</span>
+      </div>
 
-      {camposVisiveis.includes('precoMin') && (
-        <label className="campo-formulario">
-          Preço mínimo
-          <input
-            type="number"
-            min="0"
-            value={filtros.precoMin}
-            onChange={(evento) => atualizarCampo('precoMin', evento.target.value)}
-          />
-        </label>
+      {maisFiltrosAbertos && (
+        <div className="busca-filtros-extras">
+          <label className="busca-campo">
+            <span>Horário</span>
+            <input
+              type="time"
+              value={filtros.horario}
+              onChange={(evento) => atualizarCampo('horario', evento.target.value)}
+            />
+          </label>
+          <label className="busca-campo">
+            <span>Cobertura</span>
+            <select
+              value={filtros.coberta}
+              onChange={(evento) => atualizarCampo('coberta', evento.target.value)}
+            >
+              <option value="">Tanto faz</option>
+              <option value="true">Coberta</option>
+              <option value="false">Ao ar livre</option>
+            </select>
+          </label>
+          <label className="busca-campo">
+            <span>Preço mínimo</span>
+            <input
+              type="number"
+              min="0"
+              placeholder="R$ 0"
+              value={filtros.precoMin}
+              onChange={(evento) => atualizarCampo('precoMin', evento.target.value)}
+            />
+          </label>
+          <label className="busca-campo">
+            <span>Preço máximo</span>
+            <input
+              type="number"
+              min="0"
+              placeholder="Sem limite"
+              value={filtros.precoMax}
+              onChange={(evento) => atualizarCampo('precoMax', evento.target.value)}
+            />
+          </label>
+        </div>
       )}
-
-      {camposVisiveis.includes('precoMax') && (
-        <label className="campo-formulario">
-          Preço máximo
-          <input
-            type="number"
-            min="0"
-            value={filtros.precoMax}
-            onChange={(evento) => atualizarCampo('precoMax', evento.target.value)}
-          />
-        </label>
-      )}
-
-      <Button type="submit">Buscar quadras</Button>
     </form>
   );
 }

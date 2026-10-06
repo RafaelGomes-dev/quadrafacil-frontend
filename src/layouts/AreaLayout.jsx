@@ -38,13 +38,13 @@ function AreaLayout({ area }) {
   const config = AREAS[area];
 
   return (
-    <>
+    <div className={`area-shell area-${area}`}>
       <Header homePath={config.homePath} areaLabel={config.label} links={config.links} />
       <main className="conteudo-principal">
         <Outlet />
       </main>
       <Footer />
-    </>
+    </div>
   );
 }
 

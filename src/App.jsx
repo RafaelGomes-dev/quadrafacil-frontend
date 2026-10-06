@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import AreaLayout from './layouts/AreaLayout';
 import Home from './pages/Home';
@@ -19,9 +20,18 @@ function LegacyRedirect({ to }) {
   return <Navigate to={`${pathname}${location.search}`} state={location.state} replace />;
 }
 
+function ScrollAoNavegar() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [pathname]);
+  return null;
+}
+
 function App() {
   return (
     <BrowserRouter>
+      <ScrollAoNavegar />
       <Routes>
         <Route path="/" element={<Navigate to="/user" replace />} />
 

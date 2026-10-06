@@ -1,0 +1,19 @@
+Imagens ilustrativas para o protótipo QuadraFácil.
+Geração: ferramenta de imagens integrada ao Codex (built-in).
+O logo quadrafacil-logo.png foi fornecido pelo usuário.
+
+Conjunto de prompts das fotografias:
+Fotografia editorial arquitetônica, realista, de um espaço esportivo em Curitiba.
+Composição ampla, iluminação natural ou iluminação própria do ginásio, detalhes
+plausíveis dos materiais e linhas da quadra. Sem pessoas, texto, marcas ou watermark.
+Cada imagem usa um dos seguintes assuntos:
+- society.jpg: quadra society de grama sintética, cercada, ao fim da tarde.
+- futsal.jpg: ginásio coberto de futsal, quadra bem conservada.
+- beach-tennis.jpg: quadra de beach tennis de areia ao ar livre.
+- basquete.jpg: quadra de basquete em ginásio coberto.
+- volei.jpg: quadra de vôlei com rede, em ginásio coberto.
+- campo.jpg: campo de futebol de grama natural ao ar livre.
+
+Arquivos finais nesta pasta. Originais preservados em:
+/Users/mrtmacbookm2pro/.codex/generated_images/01a10c00-5a5b-7d73-ad3f-0754883ba676/
+As fotos não representam estabelecimentos reais nem comprovam suas instalações.

@@ -30,6 +30,7 @@ function SeletorHorario({
             key={horario}
             type="button"
             disabled={estaOcupado}
+            aria-pressed={estaSelecionado}
             className={`horario-slot ${estaOcupado ? 'horario-ocupado' : 'horario-livre'} ${
               estaSelecionado ? 'horario-selecionado' : ''
             }`.trim()}

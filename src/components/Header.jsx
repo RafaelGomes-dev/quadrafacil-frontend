@@ -7,7 +7,13 @@ function Header({ homePath, areaLabel, links }) {
     <header className="cabecalho">
       <div className="container cabecalho-conteudo">
         <Link to={homePath} className="logo">
-          Quadra<span>Facil</span>
+          {homePath === '/user' ? (
+            <img src="/images/quadrafacil-logo.png" alt="QuadraFácil" />
+          ) : (
+            <>
+              Quadra<span>Facil</span>
+            </>
+          )}
           {areaLabel && <small className="logo-area">{areaLabel}</small>}
         </Link>
         <Navigation links={links} />
