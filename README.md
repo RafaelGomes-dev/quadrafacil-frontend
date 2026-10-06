@@ -115,8 +115,19 @@ quadrafacil-frontend/
 
 `/` redireciona para `/user`. Os endereços anteriores redirecionam para as novas rotas.
 Cada área tem seu próprio menu. A tela de `/superadmin` reserva o espaço para o futuro
-cadastro de contas de gestores; essa função ainda não foi implementada. As rotas não
+cadastro simulado de contas de gestores. As rotas não
 possuem autenticação nesta versão do protótipo.
+
+### Administração interna
+
+`/superadmin` permite à equipe criar e editar contas fictícias de gestores, definir
+limites de quadras, revogar acesso com motivo e reativá-lo. As ações são salvas neste
+navegador e aparecem em um histórico local. Não há cadastro público, senhas ou envio
+de convites. A conta Arena Batel está vinculada ao painel de exemplo: sua revogação
+exibe um aviso no gestor, e seu limite impede novos cadastros de quadras.
+Contas novas são registros demonstrativos; não criam ambientes de gestão separados.
+A rota não é protegida: restringi-la de verdade à equipe depende de autenticação e
+autorização no backend, fora deste MVP. Revogar preserva quadras e reservas existentes.
 
 ### Demonstração do gestor
 
