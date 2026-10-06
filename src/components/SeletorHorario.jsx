@@ -1,6 +1,6 @@
 /**
  * Grade de horários de uma quadra em uma data: livres (selecionáveis) e
- * ocupados (desabilitados).
+ * ocupados (convite à lista de espera, quando disponível).
  * @param {object} props
  * @param {string[]} props.horariosLivres
  * @param {string[]} props.horariosOcupados
@@ -12,6 +12,7 @@ function SeletorHorario({
   horariosOcupados,
   horariosSelecionados = [],
   onSelecionarHorario,
+  onHorarioOcupado,
   precos = {},
   horarioBuscado = '',
 }) {
@@ -31,20 +32,30 @@ function SeletorHorario({
           <button
             key={horario}
             type="button"
-            disabled={estaOcupado}
+            disabled={estaOcupado && !onHorarioOcupado}
             aria-pressed={estaSelecionado}
-            aria-label={horario}
+            aria-label={
+              estaOcupado
+                ? `${horario} ocupado${onHorarioOcupado ? ' · avise-me ao liberar' : ''}`
+                : horario
+            }
             className={`horario-slot ${estaOcupado ? 'horario-ocupado' : 'horario-livre'} ${
               estaSelecionado ? 'horario-selecionado' : ''
             } ${horario === horarioBuscado && !estaSelecionado ? 'horario-buscado' : ''}`.trim()}
-            onClick={() => onSelecionarHorario(horario)}
+            onClick={() =>
+              estaOcupado ? onHorarioOcupado?.(horario) : onSelecionarHorario(horario)
+            }
           >
             {horario}
-            {precos[horario] && (
-              <small>
-                {precos[horario].promocao ? 'Promo · ' : ''}
-                {precos[horario].texto}
-              </small>
+            {estaOcupado ? (
+              <small>Ocupado</small>
+            ) : (
+              precos[horario] && (
+                <small>
+                  {precos[horario].promocao ? 'Promo · ' : ''}
+                  {precos[horario].texto}
+                </small>
+              )
             )}
           </button>
         );

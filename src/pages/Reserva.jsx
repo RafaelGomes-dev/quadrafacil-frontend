@@ -4,6 +4,7 @@ import Button from '../components/common/Button';
 import Icon from '../components/common/Icon';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import CampoTelefone from '../components/CampoTelefone';
+import InteresseDialog from '../components/InteresseDialog';
 import { buscarQuadraPorId } from '../services/quadraService';
 import { criarReserva } from '../services/reservaService';
 import { processarPagamento } from '../services/pagamentoService';
@@ -48,6 +49,7 @@ function Reserva() {
   const progresso = useRef({});
   const [reservaIniciada, setReservaIniciada] = useState(false);
   const [pagamentoAprovado, setPagamentoAprovado] = useState(null);
+  const [interesseMensalista, setInteresseMensalista] = useState(false);
   const [mensagemDeErro, setMensagemDeErro] = useState('');
   const [estaProcessando, setEstaProcessando] = useState(false);
   const totalDaReserva = quadra
@@ -94,7 +96,7 @@ function Reserva() {
       <div className="container reserva-sem-selecao">
         <h1>Escolha seu próximo jogo</h1>
         <p>Selecione uma quadra e um horário para continuar.</p>
-        <Link to="/user/quadras">Ver quadras disponíveis</Link>
+        <Link to="/user">Ver quadras disponíveis</Link>
       </div>
     );
   }
@@ -191,11 +193,27 @@ function Reserva() {
               Pagamento simulado via {pagamentoAprovado.metodo === 'pix' ? 'Pix' : 'cartão'}.
               Nenhuma cobrança real foi feita.
             </p>
-            <Link className="reserva-voltar-quadras" to="/user/quadras">
+            <Link className="reserva-voltar-quadras" to="/user">
               Explorar outras quadras <Icon name="seta" size={18} />
             </Link>
+            <div className="mensalista-convite">
+              <span>Quer jogar aqui toda semana?</span>
+              <button onClick={() => setInteresseMensalista(true)}>
+                Tenho interesse em me tornar mensalista <Icon name="seta" size={15} />
+              </button>
+            </div>
           </div>
         </div>
+        {interesseMensalista && (
+          <InteresseDialog
+            tipo="mensalista"
+            quadra={quadra}
+            data={data}
+            horario={itens[0]?.horario}
+            cliente={{ nome: nomeCliente, telefone: telefoneCliente }}
+            onClose={() => setInteresseMensalista(false)}
+          />
+        )}
       </div>
     );
   }

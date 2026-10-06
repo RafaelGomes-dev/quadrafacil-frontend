@@ -1,6 +1,13 @@
 import { useEffect, useRef } from 'react';
 import Icon from '../components/common/Icon';
-export default function Drawer({ titulo, subtitulo, children, onClose }) {
+export default function Drawer({
+  titulo,
+  subtitulo,
+  children,
+  onClose,
+  variante = '',
+  eyebrow = 'QUADRAFÁCIL · GESTÃO',
+}) {
   const ref = useRef(null);
   useEffect(() => {
     const anterior = document.activeElement;
@@ -33,7 +40,10 @@ export default function Drawer({ titulo, subtitulo, children, onClose }) {
     }
   }
   return (
-    <div className="g-overlay" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+    <div
+      className={`g-overlay ${variante}`}
+      onMouseDown={(e) => e.target === e.currentTarget && onClose()}
+    >
       <section
         className="g-drawer"
         role="dialog"
@@ -44,7 +54,7 @@ export default function Drawer({ titulo, subtitulo, children, onClose }) {
       >
         <header>
           <div>
-            <span className="g-eyebrow">QUADRAFÁCIL · GESTÃO</span>
+            <span className="g-eyebrow">{eyebrow}</span>
             <h2 id="g-drawer-titulo">{titulo}</h2>
             {subtitulo && <p>{subtitulo}</p>}
           </div>

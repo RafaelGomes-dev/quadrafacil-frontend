@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import SeletorHorario from '../components/SeletorHorario';
+import InteresseDialog from '../components/InteresseDialog';
 import FiltroBusca from '../components/FiltroBusca';
 import Button from '../components/common/Button';
 import Icon from '../components/common/Icon';
@@ -32,6 +33,7 @@ export default function EstabelecimentoDetalhe() {
   const [erro, setErro] = useState('');
   const [editar, setEditar] = useState(false);
   const [pendente, setPendente] = useState(null);
+  const [espera, setEspera] = useState(null);
   useEffect(() => {
     let ativo = true;
     buscarEstabelecimento(id)
@@ -119,7 +121,7 @@ export default function EstabelecimentoDetalhe() {
   return (
     <div className="pagina-quadra-detalhe">
       <div className="container">
-        <Link className="detalhe-voltar" to={`/user/quadras?${new URLSearchParams(contexto)}`}>
+        <Link className="detalhe-voltar" to={`/user?${new URLSearchParams(contexto)}`}>
           <Icon name="voltar" size={18} /> Voltar à busca
         </Link>
         <div className="detalhe-cabecalho">
@@ -167,6 +169,10 @@ export default function EstabelecimentoDetalhe() {
               <p>
                 Combine horários seguidos ou separados, em uma ou mais quadras deste
                 estabelecimento.
+              </p>
+              <p className="lista-espera-aviso">
+                <Icon name="relogio" size={16} /> Horário ocupado? Clique nele para entrar na lista
+                de espera.
               </p>
               <div className="arena-filtros">
                 <span>
@@ -266,6 +272,7 @@ export default function EstabelecimentoDetalhe() {
                           .filter((i) => i.quadraId === String(q.id) && i.data === data)
                           .map((i) => i.horario)}
                         onSelecionarHorario={(h) => alternar(q, h)}
+                        onHorarioOcupado={(h) => setEspera({ quadra: q, horario: h })}
                         precos={precos}
                         horarioBuscado={filtros.horario}
                       />
@@ -338,6 +345,15 @@ export default function EstabelecimentoDetalhe() {
           Continuar
         </Button>
       </div>
+      {espera && (
+        <InteresseDialog
+          tipo="espera"
+          quadra={espera.quadra}
+          horario={espera.horario}
+          data={data}
+          onClose={() => setEspera(null)}
+        />
+      )}
     </div>
   );
 }
