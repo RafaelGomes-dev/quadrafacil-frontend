@@ -126,7 +126,7 @@ export default function SuperAdmin() {
     <div className="admin-page container">
       <div className="admin-heading">
         <div>
-          <span className="sobretitulo">ÁREA INTERNA · EQUIPE QUADRAFÁCIL</span>
+          <span className="admin-eyebrow">ÁREA INTERNA · EQUIPE QUADRAFÁCIL</span>
           <h1>Nosso negócio, em um olhar.</h1>
           <p>Gestores, planos e reservas. A operação da QuadraFácil começa aqui.</p>
         </div>
