@@ -168,8 +168,6 @@ nesta demonstração. Há 15 gestores iniciais fictícios (cadastros locais adic
 são preservados); seus espaços são registros administrativos, não novas quadras na
 busca do jogador. Exemplos complementam a base antiga sem substituir edições.
 
-### Demonstração do gestor
-
 ### Experiência do jogador
 
 A entrada `/user` reúne busca e resultados; não há páginas duplicadas de início
