@@ -38,3 +38,39 @@ test('comissão arredonda cada transação em centavos e período vazio zera val
   assert.equal(resumoNegocio([], t, '2026-10-06', '2026-10-06').taxaPaga, 1001);
   assert.equal(resumoNegocio([], t, '2026-10-07', '2026-10-07').taxaPrevista, 0);
 });
+test('gateway incide no valor total e sai da comissão, separando confirmado e previsto', () => {
+  const r = resumoNegocio(
+    [],
+    [
+      { data: '2026-10-06', valor: 10000, status: 'paga' },
+      { data: '2026-10-06', valor: 20000, status: 'pendente' },
+      { data: '2026-10-06', valor: 90000, status: 'reembolsada' },
+    ],
+    '2026-10-06',
+    '2026-10-06',
+    { gatewayPercentual: 3, pro: 9900, premium: 19900, patrocinio: 4900 }
+  );
+  assert.equal(r.taxaPrevista, 3000);
+  assert.equal(r.gatewayPrevisto, 900);
+  assert.equal(r.liquidoPrevisto, 2100);
+  assert.equal(r.gatewayPago, 300);
+  assert.equal(r.liquidoPago, 700);
+});
+test('recorrência soma planos e patrocínio independente, excluindo revogados', () => {
+  const r = resumoNegocio(
+    [
+      { status: 'ativa', plano: 'freemium', patrocinado: true },
+      { status: 'ativa', plano: 'pro' },
+      { status: 'ativa', plano: 'premium', patrocinado: true },
+      { status: 'revogada', plano: 'premium', patrocinado: true },
+    ],
+    [],
+    '2026-10-01',
+    '2026-10-06',
+    { gatewayPercentual: 3, pro: 9900, premium: 19900, patrocinio: 4900 }
+  );
+  assert.deepEqual(r.receitaPlanos, { freemium: 0, pro: 9900, premium: 19900 });
+  assert.equal(r.receitaPatrocinio, 9800);
+  assert.equal(r.recorrenciaMensal, 39600);
+  assert.equal(r.liquidoPrevisto, 0);
+});

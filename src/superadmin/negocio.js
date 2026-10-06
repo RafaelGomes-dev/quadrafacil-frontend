@@ -58,8 +58,24 @@ export const TRANSACOES_DEMO = [
     valor: 48000,
     status: 'paga',
   },
+  ...GESTORES_ADICIONAIS.flatMap((c, i) =>
+    [1, 3, 6].map((dia, j) => ({
+      id: `QF-DEMO-${i + 1}-${j + 1}`,
+      data: `2026-10-0${dia}`,
+      estabelecimento: c.estabelecimento,
+      valor: (120 + (i % 5) * 30) * 100,
+      status:
+        i === 4 && j === 1
+          ? 'cancelada'
+          : i === 7 && j === 0
+            ? 'reembolsada'
+            : j === 2 && i % 3 === 0
+              ? 'pendente'
+              : 'paga',
+    }))
+  ),
 ];
-export function resumoNegocio(contas, transacoes, inicio, fim) {
+export function resumoNegocio(contas, transacoes, inicio, fim, config = CONFIG_FINANCEIRO) {
   const ativas = contas.filter((c) => c.status === 'ativa');
   const planos = Object.fromEntries(
     Object.keys(PLANOS).map((plano) => [
@@ -75,6 +91,19 @@ export function resumoNegocio(contas, transacoes, inicio, fim) {
   const taxaPendente = validas
     .filter((t) => t.status === 'pendente')
     .reduce((s, t) => s + Math.round(t.valor * 0.1), 0);
+  const gatewayPago = pagas.reduce(
+    (s, t) => s + Math.round((t.valor * config.gatewayPercentual) / 100),
+    0
+  );
+  const gatewayPendente = validas
+    .filter((t) => t.status === 'pendente')
+    .reduce((s, t) => s + Math.round((t.valor * config.gatewayPercentual) / 100), 0);
+  const receitaPlanos = {
+    freemium: 0,
+    pro: planos.pro * config.pro,
+    premium: planos.premium * config.premium,
+  };
+  const receitaPatrocinio = ativas.filter((c) => c.patrocinado).length * config.patrocinio;
   return {
     planos,
     patrocinados: ativas.filter((c) => c.patrocinado).length,
@@ -85,5 +114,19 @@ export function resumoNegocio(contas, transacoes, inicio, fim) {
     taxaPaga,
     taxaPendente,
     taxaPrevista: taxaPaga + taxaPendente,
+    gatewayPago,
+    gatewayPrevisto: gatewayPago + gatewayPendente,
+    liquidoPago: taxaPaga - gatewayPago,
+    liquidoPrevisto: taxaPaga + taxaPendente - gatewayPago - gatewayPendente,
+    receitaPlanos,
+    receitaPatrocinio,
+    recorrenciaMensal: receitaPlanos.pro + receitaPlanos.premium + receitaPatrocinio,
   };
 }
+import { GESTORES_ADICIONAIS } from './exemplos.js';
+export const CONFIG_FINANCEIRO = {
+  gatewayPercentual: 3,
+  pro: 9900,
+  premium: 19900,
+  patrocinio: 4900,
+};
