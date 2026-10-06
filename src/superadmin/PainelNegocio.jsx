@@ -29,8 +29,27 @@ export default function PainelNegocio({ contas, config, onConfigChange }) {
             )
           );
   const resumo = resumoNegocio(contas, TRANSACOES_DEMO, inicio, hoje, config);
+  const mensal = resumoNegocio(contas, TRANSACOES_DEMO, `${hoje.slice(0, 7)}-01`, hoje, config);
   return (
     <section className="admin-business" aria-label="Visão do negócio">
+      <div className="admin-month-total">
+        <span>RECEITA MENSAL PREVISTA · {hoje.slice(0, 7).split('-').reverse().join('/')}</span>
+        <strong>{reais(mensal.recorrenciaMensal + mensal.liquidoPrevisto)}</strong>
+        <div className="admin-month-equation">
+          <span>
+            MRR · planos + patrocínios <b>{reais(mensal.recorrenciaMensal)}</b>
+          </span>
+          <span aria-hidden="true">+</span>
+          <span>
+            Taxas líquidas · mês até hoje <b>{reais(mensal.liquidoPrevisto)}</b>
+          </span>
+        </div>
+        <p>
+          Estimativa demonstrativa: MRR bruto + comissão após gateway, incluindo reservas pendentes.
+          Não é dinheiro recebido nem lucro final. Este total permanece mensal, independente do
+          filtro abaixo.
+        </p>
+      </div>
       <div className="admin-business-heading">
         <div>
           <h2>Planos e receita recorrente</h2>
