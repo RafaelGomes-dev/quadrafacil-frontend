@@ -165,13 +165,15 @@ para calcular o líquido; não inclui tributos nem outros custos. Pagamentos pen
 entram somente na previsão. Planos e patrocínios mostram projeção bruta, sem simular
 liquidação ou taxas de cobrança. Reservas manuais e mensalistas não geram comissão
 nesta demonstração. Há 15 gestores iniciais fictícios (cadastros locais adicionais
-são preservados); seus espaços são registros administrativos, não novas quadras na
-busca do jogador. Exemplos complementam a base antiga sem substituir edições.
+são preservados). Os 12 gestores adicionais publicam 16 quadras fictícias de Society
+no catálogo do jogador, além dos espaços já existentes. Reservas desses exemplos
+são locais e separadas da operação da Arena Batel; pagamentos continuam simulados.
+Exemplos complementam a base antiga sem substituir edições.
 
 ### Experiência do jogador
 
 A entrada `/user` reúne busca e resultados; não há páginas duplicadas de início
-e quadras. Horário está sempre visível, enquanto cobertura e preços ficam em
+e quadras. Data, horário e esporte ficam visíveis; bairro, cobertura e preços ficam em
 Mais filtros. Sobre foi retirado da navegação; os links antigos de contato levam
 ao suporte. O rodapé claro é compartilhado pelas três áreas.
 
