@@ -129,6 +129,16 @@ Contas novas são registros demonstrativos; não criam ambientes de gestão sepa
 A rota não é protegida: restringi-la de verdade à equipe depende de autenticação e
 autorização no backend, fora deste MVP. Revogar preserva quadras e reservas existentes.
 
+O painel também mostra planos Freemium/Pro/Premium e patrocínios das contas ativas.
+Os nomes dos planos são demonstrativos; plano e destaque podem ser editados sem
+cobrança real. O patrocínio é independente do plano e não altera o ranking do jogador.
+O financeiro usa uma base fictícia de outubro de 2026, independente da agenda, com
+filtros Hoje/Últimos 7 dias/Este mês. Valores são calculados em centavos: comissão de
+10% por transação paga ou pendente, excluindo canceladas e reembolsadas. Volume bruto
+não é receita da plataforma, e pagamento confirmado não significa repasse recebido.
+Reservas manuais, mensalistas, assinaturas e cobrança de patrocínio não entram no
+financeiro demonstrativo.
+
 ### Demonstração do gestor
 
 O MVP começa com **Society** selecionado. A busca mostra um card por estabelecimento,
