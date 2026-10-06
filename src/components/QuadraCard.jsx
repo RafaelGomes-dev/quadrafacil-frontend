@@ -25,6 +25,7 @@ function QuadraCard({
   const detalhes = `/user/quadras/${quadra.id}${parametros.size ? `?${parametros}` : ''}`;
   const espacos = quadra.quadras || [quadra];
   const precos = precosPorModalidade(espacos);
+  const promocionais = espacos.filter((q) => q.promocao);
   const proximosHorarios = horarios
     .filter((h) => !horarioBuscado || h >= horarioBuscado)
     .slice(0, 3);
@@ -41,9 +42,10 @@ function QuadraCard({
         <span className="quadra-card-modalidade">
           {precos.map((p) => rotuloDoEsporte(p.esporte)).join(' · ')}
         </span>
-        {quadra.promocao && (
+        {promocionais.length > 0 && (
           <span className="quadra-promocao">
-            {quadra.rotuloPromocao || 'Preço promocional'} ·{' '}
+            {promocionais[0].rotuloPromocao || 'Preço promocional'} ·{' '}
+            {promocionais.map((q) => q.nome).join(', ')} ·{' '}
             {horarioBuscado || 'horários selecionados'}
           </span>
         )}
