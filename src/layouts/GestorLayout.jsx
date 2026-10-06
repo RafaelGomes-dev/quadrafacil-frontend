@@ -16,6 +16,7 @@ const links = [
 ];
 function Estrutura() {
   const { dados } = useGestor();
+  const conta = contaDemo();
   return (
     <div className="gestor-shell">
       <aside className="gestor-sidebar">
@@ -41,31 +42,16 @@ function Estrutura() {
           ))}
         </nav>
         <div className="gestor-sidebar-final">
-          <div className="gestor-dica">
-            <Icon name="escudo" />
-            <strong>Tudo sob controle.</strong>
-            <p>Mais tempo para cuidar do espaço. Menos tempo organizando horários.</p>
-          </div>
           <div className="gestor-perfil">
             <span>GC</span>
             <div>
-              <strong>Gestor Curitiba</strong>
-              <small>Administrador dos espaços</small>
+              <strong>{conta?.nome || 'Gestor'}</strong>
+              <small>Administrador · demonstração</small>
             </div>
           </div>
         </div>
       </aside>
       <div className="gestor-area">
-        <header className="gestor-topbar">
-          <span>Seu espaço. Seu ritmo.</span>
-          <div>
-            <span className="gestor-demo">
-              <i />
-              Ambiente de demonstração
-            </span>
-            <span className="gestor-avatar">GC</span>
-          </div>
-        </header>
         <main className="gestor-conteudo">
           <Outlet />
         </main>

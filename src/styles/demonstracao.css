@@ -55,7 +55,59 @@
 }
 .demo-content .gestor-sidebar {
   top: 44px;
+  overflow: hidden;
+}
+.gestor-sidebar .gestor-logo,
+.gestor-sidebar .gestor-workspace,
+.gestor-sidebar .gestor-nav-titulo,
+.gestor-sidebar .gestor-sidebar-final {
+  flex-shrink: 0;
+}
+.gestor-sidebar nav {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  align-content: start;
+}
+.demo-content .gestor-sidebar nav a {
+  padding-block: 11px;
+}
+.gestor-sidebar-final {
+  padding-top: 18px;
+}
+.gestor-area .rodape.product-footer {
+  background: #fff;
+  color: #59705e;
+  border-top: 1px solid #e5ebe5;
+  padding: 20px 0 16px;
+}
+.gestor-area .product-footer-top strong {
+  font-size: 18px;
+  color: #203e2d;
+}
+.gestor-area .product-footer-top p {
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+.gestor-area .product-footer small {
+  color: #829087;
+}
+.gestor-area .product-footer a {
+  color: #59705e;
+  font-size: 11px;
+}
+.gestor-area .product-footer-bottom {
+  border-top-color: #e5ebe5;
+  margin-top: 16px;
+  padding-top: 12px;
+}
+#root select:not([multiple]) {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 36px !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236a806d' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
 }
 .demo-content .gestor-shell,
 .demo-content .area-shell {
