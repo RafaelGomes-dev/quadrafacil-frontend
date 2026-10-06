@@ -1,15 +1,22 @@
 import { Link } from 'react-router-dom';
 import Navigation from './Navigation';
 
-/** Cabeçalho fixo com a logo do app e o menu de navegação. */
-function Header() {
+/** Cabeçalho da área ativa, com navegação específica para seu público. */
+function Header({ homePath, areaLabel, links }) {
   return (
     <header className="cabecalho">
       <div className="container cabecalho-conteudo">
-        <Link to="/" className="logo">
-          Quadra<span>Facil</span>
+        <Link to={homePath} className="logo">
+          {homePath === '/user' ? (
+            <img src="/images/quadrafacil-logo.png" alt="QuadraFácil" />
+          ) : (
+            <>
+              Quadra<span>Facil</span>
+            </>
+          )}
+          {areaLabel && <small className="logo-area">{areaLabel}</small>}
         </Link>
-        <Navigation />
+        {homePath !== '/user' && <Navigation links={links} />}
       </div>
     </header>
   );
