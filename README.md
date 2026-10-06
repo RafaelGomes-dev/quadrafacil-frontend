@@ -126,14 +126,17 @@ autenticação nesta versão do protótipo.
 A Inteligência é uma simulação de benefício dos planos Pro/Premium; Freemium recebe
 uma prévia. O plano do gestor de exemplo pode ser alterado no Superadmin. Há mapa de
 ocupação por dia/hora, filtros por quadra e 4/8 semanas, detalhe por célula, ranking
-e oportunidades de promoção. A capacidade considera o funcionamento e as quadras
+e oportunidades de promoção. Sugestões ilustrativas de desconto de 20% ou reajuste
+de 10% abrem uma prévia editável por quadra e uma regra semanal preenchida, que só
+é aplicada após confirmação do gestor. A capacidade considera o funcionamento e as quadras
 ativas. O histórico é sintético, independente da agenda: não há IA ou previsão real.
 Lista de espera aparece apenas como conceito para a próxima fase.
 
 O Financeiro tem lançamentos fictícios do mês, filtros por período, quadra, origem e
 pagamento, gráfico, extrato e detalhes. Mensalidades aparecem uma vez por mês. Comissão
-de 10% somente nas reservas avulsas da plataforma, sem descontar gateway novamente do
-gestor. Recebido direto, repassado, pagamento pendente e repasse previsto são distintos.
+de serviço não é descontada da receita do gestor nesta tela: a hipótese é cobrança
+separada ao jogador, ainda não implementada no checkout. Não há comissão sobre
+pagamentos presenciais simulados. Recebido direto, repassado, pagamento pendente e repasse previsto são distintos.
 Canceladas/reembolsadas não entram nos totais. Não há documento fiscal, movimentação
 bancária, cálculo tributário ou sincronização desse extrato com a agenda.
 
