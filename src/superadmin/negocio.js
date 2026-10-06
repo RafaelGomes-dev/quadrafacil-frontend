@@ -84,7 +84,8 @@ export function resumoNegocio(contas, transacoes, inicio, fim, config = CONFIG_F
     ])
   );
   const periodo = transacoes.filter((t) => t.data >= inicio && t.data <= fim);
-  const validas = periodo.filter((t) => ['paga', 'pendente'].includes(t.status));
+  const todasValidas = periodo.filter((t) => ['paga', 'pendente'].includes(t.status));
+  const validas = todasValidas.filter((t) => !t.canal || t.canal === 'app');
   const pagas = validas.filter((t) => t.status === 'paga');
   const volume = validas.reduce((s, t) => s + t.valor, 0);
   const taxaPaga = pagas.reduce((s, t) => s + Math.round(t.valor * 0.1), 0);
@@ -92,12 +93,21 @@ export function resumoNegocio(contas, transacoes, inicio, fim, config = CONFIG_F
     .filter((t) => t.status === 'pendente')
     .reduce((s, t) => s + Math.round(t.valor * 0.1), 0);
   const gatewayPago = pagas.reduce(
-    (s, t) => s + Math.round((t.valor * config.gatewayPercentual) / 100),
+    (s, t) =>
+      s +
+      Math.round((t.valor * (config.gatewayIncluiTaxa ? 1.1 : 1) * config.gatewayPercentual) / 100),
     0
   );
   const gatewayPendente = validas
     .filter((t) => t.status === 'pendente')
-    .reduce((s, t) => s + Math.round((t.valor * config.gatewayPercentual) / 100), 0);
+    .reduce(
+      (s, t) =>
+        s +
+        Math.round(
+          (t.valor * (config.gatewayIncluiTaxa ? 1.1 : 1) * config.gatewayPercentual) / 100
+        ),
+      0
+    );
   const receitaPlanos = {
     freemium: 0,
     pro: planos.pro * config.pro,
@@ -108,6 +118,9 @@ export function resumoNegocio(contas, transacoes, inicio, fim, config = CONFIG_F
     planos,
     patrocinados: ativas.filter((c) => c.patrocinado).length,
     periodo,
+    reservasTotais: todasValidas.length,
+    reservasExternas: todasValidas.length - validas.length,
+    volumeTotal: todasValidas.reduce((s, t) => s + t.valor, 0),
     transacoes: validas.length,
     pagas: pagas.length,
     volume,
