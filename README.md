@@ -164,19 +164,27 @@ por canal; fins de semana têm maior peso sem aumentar o total mensal. No cenár
 14 estabelecimentos são 1.092 reservas planejadas, 218 pelo app e 55 cancelamentos.
 Somente 207 reservas liquidadas pelo app geram comissão; as 830 diretas válidas não.
 
-A adesão conservadora aos planos assume 20% Pro, 5% Premium e 10% patrocinados,
-arredondados para baixo: 2 Pro, nenhum Premium e 1 patrocínio para 14 gestores.
-É possível comparar com os planos dos cadastros sem sobrescrevê-los. Valores editáveis:
-Pro R$ 99/mês, Premium R$ 199/mês, patrocínio R$ 49/mês e gateway médio 3%.
-Não são preços ou taxas de mercado. Premissas são salvas no navegador.
+A nova proposta no **financeiro** tem dois planos: Free com gestão completa e
+Crescimento com BI, campanhas e automações. Hipóteses editáveis: Crescimento
+R$ 799/mês, patrocínio separado R$ 100/mês, 10% de adesão ao pago e 10% a patrocínio,
+arredondados para baixo (13 Free, 1 Crescimento e 1 anunciante para 14 gestores).
+Patrocínio propõe 2–3 destaques por busca, com rodízio entre elegíveis; não limita
+o total de anunciantes nem implementa novo ranking. Cadastros Pro/Premium antigos
+permanecem intactos e são agrupados em Crescimento apenas ao comparar a projeção.
 
-Comissão de 10% adicionada ao preço da quadra; o gateway incide sobre o total de 110%
-cobrado do jogador. Também estimamos gateway sobre planos/patrocínios. Assim, a base
-padrão projeta receita bruta da plataforma de R$ 2.731,00 e receita após gateway de
-R$ 1.903,87 (R$ 239,59 MRR + R$ 1.664,28 taxas). Não é lucro nem dinheiro recebido:
-não inclui impostos, infraestrutura, marketing, suporte, taxas fixas, inadimplência
-dos planos ou diferenças de tarifa entre Pix/cartão. O checkout do MVP ainda não
-cobra a taxa real: esta é apenas a hipótese do modelo de negócio.
+Taxa adicionada ao preço da quadra: Pix 5%, cartão 10%. Mistura hipotética: 70% Pix,
+30% cartão entre reservas do app. Gateway editável: Pix R$ 1,99/transação; cartão
+3% sobre o checkout (quadra + taxa) + R$ 0,49/transação; planos e patrocínios 3%.
+Esses valores são **hipóteses, não cotações ou preços validados**. Nenhuma comissão
+em reservas externas/canceladas/reembolsadas. Premissas da nova proposta ficam
+salvas separadamente das antigas no navegador, preservando os dados existentes.
+
+A base padrão projeta receita bruta da plataforma de R$ 2.519,00 e receita após
+gateway de R$ 1.925,12 (R$ 872,03 MRR + R$ 1.053,09 taxas). Os 207 pagamentos válidos
+do app se dividem em 144 Pix e 63 cartão após cancelamentos. Não é lucro nem dinheiro
+recebido: não inclui impostos, infraestrutura, marketing, suporte, chargebacks,
+custos de reembolso, parcelamento ou inadimplência dos planos. User/gestor e seu
+checkout não foram alterados: esta é apenas a hipótese financeira do modelo de negócio.
 Referência de método: [Sebrae · Locação de quadra de esporte](https://bibliotecas.sebrae.com.br/chronus/ARQUIVOS_CHRONUS/IDEIAS_DE_NEGOCIO/PDFS/ideia-de-negocio_locacao-de-quadra-de-esporte.pdf),
 que recomenda validar demanda e preços na região e não comprova estas premissas.
 
