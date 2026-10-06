@@ -16,13 +16,7 @@ function Header({ homePath, areaLabel, links }) {
           )}
           {areaLabel && <small className="logo-area">{areaLabel}</small>}
         </Link>
-        {homePath === '/user' ? (
-          <Link className="user-suporte-link" to="/user/suporte">
-            Suporte
-          </Link>
-        ) : (
-          <Navigation links={links} />
-        )}
+        {homePath !== '/user' && <Navigation links={links} />}
       </div>
     </header>
   );

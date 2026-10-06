@@ -26,7 +26,7 @@ const FILTROS_PADRAO = {
 function FiltroBusca({ valoresIniciais = {}, onBuscar, variant = 'hero' }) {
   const [filtros, setFiltros] = useState({ ...FILTROS_PADRAO, ...valoresIniciais });
   const [maisFiltrosAbertos, setMaisFiltrosAbertos] = useState(false);
-  const filtrosExtrasAtivos = ['coberta', 'precoMin', 'precoMax'].filter(
+  const filtrosExtrasAtivos = ['bairro', 'coberta', 'precoMin', 'precoMax'].filter(
     (campo) => filtros[campo]
   ).length;
 
@@ -42,19 +42,6 @@ function FiltroBusca({ valoresIniciais = {}, onBuscar, variant = 'hero' }) {
   return (
     <form className={`busca-form busca-form-${variant}`} onSubmit={lidarComEnvio}>
       <div className="busca-campos-principais">
-        <label className="busca-campo">
-          <span>Onde jogar</span>
-          <span className="busca-campo-controle">
-            <Icon name="local" size={19} />
-            <input
-              type="text"
-              value={filtros.bairro}
-              placeholder="Bairro ou região"
-              onChange={(evento) => atualizarCampo('bairro', evento.target.value)}
-            />
-          </span>
-        </label>
-
         <label className="busca-campo">
           <span>Data</span>
           <span className="busca-campo-controle">
@@ -121,6 +108,15 @@ function FiltroBusca({ valoresIniciais = {}, onBuscar, variant = 'hero' }) {
       {maisFiltrosAbertos && (
         <div className="busca-filtros-extras">
           <label className="busca-campo">
+            <span>Onde jogar</span>
+            <input
+              type="text"
+              value={filtros.bairro}
+              placeholder="Bairro ou região"
+              onChange={(evento) => atualizarCampo('bairro', evento.target.value)}
+            />
+          </label>
+          <label className="busca-campo">
             <span>Cobertura</span>
             <select
               value={filtros.coberta}
@@ -131,26 +127,28 @@ function FiltroBusca({ valoresIniciais = {}, onBuscar, variant = 'hero' }) {
               <option value="false">Ao ar livre</option>
             </select>
           </label>
-          <label className="busca-campo">
-            <span>Preço mínimo</span>
-            <input
-              type="number"
-              min="0"
-              placeholder="R$ 0"
-              value={filtros.precoMin}
-              onChange={(evento) => atualizarCampo('precoMin', evento.target.value)}
-            />
-          </label>
-          <label className="busca-campo">
-            <span>Preço máximo</span>
-            <input
-              type="number"
-              min="0"
-              placeholder="Sem limite"
-              value={filtros.precoMax}
-              onChange={(evento) => atualizarCampo('precoMax', evento.target.value)}
-            />
-          </label>
+          <div className="busca-faixa-preco">
+            <label className="busca-campo">
+              <span>Preço mínimo</span>
+              <input
+                type="number"
+                min="0"
+                placeholder="R$ 0"
+                value={filtros.precoMin}
+                onChange={(evento) => atualizarCampo('precoMin', evento.target.value)}
+              />
+            </label>
+            <label className="busca-campo">
+              <span>Preço máximo</span>
+              <input
+                type="number"
+                min="0"
+                placeholder="Sem limite"
+                value={filtros.precoMax}
+                onChange={(evento) => atualizarCampo('precoMax', evento.target.value)}
+              />
+            </label>
+          </div>
         </div>
       )}
     </form>

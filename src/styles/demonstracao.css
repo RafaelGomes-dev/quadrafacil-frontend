@@ -75,28 +75,29 @@
 .gestor-sidebar-final {
   padding-top: 18px;
 }
-.gestor-area .rodape.product-footer {
+.demo-content .rodape.product-footer {
   background: #fff;
   color: #59705e;
   border-top: 1px solid #e5ebe5;
   padding: 20px 0 16px;
 }
-.gestor-area .product-footer-top strong {
+.demo-content .product-footer-top strong {
   font-size: 18px;
   color: #203e2d;
 }
-.gestor-area .product-footer-top p {
+.demo-content .product-footer-top p {
+  color: #59705e;
   font-size: 11px;
   margin-bottom: 5px;
 }
-.gestor-area .product-footer small {
-  color: #829087;
+.demo-content .rodape.product-footer small {
+  color: #65756a;
 }
-.gestor-area .product-footer a {
+.demo-content .rodape.product-footer a {
   color: #59705e;
   font-size: 11px;
 }
-.gestor-area .product-footer-bottom {
+.demo-content .product-footer-bottom {
   border-top-color: #e5ebe5;
   margin-top: 16px;
   padding-top: 12px;

@@ -92,14 +92,6 @@
 .area-user .lista-navegacao .link-ativo {
   color: #17643b;
 }
-.area-user .rodape {
-  background: var(--cor-primaria);
-  color: #fff;
-  padding: 38px 0 22px;
-}
-.area-user .rodape p {
-  margin: 0;
-}
 
 /* Início */
 .area-user .hero {
@@ -852,9 +844,6 @@
 .area-user .rodape-marca p {
   margin: 5px 0 12px;
 }
-.area-user .rodape small {
-  color: #dbebdf;
-}
 .area-user .rodape nav {
   display: grid;
   gap: 12px;
@@ -1275,7 +1264,7 @@
     border-radius: 9px;
   }
   .area-user .busca-campos-principais {
-    grid-template-columns: 1.2fr 1fr 0.8fr 1fr auto;
+    grid-template-columns: 1fr 0.8fr 1fr auto;
     align-items: stretch;
   }
   .area-user .busca-enviar {
