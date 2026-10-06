@@ -212,6 +212,7 @@ export default function EstabelecimentoDetalhe() {
                   type="date"
                   min={formatarDataLocalISO()}
                   value={data}
+                  onInput={(e) => aplicar({ ...contexto, data: e.currentTarget.value })}
                   onChange={(e) => aplicar({ ...contexto, data: e.target.value })}
                 />
               </label>
