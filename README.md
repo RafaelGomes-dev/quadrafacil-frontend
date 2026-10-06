@@ -120,6 +120,16 @@ possuem autenticação nesta versão do protótipo.
 
 ### Demonstração do gestor
 
+O MVP começa com **Society** selecionado. A busca mostra um card por estabelecimento,
+com preços separados por modalidade quando todos os esportes forem selecionados.
+Modalidade, cobertura, disponibilidade e preço são verificados na mesma quadra.
+O detalhe preserva os filtros da busca e exibe somente os espaços compatíveis.
+O jogador pode combinar horários em diferentes quadras do mesmo estabelecimento;
+a confirmação agrupa somente horários consecutivos da mesma quadra e data.
+O exemplo Arena Batel possui duas quadras de Society e uma de Beach tennis.
+Endereço e contato são compartilhados; características, horários e preços pertencem
+a cada quadra. Com um único espaço ativo, o filtro da agenda deixa de aparecer.
+
 O painel usa dados fictícios e salva as alterações em `localStorage` neste navegador.
 Reservas manuais, bloqueios e mensalistas ocupam a agenda; preços por data têm prioridade
 sobre regras semanais e o preço padrão. Reservas novas preservam o valor contratado.
