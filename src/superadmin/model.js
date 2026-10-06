@@ -12,6 +12,8 @@ export function contasIniciais() {
         limite: 4,
         quadras: 3,
         status: 'ativa',
+        plano: 'premium',
+        patrocinado: true,
       },
       {
         id: 'gestor-cic',
@@ -21,6 +23,8 @@ export function contasIniciais() {
         limite: 1,
         quadras: 1,
         status: 'ativa',
+        plano: 'freemium',
+        patrocinado: false,
       },
       {
         id: 'gestor-campo',
@@ -30,6 +34,8 @@ export function contasIniciais() {
         limite: 2,
         quadras: 1,
         status: 'revogada',
+        plano: 'pro',
+        patrocinado: false,
         motivo: 'Exemplo de acesso revogado pela equipe',
       },
     ],
@@ -37,6 +43,8 @@ export function contasIniciais() {
   };
 }
 export function validarConta(form, contas, ignorarId) {
+  if (form.plano && !['freemium', 'pro', 'premium'].includes(form.plano))
+    return 'Selecione um plano válido.';
   if (form.nome.trim().length < 3 || !form.estabelecimento.trim())
     return 'Preencha o nome do gestor e do estabelecimento.';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) return 'Informe um e-mail válido.';
@@ -64,7 +72,19 @@ export function alterarAcesso(dados, id, status, motivo, registro) {
 }
 export function lerAdmin() {
   try {
-    return JSON.parse(localStorage.getItem(ADMIN_STORAGE_KEY)) || contasIniciais();
+    const dados = JSON.parse(localStorage.getItem(ADMIN_STORAGE_KEY)) || contasIniciais();
+    const iniciais = contasIniciais().contas;
+    return {
+      ...dados,
+      contas: dados.contas.map((c) => {
+        const exemplo = iniciais.find((i) => i.id === c.id);
+        return {
+          ...c,
+          plano: c.plano ?? exemplo?.plano ?? 'freemium',
+          patrocinado: c.patrocinado ?? exemplo?.patrocinado ?? false,
+        };
+      }),
+    };
   } catch {
     return contasIniciais();
   }
