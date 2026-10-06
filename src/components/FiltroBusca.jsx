@@ -112,6 +112,7 @@ function FiltroBusca({ valoresIniciais = {}, onBuscar, variant = 'hero' }) {
             <input
               type="time"
               value={filtros.horario}
+              onInput={(evento) => atualizarCampo('horario', evento.currentTarget.value)}
               onChange={(evento) => atualizarCampo('horario', evento.target.value)}
             />
           </label>
