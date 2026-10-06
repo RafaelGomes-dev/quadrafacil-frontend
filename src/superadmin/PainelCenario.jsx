@@ -212,7 +212,7 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
           <h2>Planos e receita recorrente</h2>
           <p>
             {usarPlanosAtuais
-              ? 'Pro e Premium antigos agrupados em Crescimento somente nesta projeção.'
+              ? 'Planos Free e Crescimento dos cadastros ativos — adesão demonstrativa, não conservadora.'
               : `Hipótese: ${h.percentualPremium}% em Crescimento, arredondados para baixo. Cadastros preservados.`}
           </p>
         </div>
@@ -222,7 +222,7 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
           onChange={(e) => setUsarPlanosAtuais(e.target.value === 'cadastros')}
         >
           <option value="conservador">Adesão conservadora</option>
-          <option value="cadastros">Cadastros adaptados</option>
+          <option value="cadastros">Planos dos cadastros</option>
         </select>
       </div>
       <div className="admin-plans admin-proposal-plans">

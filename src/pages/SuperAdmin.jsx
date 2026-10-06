@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Icon from '../components/common/Icon';
 import Drawer from '../gestor/Drawer';
 import PainelNegocio from '../superadmin/PainelCenario';
-import { PLANOS } from '../superadmin/negocio';
+import { PLANOS_GESTOR as PLANOS } from '../superadmin/model';
 import { CONFIG_FINANCEIRO } from '../superadmin/negocio';
 import { lerGestor, salvarGestor } from '../gestor/model';
 import {
@@ -473,8 +473,9 @@ function EditorAdmin({ editor, erro, onClose, onSave }) {
               Destaque patrocinado contratado
             </label>
             <p className="admin-explanation">
-              Pro e Premium são nomes demonstrativos. O patrocínio é separado do plano; marcar aqui
-              simula a contratação, sem cobrança real nem alteração no ranking do jogador.
+              Free inclui a gestão do estabelecimento. Crescimento acrescenta inteligência e
+              automações. O patrocínio é separado do plano; marcar aqui simula a contratação, sem
+              cobrança real nem alteração no ranking do jogador.
             </p>
           </>
         )}

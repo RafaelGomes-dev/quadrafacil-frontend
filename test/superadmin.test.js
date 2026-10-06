@@ -7,7 +7,51 @@ import {
   CONTA_DEMO_ID,
   podeCadastrarQuadra,
   completarExemplos,
+  normalizarPlano,
+  PLANOS_GESTOR,
+  lerAdmin,
+  ADMIN_STORAGE_KEY,
 } from '../src/superadmin/model.js';
+test('planos da interface são apenas Free e Crescimento; cadastro não oferece Pro antigo', () => {
+  assert.deepEqual(Object.values(PLANOS_GESTOR), ['Free', 'Crescimento']);
+  assert.equal(normalizarPlano('pro'), 'premium');
+  assert.equal(normalizarPlano('premium'), 'premium');
+  assert.equal(normalizarPlano('freemium'), 'freemium');
+  const contas = contasIniciais().contas;
+  assert.ok(contas.every((c) => Object.hasOwn(PLANOS_GESTOR, c.plano)));
+  assert.match(validarConta({ ...contas[0], plano: 'pro' }, contas, contas[0].id), /plano válido/);
+});
+test('leitura migra planos antigos sem perder configurações, contas ou histórico salvo', (t) => {
+  const dados = contasIniciais();
+  dados.contas[0] = {
+    ...dados.contas[0],
+    nome: 'Nome personalizado',
+    plano: 'pro',
+    limite: 8,
+    patrocinado: false,
+  };
+  dados.financeiro = { proposta: { crescimento: 60000 } };
+  dados.historico = [{ acao: 'Edição anterior' }];
+  const salvo = JSON.stringify(dados);
+  const anterior = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+  Object.defineProperty(globalThis, 'localStorage', {
+    configurable: true,
+    value: { getItem: (key) => (key === ADMIN_STORAGE_KEY ? salvo : null) },
+  });
+  t.after(() => {
+    if (anterior) Object.defineProperty(globalThis, 'localStorage', anterior);
+    else delete globalThis.localStorage;
+  });
+  const lido = lerAdmin();
+  assert.equal(lido.contas[0].plano, 'premium');
+  assert.equal(lido.contas[0].nome, 'Nome personalizado');
+  assert.equal(lido.contas[0].limite, 8);
+  assert.equal(lido.contas[0].patrocinado, false);
+  assert.equal(lido.contas.length, dados.contas.length);
+  assert.deepEqual(lido.financeiro, dados.financeiro);
+  assert.deepEqual(lido.historico, dados.historico);
+  assert.equal(dados.contas[0].plano, 'pro');
+});
 test('novos exemplos complementam dados antigos sem substituir edições e sem duplicar', () => {
   const antiga = {
     contas: [{ id: CONTA_DEMO_ID, nome: 'Nome editado', status: 'revogada' }],

@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useGestor } from './context';
-import { contaDemo } from '../superadmin/model';
-import { PLANOS } from '../superadmin/negocio';
+import { contaDemo, PLANOS_GESTOR as PLANOS } from '../superadmin/model';
 import { hoje, somarDias, horaNumero } from './model';
 import { DIAS_CURTOS, mapaOcupacao, precoSugerido } from './relatorios';
 import { formatarData, formatarPreco } from '../utils/formatadores';
@@ -12,7 +11,7 @@ import Drawer from './Drawer';
 export default function Inteligencia() {
   const { dados } = useGestor();
   const conta = contaDemo();
-  const paga = ['pro', 'premium'].includes(conta?.plano);
+  const paga = conta?.plano === 'premium';
   const [referencia] = useState(hoje);
   const [semanas, setSemanas] = useState(4);
   const [quadra, setQuadra] = useState('todas');
@@ -27,14 +26,14 @@ export default function Inteligencia() {
       <>
         <div className="g-page-heading">
           <div>
-            <span className="g-eyebrow">INTELIGÊNCIA · PLANOS PAGOS</span>
+            <span className="g-eyebrow">INTELIGÊNCIA · CRESCIMENTO</span>
             <h1>O próximo passo do seu espaço.</h1>
             <p>Transforme a sua operação em oportunidades de crescimento.</p>
           </div>
         </div>
         <section className="r-upgrade">
           <span className="r-premium-tag">
-            <Icon name="insights" /> Disponível no Pro e Premium
+            <Icon name="insights" /> Disponível no Crescimento
           </span>
           <h2>
             Menos achismo.
@@ -59,7 +58,7 @@ export default function Inteligencia() {
           <Icon name="escudo" size={28} />
           <h3>Uma prévia do que você pode descobrir</h3>
           <p>“Quais horários têm espaço para crescer?” · “Onde a procura é maior?”</p>
-          <small>Resultados detalhados disponíveis nos planos pagos.</small>
+          <small>Resultados detalhados disponíveis no plano Crescimento.</small>
         </div>
       </>
     );

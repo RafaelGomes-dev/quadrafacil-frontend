@@ -122,7 +122,7 @@ autenticação nesta versão do protótipo.
 
 ### Inteligência e financeiro do gestor
 
-A Inteligência é uma simulação de benefício dos planos Pro/Premium; Freemium recebe
+A Inteligência é uma simulação de benefício do plano Crescimento; Free recebe
 uma prévia. O plano do gestor de exemplo pode ser alterado no Superadmin. Há mapa de
 ocupação por dia/hora, filtros por quadra e 4/8 semanas, detalhe por célula, ranking
 e oportunidades de promoção. Sugestões ilustrativas de desconto de 20% ou reajuste
@@ -150,7 +150,7 @@ Contas novas são registros demonstrativos; não criam ambientes de gestão sepa
 A rota não é protegida: restringi-la de verdade à equipe depende de autenticação e
 autorização no backend, fora deste MVP. Revogar preserva quadras e reservas existentes.
 
-O painel também mostra planos Freemium/Pro/Premium e patrocínios das contas ativas.
+O painel também mostra planos Free/Crescimento e patrocínios das contas ativas.
 Os nomes dos planos são demonstrativos; plano e destaque podem ser editados sem
 cobrança real. O patrocínio é independente do plano e não altera o ranking do jogador.
 O financeiro gera uma base fictícia determinística para o mês atual, independente
@@ -164,13 +164,15 @@ por canal; fins de semana têm maior peso sem aumentar o total mensal. No cenár
 14 estabelecimentos são 1.092 reservas planejadas, 218 pelo app e 55 cancelamentos.
 Somente 207 reservas liquidadas pelo app geram comissão; as 830 diretas válidas não.
 
-A nova proposta no **financeiro** tem dois planos: Free com gestão completa e
+A proposta em todas as telas tem dois planos: Free com gestão completa e
 Crescimento com BI, campanhas e automações. Hipóteses editáveis: Crescimento
 R$ 799/mês, patrocínio separado R$ 100/mês, 10% de adesão ao pago e 10% a patrocínio,
 arredondados para baixo (13 Free, 1 Crescimento e 1 anunciante para 14 gestores).
 Patrocínio propõe 2–3 destaques por busca, com rodízio entre elegíveis; não limita
 o total de anunciantes nem implementa novo ranking. Cadastros Pro/Premium antigos
-permanecem intactos e são agrupados em Crescimento apenas ao comparar a projeção.
+são normalizados para Crescimento ao carregar, preservando todas as outras informações.
+Os IDs internos `freemium`/`premium` permanecem por compatibilidade, mas a interface
+e os formulários oferecem somente Free/Crescimento. Não existe mais um terceiro plano.
 
 Taxa adicionada ao preço da quadra: Pix 5%, cartão 10%. Mistura hipotética: 70% Pix,
 30% cartão entre reservas do app. Gateway editável: Pix R$ 1,99/transação; cartão

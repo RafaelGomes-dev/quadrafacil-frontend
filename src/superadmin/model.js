@@ -1,5 +1,10 @@
 export const ADMIN_STORAGE_KEY = 'quadrafacil-superadmin-v1';
 export const CONTA_DEMO_ID = 'gestor-arena-batel';
+// IDs antigos preservados para compatibilidade com dados salvos no navegador.
+export const PLANOS_GESTOR = { freemium: 'Free', premium: 'Crescimento' };
+export function normalizarPlano(plano) {
+  return ['pro', 'premium'].includes(plano) ? 'premium' : 'freemium';
+}
 
 export function contasIniciais() {
   return {
@@ -39,14 +44,13 @@ export function contasIniciais() {
         motivo: 'Exemplo de acesso revogado pela equipe',
       },
       ...GESTORES_ADICIONAIS.map((c) => ({ ...c })),
-    ],
+    ].map((c) => ({ ...c, plano: normalizarPlano(c.plano) })),
     versaoExemplos: 2,
     historico: [],
   };
 }
 export function validarConta(form, contas, ignorarId) {
-  if (form.plano && !['freemium', 'pro', 'premium'].includes(form.plano))
-    return 'Selecione um plano válido.';
+  if (form.plano && !Object.hasOwn(PLANOS_GESTOR, form.plano)) return 'Selecione um plano válido.';
   if (form.nome.trim().length < 3 || !form.estabelecimento.trim())
     return 'Preencha o nome do gestor e do estabelecimento.';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) return 'Informe um e-mail válido.';
@@ -84,7 +88,7 @@ export function lerAdmin() {
         const exemplo = iniciais.find((i) => i.id === c.id);
         return {
           ...c,
-          plano: c.plano ?? exemplo?.plano ?? 'freemium',
+          plano: normalizarPlano(c.plano ?? exemplo?.plano),
           patrocinado: c.patrocinado ?? exemplo?.patrocinado ?? false,
         };
       }),
