@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom';
 import { useGestor } from './context';
 import { contaDemo } from '../superadmin/model';
 import { PLANOS } from '../superadmin/negocio';
-import { hoje, somarDias } from './model';
-import { DIAS_CURTOS, mapaOcupacao } from './relatorios';
-import { formatarData } from '../utils/formatadores';
+import { hoje, somarDias, horaNumero } from './model';
+import { DIAS_CURTOS, mapaOcupacao, precoSugerido } from './relatorios';
+import { formatarData, formatarPreco } from '../utils/formatadores';
 import Icon from '../components/common/Icon';
+import Drawer from './Drawer';
 
 export default function Inteligencia() {
   const { dados } = useGestor();
@@ -16,6 +17,7 @@ export default function Inteligencia() {
   const [semanas, setSemanas] = useState(4);
   const [quadra, setQuadra] = useState('todas');
   const [selecionada, setSelecionada] = useState(null);
+  const [sugestao, setSugestao] = useState(null);
   const quadras = dados.quadras.filter(
     (q) => q.ativa !== false && (quadra === 'todas' || String(q.id) === quadra)
   );
@@ -209,9 +211,12 @@ export default function Inteligencia() {
                   {mapa.baixa.ocupadas} de {mapa.baixa.capacidade} horas ocupadas. Teste uma oferta
                   nesse intervalo e compare a procura.
                 </p>
-                <Link to="/gestor/configuracoes?aba=precos">
-                  Ver preços e promoções <Icon name="seta" size={16} />
-                </Link>
+                <button
+                  className="g-btn g-btn-light"
+                  onClick={() => setSugestao({ celula: mapa.baixa, percentual: -20 })}
+                >
+                  Testar 20% de desconto <Icon name="seta" size={16} />
+                </button>
               </div>
             </div>
           )}
@@ -228,6 +233,12 @@ export default function Inteligencia() {
                   lista de espera para recuperar vagas canceladas, antes de pensar em descontos.
                 </p>
                 <span className="r-coming">Lista de espera · conceito para próxima fase</span>
+                <button
+                  className="g-btn g-btn-light r-suggestion-button"
+                  onClick={() => setSugestao({ celula: mapa.pico, percentual: 10 })}
+                >
+                  Avaliar reajuste de 10% <Icon name="seta" size={16} />
+                </button>
               </div>
             </div>
           )}
@@ -267,6 +278,84 @@ export default function Inteligencia() {
           </div>
         </section>
       </div>
+      {sugestao && (
+        <Drawer
+          titulo="Um teste de preço, com clareza"
+          subtitulo="Sugestão demonstrativa · nada aplicado ainda"
+          onClose={() => setSugestao(null)}
+        >
+          <div className="r-price-preview">
+            <p>
+              <strong>
+                {sugestao.celula.dia}, das {sugestao.celula.hora}h às {sugestao.celula.hora + 1}h
+              </strong>{' '}
+              · {sugestao.celula.percentual}% de ocupação no histórico fictício.
+            </p>
+            <label className="g-field">
+              Ajuste sugerido (%)
+              <input
+                type="number"
+                min={-50}
+                max={50}
+                step={1}
+                value={sugestao.percentual}
+                onChange={(e) => {
+                  const p = Number(e.target.value);
+                  if (p >= -50 && p <= 50) setSugestao((s) => ({ ...s, percentual: p }));
+                }}
+              />
+            </label>
+            <p className="r-footnote">
+              Percentual ilustrativo para um experimento, não otimização automática. O reajuste pode
+              reduzir a procura; compare resultados antes de manter. A prévia usa o preço padrão,
+              não sobrepõe regras existentes sem sua confirmação.
+            </p>
+            {quadras
+              .filter(
+                (q) =>
+                  sugestao.celula.hora >= horaNumero(q.horarioFuncionamento.abertura) &&
+                  sugestao.celula.hora + 1 <= horaNumero(q.horarioFuncionamento.fechamento)
+              )
+              .map((q) => (
+                <div className="r-price-option" key={q.id}>
+                  <h3>{q.nome}</h3>
+                  <div>
+                    <span>
+                      Preço padrão <b>{formatarPreco(q.precoHora)}/h</b>
+                    </span>
+                    <Icon name="seta" />
+                    <span>
+                      Preço sugerido{' '}
+                      <b>{formatarPreco(precoSugerido(q.precoHora, sugestao.percentual))}/h</b>
+                    </span>
+                  </div>
+                  <Link
+                    className="g-btn g-btn-primary"
+                    to="/gestor/configuracoes?aba=precos"
+                    state={{
+                      sugestao: {
+                        quadraId: q.id,
+                        nome: `${sugestao.percentual < 0 ? 'Promoção sugerida' : 'Reajuste sugerido'} · ${sugestao.celula.dia}`,
+                        tipo: 'semanal',
+                        dia: (sugestao.celula.diaIndex + 1) % 7,
+                        inicio: `${String(sugestao.celula.hora).padStart(2, '0')}:00`,
+                        fim: `${String(sugestao.celula.hora + 1).padStart(2, '0')}:00`,
+                        valor: precoSugerido(q.precoHora, sugestao.percentual),
+                        promocao: sugestao.percentual < 0,
+                      },
+                    }}
+                  >
+                    Preparar regra para {q.nome}
+                  </Link>
+                </div>
+              ))}
+            <div className="r-demo-notice">
+              A próxima tela permite revisar e salvar a regra. Reservas confirmadas mantêm seus
+              valores.
+            </div>
+          </div>
+        </Drawer>
+      )}
     </>
   );
 }

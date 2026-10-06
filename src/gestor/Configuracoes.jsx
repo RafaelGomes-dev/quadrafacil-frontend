@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { contaDemo, podeCadastrarQuadra } from '../superadmin/model';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { useGestor } from './context';
 import Drawer from './Drawer';
 import {
@@ -35,11 +35,14 @@ export default function Configuracoes() {
   const { dados, atualizar, externas } = useGestor();
   const conta = contaDemo();
   const [params, setParams] = useSearchParams();
+  const sugestao = useLocation().state?.sugestao;
   const aba = ABAS.some((a) => a[0] === params.get('aba')) ? params.get('aba') : 'quadras';
   const [editor, setEditor] = useState(() =>
-    dados.quadras.length === 1 && aba === 'quadras'
-      ? { tipo: 'quadras', item: dados.quadras[0] }
-      : null
+    sugestao && aba === 'precos'
+      ? { tipo: 'precos', inicial: sugestao }
+      : dados.quadras.length === 1 && aba === 'quadras'
+        ? { tipo: 'quadras', item: dados.quadras[0] }
+        : null
   );
   const [toast, setToast] = useState('');
   const [estabelecimento, setEstabelecimento] = useState(dados.estabelecimento);
@@ -432,6 +435,7 @@ function EditorConfiguracao({ editor, onClose, notify, dados, atualizar, externa
             fim: '17:00',
             valor: 80,
             promocao: true,
+            ...editor.inicial,
             ...item,
           }
         : {
