@@ -230,6 +230,10 @@
   .admin-plans > div {
     padding: 15px;
   }
+  .admin-plans strong {
+    font-size: clamp(17px, 4.5vw, 21px);
+    white-space: nowrap;
+  }
   .admin-demo-badge {
     display: none;
   }

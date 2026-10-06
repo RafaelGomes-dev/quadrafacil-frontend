@@ -136,8 +136,16 @@ O financeiro usa uma base fictícia de outubro de 2026, independente da agenda, 
 filtros Hoje/Últimos 7 dias/Este mês. Valores são calculados em centavos: comissão de
 10% por transação paga ou pendente, excluindo canceladas e reembolsadas. Volume bruto
 não é receita da plataforma, e pagamento confirmado não significa repasse recebido.
-Reservas manuais, mensalistas, assinaturas e cobrança de patrocínio não entram no
-financeiro demonstrativo.
+Na aba **Financeiro**, a recorrência mensal dos planos e patrocínios é apresentada
+separadamente das reservas do período. Hipóteses editáveis: Pro R$ 99/mês, Premium
+R$ 199/mês, patrocínio R$ 49/mês e gateway 3%. Não são preços ou taxas de mercado.
+O gateway incide no valor total da reserva e é descontado da comissão bruta de 10%
+para calcular o líquido; não inclui tributos nem outros custos. Pagamentos pendentes
+entram somente na previsão. Planos e patrocínios mostram projeção bruta, sem simular
+liquidação ou taxas de cobrança. Reservas manuais e mensalistas não geram comissão
+nesta demonstração. Há 15 gestores iniciais fictícios (cadastros locais adicionais
+são preservados); seus espaços são registros administrativos, não novas quadras na
+busca do jogador. Exemplos complementam a base antiga sem substituir edições.
 
 ### Demonstração do gestor
 
