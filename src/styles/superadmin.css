@@ -3,6 +3,177 @@
   padding-bottom: 60px;
   color: #203e2d;
 }
+.admin-business {
+  background: white;
+  border: 1px solid #e0e8df;
+  border-radius: 16px;
+  padding: 26px;
+  margin-bottom: 28px;
+}
+.admin-business-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+.admin-business h2 {
+  font-size: 20px;
+  letter-spacing: -0.025em;
+  margin: 0 0 7px;
+}
+.admin-business-heading p {
+  font-size: 13px;
+  color: #788879;
+  margin: 0;
+  line-height: 1.6;
+}
+.admin-demo-badge {
+  white-space: nowrap;
+  border-radius: 20px;
+  padding: 7px 12px;
+  font-size: 11px;
+  background: #f3f6ef;
+  color: #71816f;
+}
+.admin-plans {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+.admin-plans > div {
+  border: 1px solid #e0e8df;
+  border-radius: 12px;
+  padding: 20px;
+  background: #fbfcfa;
+}
+.admin-plans span,
+.admin-finance span {
+  font-size: 13px;
+  color: #71816f;
+}
+.admin-plans strong {
+  display: block;
+  font-size: 30px;
+  margin: 10px 0 7px;
+}
+.admin-plans small,
+.admin-finance small {
+  display: block;
+  color: #788879;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.admin-plans .admin-plan-highlight {
+  background: #eef5e8;
+  border-color: #d6e6ce;
+}
+.admin-finance-heading {
+  margin-top: 30px;
+  padding-top: 26px;
+  border-top: 1px solid #e4ebe0;
+}
+.admin-finance-heading select {
+  border: 1px solid #dee7dc;
+  border-radius: 9px;
+  padding: 11px;
+  color: #47634a;
+  background: white;
+}
+.admin-finance {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.admin-finance > div {
+  padding: 22px;
+  border: 1px solid #e0e8df;
+  border-radius: 12px;
+}
+.admin-finance strong {
+  display: block;
+  font-size: clamp(22px, 2.5vw, 32px);
+  margin: 12px 0 8px;
+  letter-spacing: -0.04em;
+}
+.admin-finance .admin-revenue {
+  background: #203e2d;
+  border-color: #203e2d;
+  color: white;
+}
+.admin-revenue span,
+.admin-revenue small {
+  color: #d4e4d4;
+}
+.admin-revenue-breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 35px;
+  margin: 20px 0 14px;
+  font-size: 12px;
+  color: #788879;
+}
+.admin-revenue-breakdown strong {
+  color: #203e2d;
+  margin-left: 9px;
+}
+.admin-finance-note {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #788879;
+  margin-bottom: 20px;
+}
+.admin-transactions {
+  border: 1px solid #e0e8df;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.admin-transactions summary {
+  cursor: pointer;
+  padding: 16px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.admin-transactions summary span {
+  font-size: 11px;
+  font-weight: 400;
+  margin-left: 12px;
+  color: #788879;
+}
+.admin-sponsor-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+.admin-sponsor-field input {
+  accent-color: #247542;
+  width: 17px;
+  height: 17px;
+}
+@media (max-width: 800px) {
+  .admin-plans {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .admin-finance {
+    grid-template-columns: 1fr;
+  }
+  .admin-business-heading {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 650px) {
+  .admin-business {
+    padding: 18px;
+  }
+  .admin-plans > div {
+    padding: 15px;
+  }
+  .admin-demo-badge {
+    display: none;
+  }
+}
 .admin-heading {
   display: flex;
   justify-content: space-between;

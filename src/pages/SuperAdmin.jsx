@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../components/common/Icon';
 import Drawer from '../gestor/Drawer';
+import PainelNegocio from '../superadmin/PainelNegocio';
+import { PLANOS } from '../superadmin/negocio';
 import { lerGestor, salvarGestor } from '../gestor/model';
 import {
   alterarAcesso,
@@ -123,8 +125,8 @@ export default function SuperAdmin() {
       <div className="admin-heading">
         <div>
           <span className="sobretitulo">ÁREA INTERNA · EQUIPE QUADRAFÁCIL</span>
-          <h1>Quem cuida das quadras.</h1>
-          <p>Contas criadas pela equipe. Cada gestor, com o acesso certo.</p>
+          <h1>Nosso negócio, em um olhar.</h1>
+          <p>Gestores, planos e reservas. A operação da QuadraFácil começa aqui.</p>
         </div>
         <button className="admin-primary" onClick={() => abrir('cadastro')}>
           <Icon name="mais" size={18} /> Criar gestor
@@ -155,6 +157,7 @@ export default function SuperAdmin() {
           </div>
         ))}
       </div>
+      <PainelNegocio contas={contas} />
       {aviso && (
         <p className="admin-success" role="status">
           {aviso}
@@ -200,6 +203,7 @@ export default function SuperAdmin() {
                 <th>Gestor</th>
                 <th>Estabelecimento</th>
                 <th>Quadras / limite</th>
+                <th>Plano / destaque</th>
                 <th>Acesso</th>
                 <th>
                   <span className="visually-hidden">Ações</span>
@@ -238,6 +242,10 @@ export default function SuperAdmin() {
                         ? 'Limite atingido'
                         : `${c.limite - c.quadras} disponível(is)`}
                     </small>
+                  </td>
+                  <td>
+                    <strong>{PLANOS[c.plano || 'freemium']}</strong>
+                    <small>{c.patrocinado ? 'Patrocinado · contratado' : 'Sem patrocínio'}</small>
                   </td>
                   <td>
                     <span className={`admin-status ${c.status}`}>
@@ -315,6 +323,8 @@ function EditorAdmin({ editor, erro, onClose, onSave }) {
     email: '',
     estabelecimento: '',
     limite: 1,
+    plano: 'freemium',
+    patrocinado: false,
     ...conta,
   });
   const [motivo, setMotivo] = useState('');
@@ -413,6 +423,28 @@ function EditorAdmin({ editor, erro, onClose, onSave }) {
               A conta é criada pela equipe, não pelo gestor. Nenhuma senha ou convite será enviado.
               Reduzir o limite não apaga quadras existentes: impede novos cadastros até ficar abaixo
               do limite.
+            </p>
+            <label className="g-field">
+              Plano do gestor
+              <select value={form.plano} onChange={(e) => mudar('plano', e.target.value)}>
+                {Object.entries(PLANOS).map(([id, nome]) => (
+                  <option key={id} value={id}>
+                    {nome}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="admin-sponsor-field">
+              <input
+                type="checkbox"
+                checked={form.patrocinado}
+                onChange={(e) => mudar('patrocinado', e.target.checked)}
+              />
+              Destaque patrocinado contratado
+            </label>
+            <p className="admin-explanation">
+              Pro e Premium são nomes demonstrativos. O patrocínio é separado do plano; marcar aqui
+              simula a contratação, sem cobrança real nem alteração no ranking do jogador.
             </p>
           </>
         )}
