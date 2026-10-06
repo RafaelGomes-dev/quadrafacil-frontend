@@ -28,3 +28,47 @@ export function parametrosDaReserva(quadraId, data, horarios) {
   normalizarHorarios(horarios).forEach((horario) => parametros.append('horario', horario));
   return parametros.toString();
 }
+
+export function chaveDoItem(item) {
+  return `${item.quadraId}|${item.data}|${item.horario}`;
+}
+export function itensDosParametros(parametros) {
+  const itens = parametros
+    .getAll('item')
+    .map((valor) => {
+      try {
+        return JSON.parse(valor);
+      } catch {
+        return null;
+      }
+    })
+    .filter(
+      (item) =>
+        item &&
+        typeof item.quadraId === 'string' &&
+        /^\d{4}-\d{2}-\d{2}$/.test(item.data) &&
+        normalizarHorarios(item.horario).length
+    );
+  if (itens.length) return [...new Map(itens.map((item) => [chaveDoItem(item), item])).values()];
+  return normalizarHorarios(parametros.getAll('horario')).map((horario) => ({
+    quadraId: parametros.get('quadraId'),
+    data: parametros.get('data'),
+    horario,
+  }));
+}
+export function parametrosDosItens(itens, filtros = {}) {
+  const p = new URLSearchParams(Object.entries(filtros).filter(([k, v]) => k === 'esporte' || v));
+  itens.forEach((item) => p.append('item', JSON.stringify(item)));
+  return p.toString();
+}
+export function gruposDosItens(itens) {
+  const grupos = new Map();
+  itens.forEach((item) => {
+    const chave = `${item.quadraId}|${item.data}`;
+    if (!grupos.has(chave)) grupos.set(chave, { ...item, horarios: [] });
+    grupos.get(chave).horarios.push(item.horario);
+  });
+  return [...grupos.values()].flatMap((g) =>
+    intervalosDaReserva(g.horarios).map((intervalo) => ({ ...g, intervalo }))
+  );
+}

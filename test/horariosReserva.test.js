@@ -37,3 +37,24 @@ test('agrupa horas seguidas e mantém intervalos separados quando há uma pausa'
   assert.deepEqual(intervalosDaReserva(['22:00', '23:00']), ['22:00 às 24:00']);
   assert.deepEqual(intervalosDaReserva([]), []);
 });
+import {
+  chaveDoItem,
+  itensDosParametros,
+  parametrosDosItens,
+  gruposDosItens,
+} from '../src/utils/horariosReserva.js';
+test('itens preservam quadra, data e horário em links e agrupamentos', () => {
+  const itens = [
+    { quadraId: '1', data: '2026-10-19', horario: '14:00' },
+    { quadraId: '1', data: '2026-10-19', horario: '15:00' },
+    { quadraId: '2', data: '2026-10-19', horario: '15:00' },
+    { quadraId: '1', data: '2026-10-20', horario: '16:00' },
+  ];
+  assert.deepEqual(
+    itensDosParametros(new URLSearchParams(parametrosDosItens(itens, { esporte: 'society' }))),
+    itens
+  );
+  assert.equal(gruposDosItens(itens).length, 3);
+  assert.equal(gruposDosItens(itens)[0].intervalo, '14:00 às 16:00');
+  assert.notEqual(chaveDoItem(itens[1]), chaveDoItem(itens[2]));
+});

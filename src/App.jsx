@@ -6,7 +6,7 @@ import GestorOperacao from './gestor/GestorOperacao';
 import Configuracoes from './gestor/Configuracoes';
 import Home from './pages/Home';
 import Quadras from './pages/Quadras';
-import QuadraDetalhe from './pages/QuadraDetalhe';
+import QuadraDetalhe from './pages/EstabelecimentoDetalhe';
 import Reserva from './pages/Reserva';
 import PainelGestor from './pages/PainelGestor';
 import SuperAdmin from './pages/SuperAdmin';

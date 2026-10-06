@@ -5,6 +5,7 @@ import QuadraCard from '../components/QuadraCard';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { listarQuadras } from '../services/quadraService';
 import { ordenarQuadras } from '../utils/apresentacaoQuadras';
+import { agruparEstabelecimentos } from '../utils/estabelecimentos';
 
 /** Página inicial: hero com busca rápida e quadras em destaque. */
 function Home() {
@@ -16,9 +17,9 @@ function Home() {
   useEffect(() => {
     let cancelado = false;
 
-    listarQuadras()
+    listarQuadras({ esporte: 'society' })
       .then((quadras) => {
-        if (!cancelado) setQuadras(ordenarQuadras(quadras));
+        if (!cancelado) setQuadras(agruparEstabelecimentos(ordenarQuadras(quadras)));
       })
       .catch((erro) => {
         console.error('Falha ao carregar quadras em destaque:', erro);
@@ -35,7 +36,9 @@ function Home() {
 
   function buscarComFiltros(filtros) {
     const parametros = new URLSearchParams(
-      Object.fromEntries(Object.entries(filtros).filter(([, valor]) => valor))
+      Object.fromEntries(
+        Object.entries(filtros).filter(([campo, valor]) => campo === 'esporte' || valor)
+      )
     );
     navegar(`/user/quadras?${parametros.toString()}`);
   }
@@ -79,14 +82,14 @@ function Home() {
             <h2>Escolha a sua quadra</h2>
             <p>Espaços selecionados para transformar a vontade de jogar em partida marcada.</p>
           </div>
-          <span className="secao-contagem">{quadras.length} quadras em Curitiba</span>
+          <span className="secao-contagem">{quadras.length} estabelecimentos em Curitiba</span>
         </div>
         {estaCarregando && <LoadingSpinner mensagem="Carregando quadras..." />}
         {!estaCarregando && mensagemDeErro && <p className="mensagem-erro">{mensagemDeErro}</p>}
         {!estaCarregando && !mensagemDeErro && (
           <div className="grade-quadras">
             {quadras.map((quadra) => (
-              <QuadraCard key={quadra.id} quadra={quadra} />
+              <QuadraCard key={quadra.id} quadra={quadra} filtros={{ esporte: 'society' }} />
             ))}
           </div>
         )}

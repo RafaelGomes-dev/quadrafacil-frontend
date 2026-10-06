@@ -5,6 +5,7 @@ import QuadraCard from '../components/QuadraCard';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { buscarHorariosDaQuadra, listarQuadras } from '../services/quadraService';
 import { ordenarQuadras } from '../utils/apresentacaoQuadras';
+import { agruparEstabelecimentos, filtrosDaBusca } from '../utils/estabelecimentos';
 
 /** Página de listagem de quadras com filtros de busca. */
 function Quadras() {
@@ -13,7 +14,7 @@ function Quadras() {
   const [estaCarregando, setEstaCarregando] = useState(true);
   const [mensagemDeErro, setMensagemDeErro] = useState('');
   const [horariosPorQuadra, setHorariosPorQuadra] = useState({});
-  const filtrosAtivos = Object.fromEntries(parametrosDeBusca.entries());
+  const filtrosAtivos = filtrosDaBusca(parametrosDeBusca);
   const dataBuscada = filtrosAtivos.data || '';
   const horarioBuscado = filtrosAtivos.horario || '';
   const buscaAtual = parametrosDeBusca.toString();
@@ -22,16 +23,13 @@ function Quadras() {
     let cancelado = false;
     setEstaCarregando(true);
     setHorariosPorQuadra({});
-    const { coberta, ...filtrosDaApi } = Object.fromEntries(new URLSearchParams(buscaAtual));
+    const filtrosDaApi = filtrosDaBusca(buscaAtual);
 
     listarQuadras(filtrosDaApi)
       .then(async (resultado) => {
-        const filtradas = resultado.filter(
-          (quadra) => !coberta || String(Boolean(quadra.estrutura?.coberta)) === coberta
-        );
-        const ordenadas = ordenarQuadras(filtradas);
+        const ordenadas = ordenarQuadras(resultado);
         if (cancelado) return;
-        setQuadras(ordenadas);
+        setQuadras(agruparEstabelecimentos(ordenadas));
         setMensagemDeErro('');
         setEstaCarregando(false);
 
@@ -67,7 +65,9 @@ function Quadras() {
 
   function buscarComFiltros(filtros) {
     const parametros = new URLSearchParams(
-      Object.entries(filtros).filter(([, valor]) => valor !== undefined && valor !== '')
+      Object.entries(filtros).filter(
+        ([campo, valor]) => campo === 'esporte' || (valor !== undefined && valor !== '')
+      )
     );
     setParametrosDeBusca(parametros);
   }
@@ -89,7 +89,9 @@ function Quadras() {
         />
 
         <div className="resultados-cabecalho">
-          <h2>{estaCarregando ? 'Buscando quadras' : `${quadras.length} quadras encontradas`}</h2>
+          <h2>
+            {estaCarregando ? 'Buscando espaços' : `${quadras.length} estabelecimentos encontrados`}
+          </h2>
           <span>Curitiba e região</span>
         </div>
 
@@ -99,8 +101,19 @@ function Quadras() {
 
         {!estaCarregando && !mensagemDeErro && quadras.length === 0 && (
           <div className="resultados-vazios">
-            <h2>Nenhuma quadra por aqui ainda.</h2>
-            <p>Tente outra região, data ou esporte para encontrar mais opções.</p>
+            <h2>Nenhuma quadra corresponde à sua busca.</h2>
+            <p>
+              Não encontramos {filtrosAtivos.esporte || 'quadras'}{' '}
+              {filtrosAtivos.coberta === 'true' ? 'cobertas' : ''}
+              {horarioBuscado ? ` às ${horarioBuscado}` : ''}. Experimente alterar o horário ou
+              retirar a cobertura.
+            </p>
+            <button
+              className="busca-mais-filtros"
+              onClick={() => buscarComFiltros({ esporte: 'society' })}
+            >
+              Limpar filtros extras
+            </button>
           </div>
         )}
 
@@ -110,9 +123,12 @@ function Quadras() {
               <QuadraCard
                 key={quadra.id}
                 quadra={quadra}
+                filtros={filtrosAtivos}
                 data={dataBuscada}
                 horarioBuscado={horarioBuscado}
-                horarios={horariosPorQuadra[quadra.id] || []}
+                horarios={[
+                  ...new Set(quadra.quadras.flatMap((q) => horariosPorQuadra[q.id] || [])),
+                ].sort()}
               />
             ))}
           </div>

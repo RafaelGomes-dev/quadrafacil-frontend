@@ -14,8 +14,10 @@ import { cotarHorario } from '../services/gestorDemo';
 import {
   normalizarHorarios,
   intervaloDoHorario,
-  parametrosDaReserva,
-  intervalosDaReserva,
+  chaveDoItem,
+  itensDosParametros,
+  parametrosDosItens,
+  gruposDosItens,
 } from '../utils/horariosReserva';
 
 /** Resumo da reserva, escolha de pagamento e confirmação. */
@@ -23,12 +25,23 @@ function Reserva() {
   const { state, search } = useLocation();
   const navegar = useNavigate();
   const parametros = new URLSearchParams(search);
-  const quadraId = state?.quadraId || parametros.get('quadraId');
-  const data = state?.data || parametros.get('data');
-  const [horariosSelecionados, setHorariosSelecionados] = useState(() =>
-    normalizarHorarios(state?.horarios || state?.horario || parametros.getAll('horario'))
+  const [itens, setItens] = useState(() =>
+    state?.quadraId
+      ? normalizarHorarios(state.horarios || state.horario).map((horario) => ({
+          quadraId: String(state.quadraId),
+          data: state.data,
+          horario,
+        }))
+      : itensDosParametros(parametros)
   );
-  const [quadra, setQuadra] = useState(null);
+  const quadraId = itens[0]?.quadraId;
+  const data = itens[0]?.data;
+  const horariosSelecionados = itens.map((i) => i.horario);
+  const [quadras, setQuadras] = useState({});
+  const quadra = quadras[quadraId];
+  const contexto = Object.fromEntries(
+    [...parametros].filter(([k]) => !['item', 'quadraId', 'horario'].includes(k))
+  );
   const [nomeCliente, setNomeCliente] = useState('');
   const [telefoneCliente, setTelefoneCliente] = useState('');
   const [metodoDePagamento, setMetodoDePagamento] = useState('pix');
@@ -38,13 +51,18 @@ function Reserva() {
   const [mensagemDeErro, setMensagemDeErro] = useState('');
   const [estaProcessando, setEstaProcessando] = useState(false);
   const totalDaReserva = quadra
-    ? horariosSelecionados.reduce((total, h) => total + cotarHorario(quadra, data, h).valor, 0)
+    ? itens.reduce(
+        (total, i) =>
+          total +
+          (quadras[i.quadraId] ? cotarHorario(quadras[i.quadraId], i.data, i.horario).valor : 0),
+        0
+      )
     : 0;
 
-  function removerHorario(horario) {
-    const restantes = horariosSelecionados.filter((item) => item !== horario);
-    setHorariosSelecionados(restantes);
-    navegar(`/user/reserva?${parametrosDaReserva(quadraId, data, restantes)}`, {
+  function removerHorario(item) {
+    const restantes = itens.filter((i) => chaveDoItem(i) !== chaveDoItem(item));
+    setItens(restantes);
+    navegar(`/user/reserva?${parametrosDosItens(restantes, contexto)}`, {
       replace: true,
       state: null,
     });
@@ -52,13 +70,24 @@ function Reserva() {
 
   useEffect(() => {
     if (!quadraId) return;
-    buscarQuadraPorId(quadraId)
-      .then(setQuadra)
+    let ativo = true;
+    Promise.all(
+      [...new Set(itens.map((i) => i.quadraId))].map(async (id) => [
+        id,
+        await buscarQuadraPorId(id),
+      ])
+    )
+      .then((qs) => {
+        if (ativo) setQuadras(Object.fromEntries(qs));
+      })
       .catch((erro) => {
         console.error('Falha ao carregar quadra da reserva:', erro);
         setMensagemDeErro('Não foi possível carregar os dados da quadra.');
       });
-  }, [quadraId]);
+    return () => {
+      ativo = false;
+    };
+  }, [quadraId, itens]);
 
   if (!quadraId || !data || !horariosSelecionados.length) {
     return (
@@ -83,20 +112,30 @@ function Reserva() {
     setEstaProcessando(true);
 
     try {
+      if (
+        itens.some(
+          (i) =>
+            !quadras[i.quadraId] ||
+            (quadras[i.quadraId].estabelecimentoId || `quadra-${i.quadraId}`) !==
+              (quadra.estabelecimentoId || `quadra-${quadraId}`)
+        )
+      )
+        throw new Error('Escolha quadras do mesmo estabelecimento.');
       // A API atual trabalha com um horário por reserva. Mantemos o progresso
       // para uma repetição não criar nem pagar novamente itens já concluídos.
-      for (const horario of horariosSelecionados) {
-        let item = progresso.current[horario];
+      for (const escolhido of itens) {
+        const chave = chaveDoItem(escolhido);
+        let item = progresso.current[chave];
         if (!item) {
           const reserva = await criarReserva({
-            quadraId,
+            quadraId: escolhido.quadraId,
             nomeCliente: nomeCliente.trim(),
             telefoneCliente: normalizarTelefone(telefoneCliente),
-            data,
-            horario,
+            data: escolhido.data,
+            horario: escolhido.horario,
           });
           item = { reserva };
-          progresso.current[horario] = item;
+          progresso.current[chave] = item;
           setReservaIniciada(true);
         }
         if (!item.pagamento) {
@@ -134,15 +173,17 @@ function Reserva() {
             <span className="sobretitulo">TUDO CERTO</span>
             <h1>Partida marcada!</h1>
             <p>
-              Sua reserva simulada para <strong>{quadra?.nome}</strong> foi confirmada.
+              Sua reserva simulada para{' '}
+              <strong>{quadra?.estabelecimentoNome || quadra?.nome}</strong> foi confirmada.
             </p>
             <div className="reserva-confirmacao-dados">
               <span>
                 <Icon name="calendario" size={19} /> {formatarData(data)}
               </span>
-              {intervalosDaReserva(horariosSelecionados).map((intervalo) => (
-                <span key={intervalo}>
-                  <Icon name="relogio" size={19} /> {intervalo}
+              {gruposDosItens(itens).map((grupo) => (
+                <span key={`${grupo.quadraId}-${grupo.data}-${grupo.intervalo}`}>
+                  <Icon name="relogio" size={19} /> {quadras[grupo.quadraId]?.nome} ·{' '}
+                  {formatarData(grupo.data)} · {grupo.intervalo}
                 </span>
               ))}
             </div>
@@ -164,7 +205,7 @@ function Reserva() {
       <div className="container">
         <Link
           className="detalhe-voltar"
-          to={`/user/quadras/${quadraId}?${parametrosDaReserva(quadraId, data, horariosSelecionados)}`}
+          to={`/user/quadras/${parametros.get('estabelecimento') || quadraId}?${parametrosDosItens(itens, contexto)}`}
         >
           <Icon name="voltar" size={18} /> Voltar à quadra
         </Link>
@@ -260,7 +301,7 @@ function Reserva() {
                 <div className="reserva-resumo-quadra">
                   <img src={fotoDaQuadra(quadra)} alt={`Quadra ${quadra.nome}`} />
                   <div>
-                    <strong>{quadra.nome}</strong>
+                    <strong>{quadra.estabelecimentoNome || quadra.nome}</strong>
                     <span>
                       {rotuloDoEsporte(quadra.esporte)} · {quadra.bairro}
                     </span>
@@ -291,21 +332,28 @@ function Reserva() {
                   </div>
                 </div>
                 <ul className="reserva-itens">
-                  {horariosSelecionados.map((horario) => (
-                    <li key={horario}>
+                  {itens.map((item) => (
+                    <li key={chaveDoItem(item)}>
                       <span>
-                        <strong>{intervaloDoHorario(horario)}</strong>
+                        <strong>
+                          {quadras[item.quadraId]?.nome} · {intervaloDoHorario(item.horario)}
+                        </strong>
                         <small>
-                          1 hora · {formatarPreco(cotarHorario(quadra, data, horario).valor)}
+                          {formatarData(item.data)} · 1 hora ·{' '}
+                          {formatarPreco(
+                            quadras[item.quadraId]
+                              ? cotarHorario(quadras[item.quadraId], item.data, item.horario).valor
+                              : 0
+                          )}
                         </small>
                       </span>
                       <button
                         type="button"
-                        aria-label={`Remover horário ${horario}`}
+                        aria-label={`Remover ${quadras[item.quadraId]?.nome} ${item.horario}`}
                         disabled={
                           estaProcessando || reservaIniciada || horariosSelecionados.length === 1
                         }
-                        onClick={() => removerHorario(horario)}
+                        onClick={() => removerHorario(item)}
                       >
                         ×
                       </button>
