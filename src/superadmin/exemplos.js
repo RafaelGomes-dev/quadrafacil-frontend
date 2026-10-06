@@ -1,0 +1,25 @@
+// Pessoas e estabelecimentos fictícios, exclusivos da demonstração administrativa.
+export const GESTORES_ADICIONAIS = [
+  ['ana', 'Ana Costa', 'Arena Água Verde', 'freemium', 1, false],
+  ['bruno', 'Bruno Lima', 'Society Portão', 'pro', 1, true],
+  ['carla', 'Carla Souza', 'Arena Cabral', 'premium', 3, true],
+  ['daniel', 'Daniel Rocha', 'Campo Santa Felicidade', 'freemium', 1, false],
+  ['elisa', 'Elisa Fernandes', 'Society Boa Vista', 'pro', 1, false],
+  ['felipe', 'Felipe Moraes', 'Arena Hauer', 'premium', 2, true],
+  ['gabriela', 'Gabriela Dias', 'Quadra Jardim Social', 'freemium', 1, false],
+  ['gustavo', 'Gustavo Ribeiro', 'Arena Rebouças', 'pro', 1, false],
+  ['helena', 'Helena Carvalho', 'Society Mercês', 'freemium', 1, false],
+  ['igor', 'Igor Almeida', 'Arena Pinheirinho', 'premium', 2, true],
+  ['juliana', 'Juliana Mendes', 'Campo Uberaba', 'pro', 1, true],
+  ['leonardo', 'Leonardo Teixeira', 'Arena Prado Velho', 'freemium', 1, false],
+].map(([id, nome, estabelecimento, plano, quadras, patrocinado]) => ({
+  id: `demo-${id}`,
+  nome,
+  estabelecimento,
+  plano,
+  quadras,
+  patrocinado,
+  email: `${id}@quadrafacil.example`,
+  status: 'ativa',
+  limite: quadras + 1,
+}));

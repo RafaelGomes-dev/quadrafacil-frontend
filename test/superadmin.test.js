@@ -6,7 +6,21 @@ import {
   alterarAcesso,
   CONTA_DEMO_ID,
   podeCadastrarQuadra,
+  completarExemplos,
 } from '../src/superadmin/model.js';
+test('novos exemplos complementam dados antigos sem substituir edições e sem duplicar', () => {
+  const antiga = {
+    contas: [{ id: CONTA_DEMO_ID, nome: 'Nome editado', status: 'revogada' }],
+    historico: [{ acao: 'teste' }],
+  };
+  const migrada = completarExemplos(antiga);
+  assert.equal(migrada.contas.length, 13);
+  assert.equal(migrada.contas[0].nome, 'Nome editado');
+  assert.equal(migrada.contas[0].status, 'revogada');
+  assert.deepEqual(migrada.historico, antiga.historico);
+  assert.equal(completarExemplos(migrada).contas.length, 13);
+  assert.equal(contasIniciais().contas.length, 15);
+});
 test('cadastro valida identificação, e-mail único e limite inteiro', () => {
   const contas = contasIniciais().contas;
   const form = {

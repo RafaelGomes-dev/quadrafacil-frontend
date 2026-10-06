@@ -38,7 +38,9 @@ export function contasIniciais() {
         patrocinado: false,
         motivo: 'Exemplo de acesso revogado pela equipe',
       },
+      ...GESTORES_ADICIONAIS.map((c) => ({ ...c })),
     ],
+    versaoExemplos: 2,
     historico: [],
   };
 }
@@ -72,7 +74,9 @@ export function alterarAcesso(dados, id, status, motivo, registro) {
 }
 export function lerAdmin() {
   try {
-    const dados = JSON.parse(localStorage.getItem(ADMIN_STORAGE_KEY)) || contasIniciais();
+    const dados = completarExemplos(
+      JSON.parse(localStorage.getItem(ADMIN_STORAGE_KEY)) || contasIniciais()
+    );
     const iniciais = contasIniciais().contas;
     return {
       ...dados,
@@ -89,6 +93,19 @@ export function lerAdmin() {
     return contasIniciais();
   }
 }
+export function completarExemplos(dados) {
+  if (dados.versaoExemplos === 2) return dados;
+  return {
+    ...dados,
+    versaoExemplos: 2,
+    contas: [
+      ...dados.contas,
+      ...GESTORES_ADICIONAIS.filter((c) => !dados.contas.some((atual) => atual.id === c.id)).map(
+        (c) => ({ ...c })
+      ),
+    ],
+  };
+}
 export function salvarAdmin(dados) {
   localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(dados));
   window.dispatchEvent(new Event('quadrafacil-admin'));
@@ -99,3 +116,4 @@ export function contaDemo() {
 export function podeCadastrarQuadra(conta, quantidade) {
   return Boolean(conta?.status === 'ativa' && quantidade < Number(conta.limite));
 }
+import { GESTORES_ADICIONAIS } from './exemplos.js';
