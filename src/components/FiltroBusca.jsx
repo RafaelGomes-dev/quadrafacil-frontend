@@ -26,7 +26,7 @@ const FILTROS_PADRAO = {
 function FiltroBusca({ valoresIniciais = {}, onBuscar, variant = 'hero' }) {
   const [filtros, setFiltros] = useState({ ...FILTROS_PADRAO, ...valoresIniciais });
   const [maisFiltrosAbertos, setMaisFiltrosAbertos] = useState(false);
-  const filtrosExtrasAtivos = ['horario', 'coberta', 'precoMin', 'precoMax'].filter(
+  const filtrosExtrasAtivos = ['coberta', 'precoMin', 'precoMax'].filter(
     (campo) => filtros[campo]
   ).length;
 
@@ -71,6 +71,18 @@ function FiltroBusca({ valoresIniciais = {}, onBuscar, variant = 'hero' }) {
         </label>
 
         <label className="busca-campo">
+          <span>Horário</span>
+          <span className="busca-campo-controle">
+            <Icon name="relogio" size={19} />
+            <input
+              type="time"
+              value={filtros.horario}
+              onChange={(evento) => atualizarCampo('horario', evento.target.value)}
+            />
+          </span>
+        </label>
+
+        <label className="busca-campo">
           <span>Esporte</span>
           <span className="busca-campo-controle">
             <select
@@ -107,15 +119,6 @@ function FiltroBusca({ valoresIniciais = {}, onBuscar, variant = 'hero' }) {
 
       {maisFiltrosAbertos && (
         <div className="busca-filtros-extras">
-          <label className="busca-campo">
-            <span>Horário</span>
-            <input
-              type="time"
-              value={filtros.horario}
-              onInput={(evento) => atualizarCampo('horario', evento.currentTarget.value)}
-              onChange={(evento) => atualizarCampo('horario', evento.target.value)}
-            />
-          </label>
           <label className="busca-campo">
             <span>Cobertura</span>
             <select

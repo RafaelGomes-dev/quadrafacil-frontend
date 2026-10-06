@@ -75,11 +75,7 @@ function Quadras() {
   return (
     <div className="pagina-resultados">
       <div className="container">
-        <div className="pagina-resultados-cabecalho">
-          <span className="sobretitulo">ENCONTRE SEU LUGAR</span>
-          <h1>Quadras para o seu próximo jogo</h1>
-          <p>Ajuste a busca até encontrar o lugar e o horário que combinam com o seu time.</p>
-        </div>
+        <h1 className="busca-titulo-compacto">Encontre sua próxima partida</h1>
 
         <FiltroBusca
           key={buscaAtual}

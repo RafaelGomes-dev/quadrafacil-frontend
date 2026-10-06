@@ -15,8 +15,7 @@ function Footer() {
             <small>Espaços esportivos, pessoas conectadas.</small>
           </div>
           <nav aria-label="Links do rodapé">
-            <Link to="/user/sobre">Sobre o QuadraFácil</Link>
-            <Link to="/user/contato">Contato</Link>
+            <Link to="/user/suporte">Suporte</Link>
           </nav>
         </div>
         <div className="product-footer-bottom">

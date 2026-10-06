@@ -6,10 +6,7 @@ const AREAS = {
   user: {
     homePath: '/user',
     label: '',
-    links: [
-      { caminho: '/user', rotulo: 'Início', end: true },
-      { caminho: '/user/quadras', rotulo: 'Quadras' },
-    ],
+    links: [{ caminho: '/user/suporte', rotulo: 'Suporte' }],
   },
   gestor: {
     homePath: '/gestor',

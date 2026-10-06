@@ -4,13 +4,11 @@ import AreaLayout from './layouts/AreaLayout';
 import GestorLayout from './layouts/GestorLayout';
 import GestorOperacao from './gestor/GestorOperacao';
 import Configuracoes from './gestor/Configuracoes';
-import Home from './pages/Home';
 import Quadras from './pages/Quadras';
 import QuadraDetalhe from './pages/EstabelecimentoDetalhe';
 import Reserva from './pages/Reserva';
 import PainelGestor from './pages/PainelGestor';
 import SuperAdmin from './pages/SuperAdmin';
-import About from './pages/About';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 import DemoBar from './components/DemoBar';
@@ -45,12 +43,13 @@ function App() {
           <Route path="/" element={<Navigate to="/user" replace />} />
 
           <Route path="/user" element={<AreaLayout area="user" />}>
-            <Route index element={<Home />} />
-            <Route path="quadras" element={<Quadras />} />
+            <Route index element={<Quadras />} />
+            <Route path="quadras" element={<LegacyRedirect to="/user" />} />
             <Route path="quadras/:id" element={<QuadraDetalhe />} />
             <Route path="reserva" element={<Reserva />} />
-            <Route path="sobre" element={<About />} />
-            <Route path="contato" element={<Contact />} />
+            <Route path="sobre" element={<LegacyRedirect to="/user" />} />
+            <Route path="suporte" element={<Contact />} />
+            <Route path="contato" element={<LegacyRedirect to="/user/suporte" />} />
             <Route path="*" element={<NotFound homePath="/user" />} />
           </Route>
 
