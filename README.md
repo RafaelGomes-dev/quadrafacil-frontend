@@ -153,18 +153,34 @@ autorização no backend, fora deste MVP. Revogar preserva quadras e reservas ex
 O painel também mostra planos Freemium/Pro/Premium e patrocínios das contas ativas.
 Os nomes dos planos são demonstrativos; plano e destaque podem ser editados sem
 cobrança real. O patrocínio é independente do plano e não altera o ranking do jogador.
-O financeiro usa uma base fictícia de outubro de 2026, independente da agenda, com
-filtros Hoje/Últimos 7 dias/Este mês. Valores são calculados em centavos: comissão de
-10% por transação paga ou pendente, excluindo canceladas e reembolsadas. Volume bruto
-não é receita da plataforma, e pagamento confirmado não significa repasse recebido.
-Na aba **Financeiro**, a recorrência mensal dos planos e patrocínios é apresentada
-separadamente das reservas do período. Hipóteses editáveis: Pro R$ 99/mês, Premium
-R$ 199/mês, patrocínio R$ 49/mês e gateway 3%. Não são preços ou taxas de mercado.
-O gateway incide no valor total da reserva e é descontado da comissão bruta de 10%
-para calcular o líquido; não inclui tributos nem outros custos. Pagamentos pendentes
-entram somente na previsão. Planos e patrocínios mostram projeção bruta, sem simular
-liquidação ou taxas de cobrança. Reservas manuais e mensalistas não geram comissão
-nesta demonstração. Há 15 gestores iniciais fictícios (cadastros locais adicionais
+O financeiro gera uma base fictícia determinística para o mês atual, independente
+da agenda. Filtros Hoje/Últimos 7 dias/Mês até hoje excluem datas futuras; Projeção
+do mês inteiro mostra a base mensal completa. O extrato é paginado em 20 linhas.
+
+Premissas iniciais, **não médias de mercado comprovadas**: uma quadra por estabelecimento
+ativo com espaços cadastrados, 3 reservas de 1h por dia, 26 dias/mês, ticket R$ 120,
+20% pelo app e 80% WhatsApp/presencial. Cancelamentos de 5% são arredondados para cima
+por canal; fins de semana têm maior peso sem aumentar o total mensal. No cenário de
+14 estabelecimentos são 1.092 reservas planejadas, 218 pelo app e 55 cancelamentos.
+Somente 207 reservas liquidadas pelo app geram comissão; as 830 diretas válidas não.
+
+A adesão conservadora aos planos assume 20% Pro, 5% Premium e 10% patrocinados,
+arredondados para baixo: 2 Pro, nenhum Premium e 1 patrocínio para 14 gestores.
+É possível comparar com os planos dos cadastros sem sobrescrevê-los. Valores editáveis:
+Pro R$ 99/mês, Premium R$ 199/mês, patrocínio R$ 49/mês e gateway médio 3%.
+Não são preços ou taxas de mercado. Premissas são salvas no navegador.
+
+Comissão de 10% adicionada ao preço da quadra; o gateway incide sobre o total de 110%
+cobrado do jogador. Também estimamos gateway sobre planos/patrocínios. Assim, a base
+padrão projeta receita bruta da plataforma de R$ 2.731,00 e receita após gateway de
+R$ 1.903,87 (R$ 239,59 MRR + R$ 1.664,28 taxas). Não é lucro nem dinheiro recebido:
+não inclui impostos, infraestrutura, marketing, suporte, taxas fixas, inadimplência
+dos planos ou diferenças de tarifa entre Pix/cartão. O checkout do MVP ainda não
+cobra a taxa real: esta é apenas a hipótese do modelo de negócio.
+Referência de método: [Sebrae · Locação de quadra de esporte](https://bibliotecas.sebrae.com.br/chronus/ARQUIVOS_CHRONUS/IDEIAS_DE_NEGOCIO/PDFS/ideia-de-negocio_locacao-de-quadra-de-esporte.pdf),
+que recomenda validar demanda e preços na região e não comprova estas premissas.
+
+Há 15 gestores iniciais fictícios (cadastros locais adicionais
 são preservados). Os 12 gestores adicionais publicam 16 quadras fictícias de Society
 no catálogo do jogador, além dos espaços já existentes. Reservas desses exemplos
 são locais e separadas da operação da Arena Batel; pagamentos continuam simulados.
