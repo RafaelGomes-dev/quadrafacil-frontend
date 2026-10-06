@@ -47,6 +47,10 @@ function Estrutura() {
             <Icon name="seta" />
             Ver experiência do jogador
           </Link>
+          <Link to="/superadmin">
+            <Icon name="escudo" />
+            Superadmin · demonstração
+          </Link>
           <div className="gestor-perfil">
             <span>GC</span>
             <div>
