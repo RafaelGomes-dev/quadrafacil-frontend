@@ -110,13 +110,32 @@ quadrafacil-frontend/
 | Gestor  | `/gestor`               | Dashboard com métricas e agenda                           |
 | Gestor  | `/gestor/agenda`        | Agenda diária e semanal por quadra                        |
 | Gestor  | `/gestor/reservas`      | Busca, detalhes e cancelamento de reservas                |
+| Gestor  | `/gestor/financeiro`    | Receita, comissão, pendências, repasses e extrato fictício |
+| Gestor  | `/gestor/inteligencia`  | Histórico de ocupação e insights demonstrativos · planos pagos |
 | Gestor  | `/gestor/configuracoes` | Quadras, preços, promoções, mensalistas e estabelecimento |
-| Equipe  | `/superadmin`           | Entrada da administração                                  |
+| Equipe  | `/superadmin`           | Contas de gestores e financeiro demonstrativo da plataforma |
 
 `/` redireciona para `/user`. Os endereços anteriores redirecionam para as novas rotas.
-Cada área tem seu próprio menu. A tela de `/superadmin` reserva o espaço para o futuro
-cadastro simulado de contas de gestores. As rotas não
-possuem autenticação nesta versão do protótipo.
+Cada área tem seu próprio menu e o mesmo rodapé institucional. A barra superior
+**DEMO** reúne a troca entre Jogador, Gestor e Superadmin: é um controle temporário,
+fora da navegação do produto, a remover na versão final. As rotas não possuem
+autenticação nesta versão do protótipo.
+
+### Inteligência e financeiro do gestor
+
+A Inteligência é uma simulação de benefício dos planos Pro/Premium; Freemium recebe
+uma prévia. O plano do gestor de exemplo pode ser alterado no Superadmin. Há mapa de
+ocupação por dia/hora, filtros por quadra e 4/8 semanas, detalhe por célula, ranking
+e oportunidades de promoção. A capacidade considera o funcionamento e as quadras
+ativas. O histórico é sintético, independente da agenda: não há IA ou previsão real.
+Lista de espera aparece apenas como conceito para a próxima fase.
+
+O Financeiro tem lançamentos fictícios do mês, filtros por período, quadra, origem e
+pagamento, gráfico, extrato e detalhes. Mensalidades aparecem uma vez por mês. Comissão
+de 10% somente nas reservas avulsas da plataforma, sem descontar gateway novamente do
+gestor. Recebido direto, repassado, pagamento pendente e repasse previsto são distintos.
+Canceladas/reembolsadas não entram nos totais. Não há documento fiscal, movimentação
+bancária, cálculo tributário ou sincronização desse extrato com a agenda.
 
 ### Administração interna
 
