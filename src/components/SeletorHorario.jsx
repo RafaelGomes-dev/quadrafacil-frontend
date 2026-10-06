@@ -1,17 +1,20 @@
 /**
  * Grade de horários de uma quadra em uma data: livres (selecionáveis) e
- * ocupados (desabilitados).
+ * ocupados (convite à lista de espera, quando disponível).
  * @param {object} props
  * @param {string[]} props.horariosLivres
  * @param {string[]} props.horariosOcupados
- * @param {string} props.horarioSelecionado
+ * @param {string[]} props.horariosSelecionados
  * @param {(horario: string) => void} props.onSelecionarHorario
  */
 function SeletorHorario({
   horariosLivres,
   horariosOcupados,
-  horarioSelecionado,
+  horariosSelecionados = [],
   onSelecionarHorario,
+  onHorarioOcupado,
+  precos = {},
+  horarioBuscado = '',
 }) {
   const todosOsHorarios = [...horariosLivres, ...horariosOcupados].sort();
 
@@ -23,19 +26,37 @@ function SeletorHorario({
     <div className="grade-horarios">
       {todosOsHorarios.map((horario) => {
         const estaOcupado = horariosOcupados.includes(horario);
-        const estaSelecionado = horario === horarioSelecionado;
+        const estaSelecionado = horariosSelecionados.includes(horario);
 
         return (
           <button
             key={horario}
             type="button"
-            disabled={estaOcupado}
+            disabled={estaOcupado && !onHorarioOcupado}
+            aria-pressed={estaSelecionado}
+            aria-label={
+              estaOcupado
+                ? `${horario} ocupado${onHorarioOcupado ? ' · avise-me ao liberar' : ''}`
+                : horario
+            }
             className={`horario-slot ${estaOcupado ? 'horario-ocupado' : 'horario-livre'} ${
               estaSelecionado ? 'horario-selecionado' : ''
-            }`.trim()}
-            onClick={() => onSelecionarHorario(horario)}
+            } ${horario === horarioBuscado && !estaSelecionado ? 'horario-buscado' : ''}`.trim()}
+            onClick={() =>
+              estaOcupado ? onHorarioOcupado?.(horario) : onSelecionarHorario(horario)
+            }
           >
             {horario}
+            {estaOcupado ? (
+              <small>Ocupado</small>
+            ) : (
+              precos[horario] && (
+                <small>
+                  {precos[horario].promocao ? 'Promo · ' : ''}
+                  {precos[horario].texto}
+                </small>
+              )
+            )}
           </button>
         );
       })}

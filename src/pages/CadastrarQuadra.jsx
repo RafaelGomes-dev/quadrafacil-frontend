@@ -72,7 +72,7 @@ function CadastrarQuadra() {
         ...dadosDoFormulario,
         precoHora: Number(dadosDoFormulario.precoHora),
       });
-      navegar(`/quadras/${quadraCriada.id}`);
+      navegar('/gestor', { state: { quadraCadastrada: quadraCriada.nome } });
     } catch (erro) {
       console.error('Falha ao cadastrar quadra:', erro);
       setErrosDeValidacao(

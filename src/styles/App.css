@@ -38,6 +38,14 @@
   color: var(--cor-primaria-clara);
 }
 
+.logo-area {
+  display: block;
+  color: #cfd6cd;
+  font-size: var(--fonte-tamanho-sm);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
 .botao-hamburguer {
   display: flex;
   flex-direction: column;
