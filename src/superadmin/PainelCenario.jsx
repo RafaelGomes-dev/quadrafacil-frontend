@@ -1,6 +1,14 @@
 import { useState } from 'react';
-import { PLANOS, resumoNegocio } from './negocio';
-import { HIPOTESES_CONSERVADORAS, contasDoCenario, gerarReservasCenario } from './cenario';
+import {
+  PLANOS_PROPOSTA,
+  CONFIG_PROPOSTA,
+  CENARIO_PROPOSTA,
+  configurarProposta,
+  contasDaProposta,
+  reservasDaProposta,
+  resumoProposta,
+  valoresDaReserva,
+} from './proposta';
 
 const reais = (c) => (c / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 const dataLocal = (d) =>
@@ -16,18 +24,13 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
   const [pagina, setPagina] = useState(1);
   const mes = hoje.slice(0, 7);
   const ultimoDia = dataLocal(new Date(Number(mes.slice(0, 4)), Number(mes.slice(5, 7)), 0));
-  const h = { ...HIPOTESES_CONSERVADORAS, ...config.cenario };
-  const contasSimuladas = contasDoCenario(contas, h, usarPlanosAtuais);
-  const transacoes = gerarReservasCenario(contasSimuladas, mes, h);
-  const parametrosFinanceiros = { ...config, gatewayIncluiTaxa: true };
-  const mensal = resumoNegocio(
-    contasSimuladas,
-    transacoes,
-    `${mes}-01`,
-    ultimoDia,
-    parametrosFinanceiros
-  );
-  const gatewayMRR = Math.round((mensal.recorrenciaMensal * config.gatewayPercentual) / 100);
+  const financeiro = configurarProposta(config);
+  const h = financeiro.cenario;
+  const salvar = (proposta) => onConfigChange({ ...config, proposta });
+  const contasSimuladas = contasDaProposta(contas, h, usarPlanosAtuais);
+  const transacoes = reservasDaProposta(contasSimuladas, mes, h);
+  const mensal = resumoProposta(contasSimuladas, transacoes, `${mes}-01`, ultimoDia, financeiro);
+  const gatewayMRR = Math.round((mensal.recorrenciaMensal * financeiro.gatewayMRR) / 100);
   const mrrLiquido = mensal.recorrenciaMensal - gatewayMRR;
   const receitaBruta = mensal.recorrenciaMensal + mensal.taxaPrevista;
   const receitaLiquida = mrrLiquido + mensal.liquidoPrevisto;
@@ -47,26 +50,21 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
   const fim = periodo === 'projecao' ? ultimoDia : hoje;
   const basePeriodo =
     inicio.slice(0, 7) !== mes
-      ? [...gerarReservasCenario(contasSimuladas, inicio.slice(0, 7), h), ...transacoes]
+      ? [...reservasDaProposta(contasSimuladas, inicio.slice(0, 7), h), ...transacoes]
       : transacoes;
-  const r = resumoNegocio(contasSimuladas, basePeriodo, inicio, fim, parametrosFinanceiros);
+  const r = resumoProposta(contasSimuladas, basePeriodo, inicio, fim, financeiro);
   const padrao =
     !usarPlanosAtuais &&
-    Object.keys(HIPOTESES_CONSERVADORAS).every((k) => h[k] === HIPOTESES_CONSERVADORAS[k]);
+    Object.keys(CENARIO_PROPOSTA).every((k) => h[k] === CENARIO_PROPOSTA[k]) &&
+    Object.keys(CONFIG_PROPOSTA).every((k) => financeiro[k] === CONFIG_PROPOSTA[k]);
   const paginas = Math.max(1, Math.ceil(r.periodo.length / 20));
   const paginaAtual = Math.min(pagina, paginas);
   const linhas = r.periodo.slice((paginaAtual - 1) * 20, paginaAtual * 20);
   const temTaxa = (t) => t.canal === 'app' && ['paga', 'pendente'].includes(t.status);
-  const gateway = (t) => Math.round((t.valor * 1.1 * config.gatewayPercentual) / 100);
   function alterarHipotese(chave, valor, min, max) {
     const numero = Number(valor);
     if (!Number.isFinite(numero) || numero < min || numero > max) return;
-    if (
-      (chave === 'percentualPro' || chave === 'percentualPremium') &&
-      numero + h[chave === 'percentualPro' ? 'percentualPremium' : 'percentualPro'] > 100
-    )
-      return;
-    onConfigChange({ ...config, cenario: { ...h, [chave]: numero } });
+    salvar({ ...financeiro, cenario: { ...h, [chave]: numero } });
     setPagina(1);
   }
   return (
@@ -98,6 +96,10 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
           Reservas canceladas não geram receita.
         </p>
       </div>
+      <p className="admin-finance-note admin-proposal-note">
+        MODELO EM VALIDAÇÃO · Gestão Free completa, plano opcional de Crescimento e taxa nas
+        reservas pelo app. Preços, adesão e custos de pagamento são hipóteses editáveis.
+      </p>
       <div className="admin-business-heading">
         <div>
           <h2>O cenário por trás dos números</h2>
@@ -143,8 +145,8 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
             ['ticket', 'Ticket médio · R$', 1, 1000, 1],
             ['percentualApp', 'Reservas pelo app · %', 0, 100, 1],
             ['cancelamentos', 'Cancelamentos · %', 0, 100, 1],
-            ['percentualPro', 'Adesão Pro · %', 0, 100, 1],
-            ['percentualPremium', 'Adesão Premium · %', 0, 100, 1],
+            ['percentualPremium', 'Adesão Crescimento · %', 0, 100, 1],
+            ['percentualPix', 'Pix nos pagamentos do app · %', 0, 100, 1],
             ['percentualPatrocinio', 'Adesão patrocínio · %', 0, 100, 1],
           ].map(([chave, label, min, max, step]) => (
             <label key={chave}>
@@ -160,29 +162,29 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
             </label>
           ))}
           {[
-            ['pro', 'Pro · R$/mês'],
-            ['premium', 'Premium · R$/mês'],
+            ['crescimento', 'Crescimento · R$/mês'],
             ['patrocinio', 'Patrocínio · R$/mês'],
-            ['gatewayPercentual', 'Gateway médio · %'],
-          ].map(([chave, label]) => (
+            ['taxaPix', 'Taxa da plataforma · Pix %', true],
+            ['taxaCartao', 'Taxa da plataforma · cartão %', true],
+            ['gatewayPix', 'Gateway Pix · R$/transação'],
+            ['gatewayCartaoPercentual', 'Gateway cartão · %', true],
+            ['gatewayCartaoFixo', 'Gateway cartão · R$/transação'],
+            ['gatewayMRR', 'Gateway de planos/patrocínio · %', true],
+          ].map(([chave, label, percentual]) => (
             <label key={chave}>
               {label}
               <input
                 type="number"
                 min="0"
-                max={chave === 'gatewayPercentual' ? 100 : 10000}
+                max={percentual ? 100 : 10000}
                 step="0.01"
-                value={chave === 'gatewayPercentual' ? config[chave] : config[chave] / 100}
+                value={percentual ? financeiro[chave] : financeiro[chave] / 100}
                 onChange={(e) => {
                   const v = Number(e.target.value);
-                  if (
-                    Number.isFinite(v) &&
-                    v >= 0 &&
-                    v <= (chave === 'gatewayPercentual' ? 100 : 10000)
-                  )
-                    onConfigChange({
-                      ...config,
-                      [chave]: chave === 'gatewayPercentual' ? v : Math.round(v * 100),
+                  if (Number.isFinite(v) && v >= 0 && v <= (percentual ? 100 : 10000))
+                    salvar({
+                      ...financeiro,
+                      [chave]: percentual ? v : Math.round(v * 100),
                     });
                 }}
               />
@@ -191,15 +193,18 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
         </div>
         <button
           className="admin-scenario-reset"
-          onClick={() => onConfigChange({ ...config, cenario: { ...HIPOTESES_CONSERVADORAS } })}
+          onClick={() => salvar({ ...CONFIG_PROPOSTA, cenario: { ...CENARIO_PROPOSTA } })}
         >
-          Restaurar premissas conservadoras
+          Restaurar hipóteses da proposta
         </button>
         <p className="admin-finance-note">
           Dias limitados à duração do mês. Reservas de 1h, sem dupla contagem de mensalistas; o
-          canal externo inclui acordos diretos. Comissão de 10% adicionada ao preço da quadra;
-          gateway de {config.gatewayPercentual}% sobre os 110% cobrados. Taxas fixas e diferenças
-          entre Pix/cartão não estão modeladas.
+          canal externo inclui acordos diretos e não gera comissão. Taxa adicionada ao preço da
+          quadra: {financeiro.taxaPix}% no Pix e {financeiro.taxaCartao}% no cartão. Gateway
+          hipotético: {reais(financeiro.gatewayPix)} por Pix; no cartão,{' '}
+          {financeiro.gatewayCartaoPercentual}% sobre o total do checkout +{' '}
+          {reais(financeiro.gatewayCartaoFixo)}. Planos e patrocínios: {financeiro.gatewayMRR}%. Sem
+          parcelamento, chargebacks ou custos de reembolso modelados.
         </p>
       </details>
       <div className="admin-business-heading">
@@ -207,8 +212,8 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
           <h2>Planos e receita recorrente</h2>
           <p>
             {usarPlanosAtuais
-              ? 'Planos cadastrados na demonstração — adesão não conservadora.'
-              : 'Adesão inicial conservadora, arredondada para baixo. Não altera os cadastros.'}
+              ? 'Pro e Premium antigos agrupados em Crescimento somente nesta projeção.'
+              : `Hipótese: ${h.percentualPremium}% em Crescimento, arredondados para baixo. Cadastros preservados.`}
           </p>
         </div>
         <select
@@ -217,11 +222,11 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
           onChange={(e) => setUsarPlanosAtuais(e.target.value === 'cadastros')}
         >
           <option value="conservador">Adesão conservadora</option>
-          <option value="cadastros">Planos dos cadastros</option>
+          <option value="cadastros">Cadastros adaptados</option>
         </select>
       </div>
-      <div className="admin-plans">
-        {Object.entries(PLANOS).map(([id, nome]) => (
+      <div className="admin-plans admin-proposal-plans">
+        {Object.entries(PLANOS_PROPOSTA).map(([id, nome]) => (
           <div key={id}>
             <span>{nome}</span>
             <strong>
@@ -229,7 +234,12 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
               <small>/ mês</small>
             </strong>
             <small>
-              {mensal.planos[id]} gestores × {reais(id === 'freemium' ? 0 : config[id])}
+              {mensal.planos[id]} gestores × {reais(id === 'freemium' ? 0 : financeiro.crescimento)}
+            </small>
+            <small>
+              {id === 'freemium'
+                ? 'Agenda, mensalistas, reservas e financeiro básico'
+                : 'Inteligência, campanhas e otimização de receita'}
             </small>
           </div>
         ))}
@@ -240,7 +250,11 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
             <small>/ mês</small>
           </strong>
           <small>
-            {mensal.patrocinados} destaques × {reais(config.patrocinio)} · separado do plano
+            {mensal.patrocinados} anunciantes × {reais(financeiro.patrocinio)} · separado do plano
+          </small>
+          <small>
+            Proposta: até 2–3 destaques por busca, com rodízio e respeito aos filtros. Sem garantia
+            de reservas.
           </small>
         </div>
       </div>
@@ -284,7 +298,9 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
       </div>
       <div className="admin-finance admin-net-finance">
         <div>
-          <span>Nossa comissão bruta · 10%</span>
+          <span>
+            Taxas brutas · Pix {financeiro.taxaPix}% / cartão {financeiro.taxaCartao}%
+          </span>
           <strong>{reais(mensal.taxaPrevista)}</strong>
           <small>Não confundir com o volume das quadras</small>
         </div>
@@ -298,6 +314,19 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
           <strong>{reais(mensal.liquidoPrevisto)}</strong>
           <small>Somadas ao MRR no total mensal</small>
         </div>
+      </div>
+      <div className="admin-finance admin-payment-breakdown">
+        {Object.entries(mensal.porPagamento).map(([meio, valores]) => (
+          <div key={meio}>
+            <span>
+              {meio === 'pix' ? 'Pix' : 'Cartão'} · {valores.reservas} reservas válidas
+            </span>
+            <strong>{reais(valores.liquido)}</strong>
+            <small>
+              Após gateway · taxas brutas {reais(valores.taxa)} − gateway {reais(valores.gateway)}
+            </small>
+          </div>
+        ))}
       </div>
       <div className="admin-business-heading admin-finance-heading">
         <div>
@@ -339,9 +368,9 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
               <tr>
                 <th>Reserva / data</th>
                 <th>Estabelecimento / horário</th>
-                <th>Canal</th>
+                <th>Canal / pagamento</th>
                 <th>Valor da quadra</th>
-                <th>Taxa de 10%</th>
+                <th>Taxa da plataforma</th>
                 <th>Gateway</th>
                 <th>Nossa receita</th>
                 <th>Situação</th>
@@ -358,11 +387,20 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
                     {t.estabelecimento}
                     <small>{t.horario} · 1h</small>
                   </td>
-                  <td>{t.canal === 'app' ? 'QuadraFácil' : 'WhatsApp / presencial'}</td>
+                  <td>
+                    {t.canal === 'app' ? 'QuadraFácil' : 'WhatsApp / presencial'}
+                    <small>
+                      {t.pagamento === 'pix'
+                        ? 'Pix'
+                        : t.pagamento === 'cartao'
+                          ? 'Cartão'
+                          : 'Pagamento externo · sem comissão'}
+                    </small>
+                  </td>
                   <td>{reais(t.valor)}</td>
-                  <td>{temTaxa(t) ? reais(Math.round(t.valor * 0.1)) : '—'}</td>
-                  <td>{temTaxa(t) ? reais(gateway(t)) : '—'}</td>
-                  <td>{temTaxa(t) ? reais(Math.round(t.valor * 0.1) - gateway(t)) : reais(0)}</td>
+                  <td>{temTaxa(t) ? reais(valoresDaReserva(t, financeiro).taxa) : '—'}</td>
+                  <td>{temTaxa(t) ? reais(valoresDaReserva(t, financeiro).gateway) : '—'}</td>
+                  <td>{reais(valoresDaReserva(t, financeiro).liquido)}</td>
                   <td>
                     {t.status === 'cancelada' ? 'Cancelada · simulada' : 'Liquidada · hipótese'}
                   </td>
@@ -392,8 +430,8 @@ export default function PainelCenario({ contas, config, onConfigChange }) {
           Sebrae · Locação de quadra de esporte
         </a>
         . O material recomenda pesquisa local e não valida estas médias. Taxas variam por provedor;
-        os 3% padrão são hipótese, não cotação. Valores precisam de entrevistas e validação. Esta
-        base não altera a agenda nem os cadastros da demonstração.
+        os custos configurados são hipóteses, não cotações. Valores precisam de entrevistas e
+        validação. Esta base não altera a agenda nem os cadastros da demonstração.
       </p>
     </section>
   );

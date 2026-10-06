@@ -235,6 +235,23 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
 }
+.admin-proposal-plans {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.admin-proposal-plans small + small {
+  margin-top: 12px;
+}
+.admin-proposal-note {
+  padding: 16px 18px;
+  border: 1px solid #e0e8df;
+  background: #f6f9f2;
+  border-radius: 10px;
+  margin: 0 0 28px;
+}
+.admin-payment-breakdown {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 18px;
+}
 .admin-plans > div {
   border: 1px solid #e0e8df;
   border-radius: 12px;
@@ -358,6 +375,9 @@
 @media (max-width: 800px) {
   .admin-plans {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .admin-proposal-plans {
+    grid-template-columns: 1fr;
   }
   .admin-finance {
     grid-template-columns: 1fr;
