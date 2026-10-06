@@ -238,7 +238,10 @@
   color: #8c9b83;
   font-size: 10px;
 }
-.r-suggestion-button {
+.r-insight .r-suggestion-button {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
   margin-top: 14px;
 }
 .r-price-preview > p {
