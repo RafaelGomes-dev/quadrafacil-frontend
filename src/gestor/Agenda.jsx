@@ -90,42 +90,44 @@ export default function Agenda({
               Semana
             </button>
           </div>
-          <div className="g-filtro-quadras">
-            <button
-              className="g-btn g-btn-light"
-              aria-expanded={filtroAberto}
-              onClick={() => setFiltroAberto(!filtroAberto)}
-            >
-              <Icon name="filtros" size={17} />
-              {visiveis.length === quadras.filter((q) => q.ativa !== false).length
-                ? 'Todas as quadras'
-                : `${visiveis.length} quadra(s)`}
-              <span>⌄</span>
-            </button>
-            {filtroAberto && (
-              <div className="g-filtro-popover">
-                <strong>Mostrar na agenda</strong>
-                {quadras
-                  .filter((q) => q.ativa !== false)
-                  .map((q) => (
-                    <label key={q.id}>
-                      <input
-                        type="checkbox"
-                        checked={selecionadas.includes(String(q.id))}
-                        onChange={(e) =>
-                          setSelecionadas(
-                            e.target.checked
-                              ? [...selecionadas, String(q.id)]
-                              : selecionadas.filter((id) => id !== String(q.id))
-                          )
-                        }
-                      />
-                      {q.nome}
-                    </label>
-                  ))}
-              </div>
-            )}
-          </div>
+          {quadras.filter((q) => q.ativa !== false).length > 1 && (
+            <div className="g-filtro-quadras">
+              <button
+                className="g-btn g-btn-light"
+                aria-expanded={filtroAberto}
+                onClick={() => setFiltroAberto(!filtroAberto)}
+              >
+                <Icon name="filtros" size={17} />
+                {visiveis.length === quadras.filter((q) => q.ativa !== false).length
+                  ? 'Todas as quadras'
+                  : `${visiveis.length} quadra(s)`}
+                <span>⌄</span>
+              </button>
+              {filtroAberto && (
+                <div className="g-filtro-popover">
+                  <strong>Mostrar na agenda</strong>
+                  {quadras
+                    .filter((q) => q.ativa !== false)
+                    .map((q) => (
+                      <label key={q.id}>
+                        <input
+                          type="checkbox"
+                          checked={selecionadas.includes(String(q.id))}
+                          onChange={(e) =>
+                            setSelecionadas(
+                              e.target.checked
+                                ? [...selecionadas, String(q.id)]
+                                : selecionadas.filter((id) => id !== String(q.id))
+                            )
+                          }
+                        />
+                        {q.nome}
+                      </label>
+                    ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
       <div className="g-agenda-data">

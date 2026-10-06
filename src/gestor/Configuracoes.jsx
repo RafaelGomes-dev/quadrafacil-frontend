@@ -34,7 +34,11 @@ export default function Configuracoes() {
   const { dados, atualizar, externas } = useGestor();
   const [params, setParams] = useSearchParams();
   const aba = ABAS.some((a) => a[0] === params.get('aba')) ? params.get('aba') : 'quadras';
-  const [editor, setEditor] = useState(null);
+  const [editor, setEditor] = useState(() =>
+    dados.quadras.length === 1 && aba === 'quadras'
+      ? { tipo: 'quadras', item: dados.quadras[0] }
+      : null
+  );
   const [toast, setToast] = useState('');
   const [estabelecimento, setEstabelecimento] = useState(dados.estabelecimento);
   function notify(msg) {
@@ -282,7 +286,7 @@ export default function Configuracoes() {
           <div className="g-section-card-heading">
             <h2>Informações da sua operação</h2>
             <p>
-              O nome identifica seu painel. Endereços específicos ficam no cadastro de cada quadra.
+              Nome, endereço e contato são compartilhados por todas as quadras do estabelecimento.
             </p>
           </div>
           <form
@@ -320,6 +324,22 @@ export default function Configuracoes() {
                 />
               </label>
             </div>
+            <label className="g-field">
+              Endereço do estabelecimento
+              <input
+                required
+                value={estabelecimento.endereco || ''}
+                onChange={(e) => setEstabelecimento((f) => ({ ...f, endereco: e.target.value }))}
+              />
+            </label>
+            <label className="g-field">
+              Bairro do estabelecimento
+              <input
+                required
+                value={estabelecimento.bairro || ''}
+                onChange={(e) => setEstabelecimento((f) => ({ ...f, bairro: e.target.value }))}
+              />
+            </label>
             <div className="g-info-banner">
               <Icon name="escudo" />
               <div>
@@ -439,6 +459,9 @@ function EditorConfiguracao({ editor, onClose, notify, dados, atualizar, externa
           return setErro('O fechamento deve ser depois da abertura.');
         const quadra = {
           ...f,
+          endereco: dados.estabelecimento.endereco,
+          bairro: dados.estabelecimento.bairro,
+          cidade: dados.estabelecimento.cidade,
           id: item?.id || `local-${idNovo()}`,
           precoHora: Number(f.precoHora),
         };
@@ -614,31 +637,16 @@ function EditorConfiguracao({ editor, onClose, notify, dados, atualizar, externa
                 onChange={(e) => mudar('descricao', e.target.value)}
               />
             </label>
-            <label className="g-field">
-              Endereço
-              <input
-                required
-                value={f.endereco}
-                onChange={(e) => mudar('endereco', e.target.value)}
-              />
-            </label>
-            <div className="g-form-row">
-              <label className="g-field">
-                Bairro
-                <input
-                  required
-                  value={f.bairro}
-                  onChange={(e) => mudar('bairro', e.target.value)}
-                />
-              </label>
-              <label className="g-field">
-                Cidade
-                <input
-                  required
-                  value={f.cidade}
-                  onChange={(e) => mudar('cidade', e.target.value)}
-                />
-              </label>
+            <div className="g-info-banner">
+              <Icon name="local" />
+              <div>
+                <strong>{dados.estabelecimento.nome}</strong>
+                <p>
+                  {dados.estabelecimento.endereco} · {dados.estabelecimento.bairro},{' '}
+                  {dados.estabelecimento.cidade}. Endereço e contato são definidos em
+                  Estabelecimento.
+                </p>
+              </div>
             </div>
             <div className="g-form-row">
               <label className="g-field">
