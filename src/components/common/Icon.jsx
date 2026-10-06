@@ -1,4 +1,10 @@
 const DESENHOS = {
+  insights: (
+    <>
+      <path d="M4 20h17M6 16v-4M12 16V8M18 16V4" />
+      <path d="m4 8 5-4 4 2 6-4" />
+    </>
+  ),
   painel: (
     <>
       <rect x="3" y="3" width="7" height="7" rx="1.5" />
