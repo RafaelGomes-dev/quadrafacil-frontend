@@ -9,6 +9,7 @@ import { formatarDataLocalISO } from '../utils/data';
 import { formatarData, formatarPreco } from '../utils/formatadores';
 import { fotoDaQuadra, rotuloDoEsporte } from '../utils/apresentacaoQuadras';
 import { normalizarHorarios, parametrosDaReserva } from '../utils/horariosReserva';
+import { cotarHorario } from '../services/gestorDemo';
 
 const ITENS_DE_ESTRUTURA = [
   { chave: 'vestiario', rotulo: 'Vestiário' },
@@ -35,6 +36,18 @@ function QuadraDetalhe() {
   const [estaCarregando, setEstaCarregando] = useState(true);
   const [erroDaQuadra, setErroDaQuadra] = useState('');
   const [erroDosHorarios, setErroDosHorarios] = useState('');
+  const precos = quadra
+    ? Object.fromEntries(
+        [...horarios.horariosLivres, ...horarios.horariosOcupados].map((h) => {
+          const cotacao = cotarHorario(quadra, dataEscolhida, h);
+          return [h, { ...cotacao, texto: formatarPreco(cotacao.valor) }];
+        })
+      )
+    : {};
+  const totalSelecionado = horariosSelecionados.reduce(
+    (total, h) => total + (precos[h]?.valor || quadra?.precoHora || 0),
+    0
+  );
 
   useEffect(() => {
     let cancelado = false;
@@ -210,6 +223,7 @@ function QuadraDetalhe() {
                   horariosOcupados={horarios.horariosOcupados}
                   horariosSelecionados={horariosSelecionados}
                   onSelecionarHorario={alternarHorario}
+                  precos={precos}
                 />
               )}
               <p className="detalhe-legenda-horarios">
@@ -235,7 +249,7 @@ function QuadraDetalhe() {
                   {horariosSelecionados.length}{' '}
                   {horariosSelecionados.length === 1 ? 'hora' : 'horas'} selecionadas
                 </span>
-                <strong>{formatarPreco(quadra.precoHora * horariosSelecionados.length)}</strong>
+                <strong>{formatarPreco(totalSelecionado)}</strong>
               </div>
             )}
             <Button
@@ -251,7 +265,9 @@ function QuadraDetalhe() {
 
       <div className="detalhe-cta-mobile">
         <div>
-          <strong>{formatarPreco(quadra.precoHora * (horariosSelecionados.length || 1))}</strong>
+          <strong>
+            {formatarPreco(horariosSelecionados.length ? totalSelecionado : quadra.precoHora)}
+          </strong>
           <span>{horariosSelecionados.length ? ' no total' : ' / hora'}</span>
           <small>
             {horariosSelecionados.length

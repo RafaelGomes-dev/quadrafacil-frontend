@@ -99,22 +99,35 @@ quadrafacil-frontend/
 
 ## Páginas e rotas
 
-| Área    | Rota                   | Página                       |
-| ------- | ---------------------- | ---------------------------- |
-| Jogador | `/user`                | Início e busca rápida        |
-| Jogador | `/user/quadras`        | Listagem com filtros         |
-| Jogador | `/user/quadras/:id`    | Detalhes e horários          |
-| Jogador | `/user/reserva`        | Reserva e pagamento simulado |
-| Jogador | `/user/sobre`          | Sobre o projeto              |
-| Jogador | `/user/contato`        | Contato demonstrativo        |
-| Gestor  | `/gestor`              | Painel de reservas           |
-| Gestor  | `/gestor/quadras/nova` | Cadastro de quadra           |
-| Equipe  | `/superadmin`          | Entrada da administração     |
+| Área    | Rota                    | Página                                                    |
+| ------- | ----------------------- | --------------------------------------------------------- |
+| Jogador | `/user`                 | Início e busca rápida                                     |
+| Jogador | `/user/quadras`         | Listagem com filtros                                      |
+| Jogador | `/user/quadras/:id`     | Detalhes e horários                                       |
+| Jogador | `/user/reserva`         | Reserva e pagamento simulado                              |
+| Jogador | `/user/sobre`           | Sobre o projeto                                           |
+| Jogador | `/user/contato`         | Contato demonstrativo                                     |
+| Gestor  | `/gestor`               | Dashboard com métricas e agenda                           |
+| Gestor  | `/gestor/agenda`        | Agenda diária e semanal por quadra                        |
+| Gestor  | `/gestor/reservas`      | Busca, detalhes e cancelamento de reservas                |
+| Gestor  | `/gestor/configuracoes` | Quadras, preços, promoções, mensalistas e estabelecimento |
+| Equipe  | `/superadmin`           | Entrada da administração                                  |
 
 `/` redireciona para `/user`. Os endereços anteriores redirecionam para as novas rotas.
 Cada área tem seu próprio menu. A tela de `/superadmin` reserva o espaço para o futuro
 cadastro de contas de gestores; essa função ainda não foi implementada. As rotas não
 possuem autenticação nesta versão do protótipo.
+
+### Demonstração do gestor
+
+O painel usa dados fictícios e salva as alterações em `localStorage` neste navegador.
+Reservas manuais, bloqueios e mensalistas ocupam a agenda; preços por data têm prioridade
+sobre regras semanais e o preço padrão. Reservas novas preservam o valor contratado.
+O fluxo do jogador no mesmo navegador considera essas alterações e promoções.
+As reservas da API mock também aparecem no painel para as quadras administradas.
+Ainda não há banco, autenticação, cobrança ou reembolso real. A receita do período
+considera reservas avulsas; mensalidades são mostradas separadamente, sem contabilizar
+o valor mensal a cada ocorrência da agenda.
 
 ## Protótipo
 

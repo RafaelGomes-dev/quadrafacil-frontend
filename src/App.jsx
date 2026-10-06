@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import AreaLayout from './layouts/AreaLayout';
+import GestorLayout from './layouts/GestorLayout';
+import GestorOperacao from './gestor/GestorOperacao';
+import Configuracoes from './gestor/Configuracoes';
 import Home from './pages/Home';
 import Quadras from './pages/Quadras';
 import QuadraDetalhe from './pages/QuadraDetalhe';
 import Reserva from './pages/Reserva';
 import PainelGestor from './pages/PainelGestor';
-import CadastrarQuadra from './pages/CadastrarQuadra';
 import SuperAdmin from './pages/SuperAdmin';
 import About from './pages/About';
 import Contact from './pages/Contact';
@@ -45,9 +47,12 @@ function App() {
           <Route path="*" element={<NotFound homePath="/user" />} />
         </Route>
 
-        <Route path="/gestor" element={<AreaLayout area="gestor" />}>
+        <Route path="/gestor" element={<GestorLayout />}>
           <Route index element={<PainelGestor />} />
-          <Route path="quadras/nova" element={<CadastrarQuadra />} />
+          <Route path="agenda" element={<GestorOperacao pagina="agenda" />} />
+          <Route path="reservas" element={<GestorOperacao pagina="reservas" />} />
+          <Route path="configuracoes" element={<Configuracoes />} />
+          <Route path="quadras/nova" element={<Navigate to="/gestor/configuracoes" replace />} />
           <Route path="*" element={<NotFound homePath="/gestor" />} />
         </Route>
 

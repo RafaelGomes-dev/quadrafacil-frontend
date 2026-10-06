@@ -12,6 +12,7 @@ function SeletorHorario({
   horariosOcupados,
   horariosSelecionados = [],
   onSelecionarHorario,
+  precos = {},
 }) {
   const todosOsHorarios = [...horariosLivres, ...horariosOcupados].sort();
 
@@ -31,12 +32,19 @@ function SeletorHorario({
             type="button"
             disabled={estaOcupado}
             aria-pressed={estaSelecionado}
+            aria-label={horario}
             className={`horario-slot ${estaOcupado ? 'horario-ocupado' : 'horario-livre'} ${
               estaSelecionado ? 'horario-selecionado' : ''
             }`.trim()}
             onClick={() => onSelecionarHorario(horario)}
           >
             {horario}
+            {precos[horario] && (
+              <small>
+                {precos[horario].promocao ? 'Promo · ' : ''}
+                {precos[horario].texto}
+              </small>
+            )}
           </button>
         );
       })}

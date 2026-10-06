@@ -10,6 +10,7 @@ import { processarPagamento } from '../services/pagamentoService';
 import { normalizarTelefone, validarDadosDoCliente } from '../utils/reserva';
 import { formatarData, formatarPreco } from '../utils/formatadores';
 import { fotoDaQuadra, rotuloDoEsporte } from '../utils/apresentacaoQuadras';
+import { cotarHorario } from '../services/gestorDemo';
 import {
   normalizarHorarios,
   intervaloDoHorario,
@@ -36,6 +37,9 @@ function Reserva() {
   const [pagamentoAprovado, setPagamentoAprovado] = useState(null);
   const [mensagemDeErro, setMensagemDeErro] = useState('');
   const [estaProcessando, setEstaProcessando] = useState(false);
+  const totalDaReserva = quadra
+    ? horariosSelecionados.reduce((total, h) => total + cotarHorario(quadra, data, h).valor, 0)
+    : 0;
 
   function removerHorario(horario) {
     const restantes = horariosSelecionados.filter((item) => item !== horario);
@@ -291,7 +295,9 @@ function Reserva() {
                     <li key={horario}>
                       <span>
                         <strong>{intervaloDoHorario(horario)}</strong>
-                        <small>1 hora · {formatarPreco(quadra.precoHora)}</small>
+                        <small>
+                          1 hora · {formatarPreco(cotarHorario(quadra, data, horario).valor)}
+                        </small>
                       </span>
                       <button
                         type="button"
@@ -308,7 +314,7 @@ function Reserva() {
                 </ul>
                 <div className="reserva-resumo-total">
                   <span>Total da reserva</span>
-                  <strong>{formatarPreco(quadra.precoHora * horariosSelecionados.length)}</strong>
+                  <strong>{formatarPreco(totalDaReserva)}</strong>
                 </div>
                 <small>
                   {horariosSelecionados.length}{' '}

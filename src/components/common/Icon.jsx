@@ -1,4 +1,45 @@
 const DESENHOS = {
+  painel: (
+    <>
+      <rect x="3" y="3" width="7" height="7" rx="1.5" />
+      <rect x="14" y="3" width="7" height="7" rx="1.5" />
+      <rect x="3" y="14" width="7" height="7" rx="1.5" />
+      <rect x="14" y="14" width="7" height="7" rx="1.5" />
+    </>
+  ),
+  lista: (
+    <>
+      <path d="M8 5h13M8 12h13M8 19h13M3 5h.01M3 12h.01M3 19h.01" />
+    </>
+  ),
+  config: (
+    <>
+      <path d="m9 3-1 3-3 1-2 5 2 5 3 1 1 3h6l1-3 3-1 2-5-2-5-3-1-1-3Z" />
+      <circle cx="12" cy="12" r="3" />
+    </>
+  ),
+  quadra: (
+    <>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M12 4v16M3 8h4v8H3M21 8h-4v8h4" />
+      <circle cx="12" cy="12" r="3" />
+    </>
+  ),
+  mais: <path d="M12 5v14M5 12h14" />,
+  fechar: <path d="m6 6 12 12M6 18 18 6" />,
+  dinheiro: (
+    <>
+      <rect x="2" y="5" width="20" height="14" rx="2" />
+      <circle cx="12" cy="12" r="3" />
+      <path d="M6 12h.01M18 12h.01" />
+    </>
+  ),
+  pessoas: (
+    <>
+      <circle cx="9" cy="7" r="3" />
+      <path d="M3 21v-3a6 6 0 0 1 12 0v3M16 4a3 3 0 0 1 0 6M21 21v-3a6 6 0 0 0-4-5" />
+    </>
+  ),
   busca: (
     <>
       <circle cx="10.8" cy="10.8" r="6.8" />

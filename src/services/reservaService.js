@@ -1,4 +1,5 @@
 import api from './api';
+import { quadraLocal, reservarLocal } from './gestorDemo';
 
 /**
  * Lista reservas, opcionalmente filtradas por quadra.
@@ -22,6 +23,16 @@ export async function listarReservas(filtros = {}) {
  * @returns {Promise<object>} A reserva criada.
  */
 export async function criarReserva(dadosReserva) {
+  if (quadraLocal(dadosReserva.quadraId)) {
+    const ocupados = String(dadosReserva.quadraId).startsWith('local-')
+      ? []
+      : (
+          await api.get(`/quadras/${dadosReserva.quadraId}/horarios`, {
+            params: { data: dadosReserva.data },
+          })
+        ).data.horariosOcupados;
+    return reservarLocal(dadosReserva, ocupados);
+  }
   const resposta = await api.post('/reservas', dadosReserva);
   return resposta.data;
 }

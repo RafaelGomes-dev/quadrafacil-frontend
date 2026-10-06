@@ -14,7 +14,9 @@ function QuadraCard({ quadra, data = '', horarios = [], horarioBuscado = '' }) {
   if (data) parametros.set('data', data);
   if (horarioBuscado) parametros.set('horario', horarioBuscado);
   const detalhes = `/user/quadras/${quadra.id}${parametros.size ? `?${parametros}` : ''}`;
-  const proximosHorarios = horarios.slice(0, 3);
+  const proximosHorarios = horarios
+    .filter((h) => !horarioBuscado || h >= horarioBuscado)
+    .slice(0, 3);
 
   return (
     <article className="quadra-card">
@@ -26,6 +28,12 @@ function QuadraCard({ quadra, data = '', horarios = [], horarioBuscado = '' }) {
       </div>
       <div className="quadra-card-corpo">
         <span className="quadra-card-modalidade">{rotuloDoEsporte(quadra.esporte)}</span>
+        {quadra.promocao && (
+          <span className="quadra-promocao">
+            {quadra.rotuloPromocao || 'Preço promocional'} ·{' '}
+            {horarioBuscado || 'horários selecionados'}
+          </span>
+        )}
         <h3>
           <Link to={detalhes}>{quadra.nome}</Link>
         </h3>
@@ -60,7 +68,8 @@ function QuadraCard({ quadra, data = '', horarios = [], horarioBuscado = '' }) {
 
         <div className="quadra-card-rodape">
           <p>
-            <strong>{formatarPreco(quadra.precoHora)}</strong>
+            {quadra.precoAPartirDe && <small>A partir de </small>}
+            <strong>{formatarPreco(quadra.precoBuscado ?? quadra.precoHora)}</strong>
             <span> / hora</span>
           </p>
           <Link to={detalhes} aria-label={`Ver horários de ${quadra.nome}`}>

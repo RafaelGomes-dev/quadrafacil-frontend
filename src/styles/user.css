@@ -717,6 +717,22 @@
     background 0.2s,
     border-color 0.2s;
 }
+.area-user .horario-slot small {
+  display: block;
+  font-size: 0.65rem;
+  margin-top: 4px;
+  font-weight: 400;
+  opacity: 0.8;
+}
+.area-user .quadra-promocao {
+  display: block;
+  margin-top: 7px;
+  padding: 6px 8px;
+  border-radius: 7px;
+  background: #eef6e6;
+  color: #64843e;
+  font-size: 0.7rem;
+}
 .area-user .horario-livre:hover {
   border-color: #55a764;
   background: #f0f8ef;
