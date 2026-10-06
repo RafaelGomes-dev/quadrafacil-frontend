@@ -1,13 +1,16 @@
-# QuadraFacil — Frontend
+# QuadraFácil — Frontend
 
-Frontend do **QuadraFacil**, um "Airbnb de quadras esportivas": conecta jogadores e organizadores que querem reservar quadras de society, futsal, campo, vôlei, beach tennis e basquete aos gestores que administram agendas e pagamentos.
+Frontend do **QuadraFácil** — _Encontre. Reserve. Jogue._ Um marketplace de espaços esportivos, com áreas separadas para jogadores, gestores e equipe administradora. O escopo principal do MVP é **Society**; outras modalidades aparecem como exemplos.
 
 ## Descrição do projeto
 
-Esta interface React consome a [QuadraFacil API](../quadrafacil-api) e permite que:
+Este é um **protótipo funcional de frontend**, com interface responsiva, integração com a [QuadraFácil API mock](https://github.com/RafaelGomes-dev/quadrafacil-api) e dados demonstrativos no navegador. Permite que:
 
-- Jogadores busquem quadras por cidade, bairro, esporte, preço, data e horário, consultem detalhes e disponibilidade, façam reservas e usem o pagamento simulado.
-- Gestores cadastrem quadras, acompanhem reservas e pagamentos e cancelem reservas.
+- Jogadores busquem estabelecimentos, filtrem os espaços reserváveis, escolham vários horários e concluam um checkout simulado, além de registrar interesse em lista de espera ou mensalista.
+- Gestores acompanhem dashboard e agenda diária/semanal, registrem reservas manuais e bloqueios, configurem quadras, preços e mensalistas e consultem financeiro e inteligência demonstrativos.
+- A equipe crie contas fictícias de gestores, defina limites, revogue/reative acessos e simule receitas e custos da plataforma.
+
+Não há autenticação, banco de dados, pagamento real, notificações ou proteção das rotas. A barra **DEMO** permite trocar de área durante a apresentação. Os planos atuais são **Free** e **Crescimento**, com patrocínio independente.
 
 ## Tecnologias
 
@@ -20,13 +23,13 @@ Esta interface React consome a [QuadraFacil API](../quadrafacil-api) e permite q
 
 ## Pré-requisitos
 
-- Node.js 18 ou superior
-- npm 9 ou superior
+- Node.js **22.12 ou superior** recomendado. Vite 8 também aceita Node 20 a partir de 20.19; Node 18 não é compatível com esta versão do frontend.
+- npm compatível com a versão do Node instalada.
 
 ## Instalação
 
 ```bash
-npm install
+npm ci
 ```
 
 ## Executar localmente
@@ -35,7 +38,11 @@ npm install
 npm run dev
 ```
 
-O frontend será iniciado em `http://localhost:5173`.
+O frontend será iniciado em `http://localhost:5173` (se a porta estiver livre). Entradas da demonstração:
+
+- Jogador: `http://localhost:5173/user`
+- Gestor: `http://localhost:5173/gestor`
+- Superadmin: `http://localhost:5173/superadmin` → abas Gestores e Financeiro.
 
 Para gerar e visualizar o build de produção:
 
@@ -44,13 +51,14 @@ npm run build
 npm run preview
 ```
 
-Para executar o lint:
+Para executar os testes automatizados e o lint:
 
 ```bash
+npm test
 npm run lint
 ```
 
-A [QuadraFacil API](../quadrafacil-api) também precisa estar rodando em `http://localhost:3001`.
+A [QuadraFácil API](https://github.com/RafaelGomes-dev/quadrafacil-api#readme) também precisa estar rodando em `http://localhost:3001` para a busca e os fluxos integrados. Em outro terminal, siga o README da API (`npm ci` e `npm run dev`, após configurar seu `.env`). As telas financeiras usam simulações próprias; isso não substitui a API nos demais fluxos.
 
 ## Variáveis de ambiente
 
@@ -67,30 +75,20 @@ O projeto usa Vite, por isso a variável começa com `VITE_`. O prefixo `REACT_A
 ```text
 quadrafacil-frontend/
 ├── index.html
+├── public/
+│   └── images/           # Logo e fotos demonstrativas
 ├── src/
-│   ├── components/
-│   │   ├── common/
-│   │   ├── APITest.jsx
-│   │   ├── FiltroBusca.jsx
-│   │   ├── Footer.jsx
-│   │   ├── Header.jsx
-│   │   ├── Navigation.jsx
-│   │   ├── QuadraCard.jsx
-│   │   └── SeletorHorario.jsx
-│   ├── layouts/
-│   │   └── AreaLayout.jsx
-│   ├── pages/
-│   ├── services/
-│   │   ├── api.js
-│   │   ├── quadraService.js
-│   │   ├── reservaService.js
-│   │   └── pagamentoService.js
-│   ├── styles/
-│   │   ├── variables.css
-│   │   ├── globals.css
-│   │   └── App.css
-│   ├── App.jsx
+│   ├── components/       # Busca, cards, diálogos, barra DEMO e rodapé compartilhado
+│   ├── layouts/          # Layouts das áreas de jogador, gestor e superadmin
+│   ├── pages/            # Páginas de jogador e entradas de gestor/superadmin
+│   ├── gestor/           # Agenda, reservas, configurações, financeiro e inteligência
+│   ├── superadmin/       # Contas e modelo financeiro demonstrativo
+│   ├── services/         # API e integração dos dados locais de demonstração
+│   ├── utils/            # Filtros, horários, formatação e validações
+│   ├── styles/           # Estilos responsivos e identidade visual
+│   ├── App.jsx           # Definição das rotas e redirecionamentos
 │   └── main.jsx
+├── test/                 # Testes automatizados com node:test
 ├── .env.example
 ├── .gitignore
 ├── package.json
@@ -99,22 +97,38 @@ quadrafacil-frontend/
 
 ## Páginas e rotas
 
-| Área    | Rota                    | Página                                                         |
-| ------- | ----------------------- | -------------------------------------------------------------- |
-| Jogador | `/user`                 | Busca e listagem únicas, com horário nos filtros principais    |
-| Jogador | `/user/quadras`         | Redirecionamento para `/user`, preservando a busca             |
-| Jogador | `/user/quadras/:id`     | Detalhes e horários                                            |
-| Jogador | `/user/reserva`         | Reserva e pagamento simulado                                   |
-| Jogador | `/user/suporte`         | Formulário de atendimento demonstrativo                        |
-| Gestor  | `/gestor`               | Dashboard com métricas e agenda                                |
-| Gestor  | `/gestor/agenda`        | Agenda diária e semanal por quadra                             |
-| Gestor  | `/gestor/reservas`      | Busca, detalhes e cancelamento de reservas                     |
-| Gestor  | `/gestor/financeiro`    | Receita das quadras, pendências e extrato fictício             |
-| Gestor  | `/gestor/inteligencia`  | Histórico de ocupação e insights demonstrativos · planos pagos |
-| Gestor  | `/gestor/configuracoes` | Quadras, preços, promoções, mensalistas e estabelecimento      |
-| Equipe  | `/superadmin`           | Contas de gestores e financeiro demonstrativo da plataforma    |
+| Área    | Rota                    | Página                                                            |
+| ------- | ----------------------- | ----------------------------------------------------------------- |
+| Jogador | `/user`                 | Busca e listagem únicas, com horário nos filtros principais       |
+| Jogador | `/user/quadras`         | Redirecionamento para `/user`, preservando a busca                |
+| Jogador | `/user/quadras/:id`     | Detalhes e horários                                               |
+| Jogador | `/user/reserva`         | Reserva e pagamento simulado                                      |
+| Jogador | `/user/suporte`         | Formulário de atendimento demonstrativo                           |
+| Gestor  | `/gestor`               | Dashboard com métricas e agenda                                   |
+| Gestor  | `/gestor/agenda`        | Agenda diária e semanal por quadra                                |
+| Gestor  | `/gestor/reservas`      | Busca, detalhes e cancelamento de reservas                        |
+| Gestor  | `/gestor/financeiro`    | Receita das quadras, pendências e extrato fictício                |
+| Gestor  | `/gestor/inteligencia`  | Histórico e insights demonstrativos · Crescimento; prévia no Free |
+| Gestor  | `/gestor/configuracoes` | Quadras, preços, promoções, mensalistas e estabelecimento         |
+| Equipe  | `/superadmin`           | Contas de gestores e financeiro demonstrativo da plataforma       |
 
-`/` redireciona para `/user`. Os endereços anteriores redirecionam para as novas rotas.
+As abas Gestores/Financeiro do superadmin compartilham `/superadmin`; não há uma rota separada `/superadmin/financeiro`. O checkout e sua confirmação também compartilham `/user/reserva`.
+
+### Compatibilidade com links antigos
+
+| Rota anterior                                | Destino atual                 |
+| -------------------------------------------- | ----------------------------- |
+| `/` e `/user/quadras`                        | `/user`                       |
+| `/quadras`                                   | `/user` (via `/user/quadras`) |
+| `/quadras/:id`                               | `/user/quadras/:id`           |
+| `/reserva`                                   | `/user/reserva`               |
+| `/sobre` e `/user/sobre`                     | `/user`                       |
+| `/contato` e `/user/contato`                 | `/user/suporte`               |
+| `/painel-gestor`                             | `/gestor`                     |
+| `/cadastrar-quadra` e `/gestor/quadras/nova` | `/gestor/configuracoes`       |
+
+Os redirecionamentos antigos preservam parâmetros de busca quando tratados por `LegacyRedirect`. URLs desconhecidas exibem a página 404 da área correspondente. Não existem telas próprias de login, cadastro público ou Minhas reservas neste MVP.
+
 Cada área tem seu próprio menu e o mesmo rodapé institucional. A barra superior
 **DEMO** reúne a troca entre Jogador, Gestor e Superadmin: é um controle temporário,
 fora da navegação do produto, a remover na versão final. As rotas não possuem
@@ -132,7 +146,7 @@ ativas. O histórico é sintético, independente da agenda: não há IA ou previ
 Lista de espera aparece apenas como conceito para a próxima fase.
 
 O Financeiro tem lançamentos fictícios do mês, filtros por período, quadra, origem e
-pagamento, gráfico, extrato e detalhes. Mensalidades aparecem uma vez por mês. Comissão
+situação do pagamento, gráfico, extrato e detalhes. Mensalidades aparecem uma vez por mês. Comissão
 de serviço não é descontada da receita do gestor nesta tela: a hipótese é cobrança
 separada ao jogador, ainda não implementada no checkout. Não há comissão sobre
 pagamentos presenciais simulados. Recebido direto, repassado, pagamento pendente e repasse previsto são distintos.
@@ -199,8 +213,8 @@ Exemplos complementam a base antiga sem substituir edições.
 ### Experiência do jogador
 
 A entrada `/user` reúne busca e resultados; não há páginas duplicadas de início
-e quadras. Data, horário e esporte ficam visíveis; bairro, cobertura e preços ficam em
-Mais filtros. Sobre foi retirado da navegação; os links antigos de contato levam
+e quadras. Data, horário e esporte ficam visíveis; bairro, cobertura e a faixa de preço ficam em
+Mais filtros (preço mínimo/máximo na mesma linha). Sobre foi retirado da navegação; os links antigos de contato levam
 ao suporte. O rodapé claro é compartilhado pelas três áreas.
 
 Clicar em um horário ocupado abre **Avise-me ao liberar**, sem selecionar aquele
@@ -234,7 +248,9 @@ o valor mensal a cada ocorrência da agenda.
 
 ## Protótipo
 
-As fotos do protótipo desenhado à mão estão na pasta \Protótipo_QF/`.`
+O protótipo desenhado à mão pertence à entrega acadêmica inicial; seu link deve ser
+consultado no documento de entrega da equipe. Essa pasta não faz parte deste repositório.
+A versão de alta fidelidade é o próprio frontend executado nas rotas acima.
 
 ## Branches e commits
 
@@ -254,10 +270,14 @@ refactor: extrai lógica de busca para quadraService
 
 ## Equipe
 
-| Nome             | Função                                                       | GitHub           |
-| ---------------- | ------------------------------------------------------------ | ---------------- |
-| Rafael Gomes     | Front-end, roteamento, integração com a API e responsividade | RafaelGomes-dev  |
-| Rafael Maluf     | Organização do Trello, validações e testes                   | RafaMaluf        |
-| Henry Mendes     | Protótipo e documentação                                     | HenryMendesr     |
-| Tiago Dagnoluzzo | Testes e documentação                                        | tiago-dagnoluzzo |
-| Erick Meister    | Documentação e ajustes de interface                          | Minimeister05    |
+| Nome             | Função                                                                                                                                          | GitHub           |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| Rafael Gomes     | Base inicial do frontend e da API, roteamento e integração inicial                                                                              | RafaelGomes-dev  |
+| Rafael Maluf     | Desenvolvimento e redesign do frontend atual (jogador, gestor e superadmin), responsividade, fluxos, organização do Trello, validações e testes | RafaMaluf        |
+| Henry Mendes     | Protótipo e documentação                                                                                                                        | HenryMendesr     |
+| Tiago Dagnoluzzo | Testes e documentação                                                                                                                           | tiago-dagnoluzzo |
+| Erick Meister    | Documentação e ajustes de interface                                                                                                             | Minimeister05    |
+
+O frontend atual evolui a base inicial da equipe: Rafael Maluf realizou a separação
+das áreas e o desenvolvimento visual e dos fluxos da versão de alta fidelidade,
+incluindo agenda, configurações, financeiro, inteligência e administração interna.
