@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../components/common/Icon';
 import Drawer from '../gestor/Drawer';
-import PainelNegocio from '../superadmin/PainelNegocio';
+import PainelNegocio from '../superadmin/PainelCenario';
 import { PLANOS } from '../superadmin/negocio';
 import { CONFIG_FINANCEIRO } from '../superadmin/negocio';
 import { lerGestor, salvarGestor } from '../gestor/model';
