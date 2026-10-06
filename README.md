@@ -99,21 +99,20 @@ quadrafacil-frontend/
 
 ## Páginas e rotas
 
-| Área    | Rota                    | Página                                                    |
-| ------- | ----------------------- | --------------------------------------------------------- |
-| Jogador | `/user`                 | Início e busca rápida                                     |
-| Jogador | `/user/quadras`         | Listagem com filtros                                      |
-| Jogador | `/user/quadras/:id`     | Detalhes e horários                                       |
-| Jogador | `/user/reserva`         | Reserva e pagamento simulado                              |
-| Jogador | `/user/sobre`           | Sobre o projeto                                           |
-| Jogador | `/user/contato`         | Contato demonstrativo                                     |
-| Gestor  | `/gestor`               | Dashboard com métricas e agenda                           |
-| Gestor  | `/gestor/agenda`        | Agenda diária e semanal por quadra                        |
-| Gestor  | `/gestor/reservas`      | Busca, detalhes e cancelamento de reservas                |
-| Gestor  | `/gestor/financeiro`    | Receita, comissão, pendências, repasses e extrato fictício |
+| Área    | Rota                    | Página                                                         |
+| ------- | ----------------------- | -------------------------------------------------------------- |
+| Jogador | `/user`                 | Busca e listagem únicas, com horário nos filtros principais    |
+| Jogador | `/user/quadras`         | Redirecionamento para `/user`, preservando a busca             |
+| Jogador | `/user/quadras/:id`     | Detalhes e horários                                            |
+| Jogador | `/user/reserva`         | Reserva e pagamento simulado                                   |
+| Jogador | `/user/suporte`         | Formulário de atendimento demonstrativo                        |
+| Gestor  | `/gestor`               | Dashboard com métricas e agenda                                |
+| Gestor  | `/gestor/agenda`        | Agenda diária e semanal por quadra                             |
+| Gestor  | `/gestor/reservas`      | Busca, detalhes e cancelamento de reservas                     |
+| Gestor  | `/gestor/financeiro`    | Receita das quadras, pendências e extrato fictício             |
 | Gestor  | `/gestor/inteligencia`  | Histórico de ocupação e insights demonstrativos · planos pagos |
-| Gestor  | `/gestor/configuracoes` | Quadras, preços, promoções, mensalistas e estabelecimento |
-| Equipe  | `/superadmin`           | Contas de gestores e financeiro demonstrativo da plataforma |
+| Gestor  | `/gestor/configuracoes` | Quadras, preços, promoções, mensalistas e estabelecimento      |
+| Equipe  | `/superadmin`           | Contas de gestores e financeiro demonstrativo da plataforma    |
 
 `/` redireciona para `/user`. Os endereços anteriores redirecionam para as novas rotas.
 Cada área tem seu próprio menu e o mesmo rodapé institucional. A barra superior
@@ -170,6 +169,23 @@ são preservados); seus espaços são registros administrativos, não novas quad
 busca do jogador. Exemplos complementam a base antiga sem substituir edições.
 
 ### Demonstração do gestor
+
+### Experiência do jogador
+
+A entrada `/user` reúne busca e resultados; não há páginas duplicadas de início
+e quadras. Horário está sempre visível, enquanto cobertura e preços ficam em
+Mais filtros. Sobre foi retirado da navegação; os links antigos de contato levam
+ao suporte. O rodapé claro é compartilhado pelas três áreas.
+
+Clicar em um horário ocupado abre **Avise-me ao liberar**, sem selecionar aquele
+horário nem alterar o carrinho. Após a confirmação, o jogador pode abrir voluntariamente
+o convite para mensalista, com dia e horário semanal de preferência. Esse convite
+não depende de detectar uma segunda reserva e não abre sozinho.
+Ambos salvam interesses em `quadrafacil.interesses-demo.v1` no `localStorage`,
+evitando inscrições repetidas. Não enviam notificações, não reservam vagas e não
+criam contratos. O formulário de suporte simula o envio e não transmite os dados.
+
+### Demonstração das quadras
 
 O MVP começa com **Society** selecionado. A busca mostra um card por estabelecimento,
 com preços separados por modalidade quando todos os esportes forem selecionados.

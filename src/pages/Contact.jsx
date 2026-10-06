@@ -87,7 +87,9 @@ function Contact() {
                 </select>
               </label>
               <label>
-                <span>Código da reserva <span className="user-opcional">(opcional)</span></span>
+                <span>
+                  Código da reserva <span className="user-opcional">(opcional)</span>
+                </span>
                 <input name="reserva" placeholder="Se tiver, informe aqui" />
               </label>
               <label>
