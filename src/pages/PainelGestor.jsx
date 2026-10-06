@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Button from '../components/common/Button';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { listarQuadras } from '../services/quadraService';
@@ -13,6 +14,7 @@ const ROTULOS_DE_STATUS = {
 
 /** Painel do gestor: reservas, status de pagamento e cancelamento. */
 function PainelGestor() {
+  const { state } = useLocation();
   const [reservas, setReservas] = useState([]);
   const [quadrasPorId, setQuadrasPorId] = useState({});
   const [estaCarregando, setEstaCarregando] = useState(true);
@@ -53,6 +55,10 @@ function PainelGestor() {
   return (
     <div className="container pagina-painel-gestor">
       <h1>Painel do Gestor</h1>
+
+      {state?.quadraCadastrada && (
+        <p className="mensagem-sucesso">Quadra {state.quadraCadastrada} cadastrada com sucesso.</p>
+      )}
 
       {mensagemDeErro && <p className="mensagem-erro">{mensagemDeErro}</p>}
 

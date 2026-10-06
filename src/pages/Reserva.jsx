@@ -35,7 +35,7 @@ function Reserva() {
     return (
       <div className="container">
         <p>Selecione uma quadra e um horário antes de reservar.</p>
-        <Link to="/quadras">Ver quadras disponíveis</Link>
+        <Link to="/user/quadras">Ver quadras disponíveis</Link>
       </div>
     );
   }
@@ -102,7 +102,7 @@ function Reserva() {
           {quadra?.nome} em {formatarData(state.data)} às {state.horario}.
         </p>
         <p>Pagamento aprovado via {pagamentoAprovado.metodo === 'pix' ? 'Pix' : 'cartão'}.</p>
-        <Link to="/painel-gestor">Ver no painel do gestor</Link>
+        <Link to="/user/quadras">Ver mais quadras</Link>
       </div>
     );
   }

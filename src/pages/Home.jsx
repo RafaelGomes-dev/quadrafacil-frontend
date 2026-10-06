@@ -39,7 +39,7 @@ function Home() {
     const parametros = new URLSearchParams(
       Object.fromEntries(Object.entries(filtros).filter(([, valor]) => valor))
     );
-    navegar(`/quadras?${parametros.toString()}`);
+    navegar(`/user/quadras?${parametros.toString()}`);
   }
 
   return (

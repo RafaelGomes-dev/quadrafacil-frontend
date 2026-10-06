@@ -68,7 +68,7 @@ function QuadraDetalhe() {
   }, [id, dataEscolhida]);
 
   function irParaReserva() {
-    navegar('/reserva', {
+    navegar('/user/reserva', {
       state: { quadraId: id, data: dataEscolhida, horario: horarioSelecionado },
     });
   }

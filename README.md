@@ -77,6 +77,8 @@ quadrafacil-frontend/
 │   │   ├── Navigation.jsx
 │   │   ├── QuadraCard.jsx
 │   │   └── SeletorHorario.jsx
+│   ├── layouts/
+│   │   └── AreaLayout.jsx
 │   ├── pages/
 │   ├── services/
 │   │   ├── api.js
@@ -97,17 +99,22 @@ quadrafacil-frontend/
 
 ## Páginas e rotas
 
-| Rota                | Página                | Descrição                                         |
-| ------------------- | --------------------- | ------------------------------------------------- |
-| `/`                 | Home                  | Busca rápida, quadras em destaque e status da API |
-| `/quadras`          | Quadras               | Listagem de quadras com filtros                   |
-| `/quadras/:id`      | Detalhes da quadra    | Informações e horários disponíveis                |
-| `/reserva`          | Reserva               | Dados do cliente, pagamento e confirmação         |
-| `/painel-gestor`    | Painel do gestor      | Reservas, status e cancelamentos                  |
-| `/cadastrar-quadra` | Cadastro de quadra    | Formulário para cadastrar uma quadra              |
-| `/sobre`            | Sobre                 | Informações sobre o projeto                       |
-| `/contato`          | Contato               | Formulário demonstrativo de contato               |
-| `*`                 | Página não encontrada | Página 404                                        |
+| Área    | Rota                   | Página                       |
+| ------- | ---------------------- | ---------------------------- |
+| Jogador | `/user`                | Início e busca rápida        |
+| Jogador | `/user/quadras`        | Listagem com filtros         |
+| Jogador | `/user/quadras/:id`    | Detalhes e horários          |
+| Jogador | `/user/reserva`        | Reserva e pagamento simulado |
+| Jogador | `/user/sobre`          | Sobre o projeto              |
+| Jogador | `/user/contato`        | Contato demonstrativo        |
+| Gestor  | `/gestor`              | Painel de reservas           |
+| Gestor  | `/gestor/quadras/nova` | Cadastro de quadra           |
+| Equipe  | `/superadmin`          | Entrada da administração     |
+
+`/` redireciona para `/user`. Os endereços anteriores redirecionam para as novas rotas.
+Cada área tem seu próprio menu. A tela de `/superadmin` reserva o espaço para o futuro
+cadastro de contas de gestores; essa função ainda não foi implementada. As rotas não
+possuem autenticação nesta versão do protótipo.
 
 ## Protótipo
 

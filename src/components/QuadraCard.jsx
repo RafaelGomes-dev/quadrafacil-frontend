@@ -12,7 +12,7 @@ function QuadraCard({ quadra }) {
 
   return (
     <Card className="quadra-card">
-      <Link to={`/quadras/${quadra.id}`} className="quadra-card-link">
+      <Link to={`/user/quadras/${quadra.id}`} className="quadra-card-link">
         {fotoPrincipal && <img src={fotoPrincipal} alt={`Foto da quadra ${quadra.nome}`} />}
         <div className="quadra-card-corpo">
           <h3>{quadra.nome}</h3>
