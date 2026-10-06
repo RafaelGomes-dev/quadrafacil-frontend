@@ -46,10 +46,12 @@ export function itensDosParametros(parametros) {
       (item) =>
         item &&
         typeof item.quadraId === 'string' &&
+        typeof item.horario === 'string' &&
         /^\d{4}-\d{2}-\d{2}$/.test(item.data) &&
         normalizarHorarios(item.horario).length
     );
   if (itens.length) return [...new Map(itens.map((item) => [chaveDoItem(item), item])).values()];
+  if (!parametros.get('quadraId') || !parametros.get('data')) return [];
   return normalizarHorarios(parametros.getAll('horario')).map((horario) => ({
     quadraId: parametros.get('quadraId'),
     data: parametros.get('data'),

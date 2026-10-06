@@ -69,7 +69,7 @@ export default function EstabelecimentoDetalhe() {
   }, [arena, data]);
   const visiveis =
     arena?.quadras
-      .map((q) => cotarBusca(q, data, filtros.horario))
+      .map((q) => cotarBusca(q, data, filtros.horario, grades[q.id]?.horariosLivres))
       .filter((q) => compativel(q, filtros, carregando ? undefined : grades[q.id])) || [];
   const itemValido = (item) =>
     item.data === data &&
@@ -253,6 +253,7 @@ export default function EstabelecimentoDetalhe() {
                                   : 'Piso esportivo')}
                           </p>
                           <strong>
+                            {!filtros.horario && 'A partir de '}
                             {formatarPreco(q.precoBuscado ?? q.precoHora)} / hora{' '}
                             {q.promocao && '· Promoção'}
                           </strong>
@@ -266,6 +267,7 @@ export default function EstabelecimentoDetalhe() {
                           .map((i) => i.horario)}
                         onSelecionarHorario={(h) => alternar(q, h)}
                         precos={precos}
+                        horarioBuscado={filtros.horario}
                       />
                     </article>
                   );

@@ -288,7 +288,10 @@ function Reserva() {
                 {mensagemDeErro}
               </p>
             )}
-            <Button type="submit" disabled={estaProcessando || !quadra}>
+            <Button
+              type="submit"
+              disabled={estaProcessando || itens.some((i) => !quadras[i.quadraId])}
+            >
               {estaProcessando ? 'Confirmando...' : 'Confirmar reserva simulada'}
               {!estaProcessando && <Icon name="seta" size={19} />}
             </Button>

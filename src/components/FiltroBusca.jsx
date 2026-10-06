@@ -61,6 +61,7 @@ function FiltroBusca({ valoresIniciais = {}, onBuscar, variant = 'hero' }) {
             <Icon name="calendario" size={19} />
             <input
               type="date"
+              required={Boolean(filtros.horario)}
               min={formatarDataLocalISO()}
               value={filtros.data}
               onInput={(evento) => atualizarCampo('data', evento.currentTarget.value)}

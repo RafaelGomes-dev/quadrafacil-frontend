@@ -16,18 +16,21 @@ import { compativel } from '../utils/estabelecimentos';
  */
 export async function listarQuadras(filtros = {}) {
   const resposta = await api.get('/quadras');
-  let quadras = mesclarQuadras(resposta.data)
-    .map((q) => cotarBusca(q, filtros.data, filtros.horario))
-    .filter((q) => compativel(q, filtros));
-  if (filtros.data && filtros.horario) {
+  const estruturais = { ...filtros, precoMin: '', precoMax: '' };
+  let quadras = mesclarQuadras(resposta.data).filter((q) => compativel(q, estruturais));
+  if (filtros.data) {
     const livres = await Promise.all(
       quadras.map(async (q) => ({ q, grade: await buscarHorariosDaQuadra(q.id, filtros.data) }))
     );
     quadras = livres
-      .filter(({ grade }) => grade.horariosLivres.includes(filtros.horario))
-      .map(({ q }) => q);
+      .filter(({ grade }) =>
+        filtros.horario
+          ? grade.horariosLivres.includes(filtros.horario)
+          : grade.horariosLivres.length > 0
+      )
+      .map(({ q, grade }) => cotarBusca(q, filtros.data, filtros.horario, grade.horariosLivres));
   }
-  return quadras;
+  return quadras.filter((q) => compativel(q, filtros));
 }
 
 export async function buscarEstabelecimento(id) {

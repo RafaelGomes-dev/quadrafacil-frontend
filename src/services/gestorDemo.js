@@ -60,18 +60,18 @@ export function gradeLocal(quadra, data, ocupadosApi = []) {
 export function cotarHorario(quadra, data, horario) {
   return precoNoHorario(lerGestor(), quadra, data, horario);
 }
-export function cotarBusca(quadra, data, horario) {
+export function cotarBusca(quadra, data, horario, horariosLivres) {
   if (!data) return quadra;
-  const horas = horario ? [horario] : gradeLocal(quadra, data).horariosLivres;
+  const horas = horario ? [horario] : (horariosLivres ?? gradeLocal(quadra, data).horariosLivres);
   const precos = horas.map((h) => cotarHorario(quadra, data, h));
   const menor = precos.reduce((a, b) => (b.valor < a.valor ? b : a), {
-    valor: quadra.precoHora,
+    valor: Infinity,
     promocao: false,
   });
   const cotacao = horario ? precos[0] : menor;
   return {
     ...quadra,
-    precoBuscado: cotacao?.valor ?? quadra.precoHora,
+    precoBuscado: Number.isFinite(cotacao?.valor) ? cotacao.valor : quadra.precoHora,
     promocao: cotacao?.promocao,
     rotuloPromocao: cotacao?.rotulo,
     precoAPartirDe: !horario,

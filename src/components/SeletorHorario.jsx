@@ -13,6 +13,7 @@ function SeletorHorario({
   horariosSelecionados = [],
   onSelecionarHorario,
   precos = {},
+  horarioBuscado = '',
 }) {
   const todosOsHorarios = [...horariosLivres, ...horariosOcupados].sort();
 
@@ -35,7 +36,7 @@ function SeletorHorario({
             aria-label={horario}
             className={`horario-slot ${estaOcupado ? 'horario-ocupado' : 'horario-livre'} ${
               estaSelecionado ? 'horario-selecionado' : ''
-            }`.trim()}
+            } ${horario === horarioBuscado && !estaSelecionado ? 'horario-buscado' : ''}`.trim()}
             onClick={() => onSelecionarHorario(horario)}
           >
             {horario}

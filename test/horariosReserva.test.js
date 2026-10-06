@@ -57,4 +57,5 @@ test('itens preservam quadra, data e horário em links e agrupamentos', () => {
   assert.equal(gruposDosItens(itens).length, 3);
   assert.equal(gruposDosItens(itens)[0].intervalo, '14:00 às 16:00');
   assert.notEqual(chaveDoItem(itens[1]), chaveDoItem(itens[2]));
+  assert.deepEqual(itensDosParametros(new URLSearchParams('data=2026-10-19&horario=14:00')), []);
 });
