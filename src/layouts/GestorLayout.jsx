@@ -4,11 +4,14 @@ import { contaDemo } from '../superadmin/model';
 import { GestorProvider } from '../gestor/GestorContext';
 import { useGestor } from '../gestor/context';
 import Icon from '../components/common/Icon';
+import Footer from '../components/Footer';
 
 const links = [
   ['/gestor', 'painel', 'Visão geral'],
   ['/gestor/agenda', 'calendario', 'Agenda'],
   ['/gestor/reservas', 'lista', 'Reservas'],
+  ['/gestor/financeiro', 'dinheiro', 'Financeiro'],
+  ['/gestor/inteligencia', 'insights', 'Inteligência'],
   ['/gestor/configuracoes', 'config', 'Configurações'],
 ];
 function Estrutura() {
@@ -43,14 +46,6 @@ function Estrutura() {
             <strong>Tudo sob controle.</strong>
             <p>Mais tempo para cuidar do espaço. Menos tempo organizando horários.</p>
           </div>
-          <Link to="/user">
-            <Icon name="seta" />
-            Ver experiência do jogador
-          </Link>
-          <Link to="/superadmin">
-            <Icon name="escudo" />
-            Superadmin · demonstração
-          </Link>
           <div className="gestor-perfil">
             <span>GC</span>
             <div>
@@ -74,10 +69,7 @@ function Estrutura() {
         <main className="gestor-conteudo">
           <Outlet />
         </main>
-        <footer className="gestor-footer">
-          QuadraFácil · Gestão de espaços esportivos{' '}
-          <span>Protótipo · alterações salvas neste navegador</span>
-        </footer>
+        <Footer />
       </div>
     </div>
   );
@@ -95,18 +87,21 @@ export default function GestorLayout() {
   }, []);
   if (conta?.status === 'revogada')
     return (
-      <div className="container pagina-institucional">
-        <span className="sobretitulo">ACESSO DO GESTOR · SIMULAÇÃO</span>
-        <h1>Acesso revogado pela equipe.</h1>
-        <p>
-          O painel está indisponível nesta demonstração. As quadras e reservas foram preservadas.
-        </p>
-        <p>
-          <strong>Motivo:</strong> {conta.motivo}
-        </p>
-        <Link to="/user">Voltar ao site</Link>
-        <p>Não há autenticação real neste protótipo.</p>
-      </div>
+      <>
+        <div className="container pagina-institucional">
+          <span className="sobretitulo">ACESSO DO GESTOR · SIMULAÇÃO</span>
+          <h1>Acesso revogado pela equipe.</h1>
+          <p>
+            O painel está indisponível nesta demonstração. As quadras e reservas foram preservadas.
+          </p>
+          <p>
+            <strong>Motivo:</strong> {conta.motivo}
+          </p>
+          <Link to="/user">Voltar ao site</Link>
+          <p>Não há autenticação real neste protótipo.</p>
+        </div>
+        <Footer />
+      </>
     );
   return (
     <GestorProvider>
