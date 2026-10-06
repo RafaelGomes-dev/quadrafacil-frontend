@@ -161,6 +161,7 @@
   color: #47634a;
 }
 .admin-table-wrap {
+  position: relative;
   overflow-x: auto;
 }
 .admin-table-wrap table {
