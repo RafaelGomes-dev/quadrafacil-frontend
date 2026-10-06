@@ -153,6 +153,10 @@
   border: 1px solid #e0e8df;
   border-radius: 10px;
   padding: 16px;
+  margin-bottom: 32px;
+}
+.admin-price-settings .admin-finance-note {
+  margin: 16px 0 0;
 }
 .admin-price-settings summary {
   font-size: 13px;
@@ -203,6 +207,9 @@
   align-items: center;
   gap: 18px;
   margin-bottom: 22px;
+}
+.admin-business-heading > div {
+  min-width: 0;
 }
 .admin-business h2 {
   font-size: 20px;
@@ -260,12 +267,22 @@
   padding-top: 26px;
   border-top: 1px solid #e4ebe0;
 }
-.admin-finance-heading select {
+.admin-business-heading select {
   border: 1px solid #dee7dc;
   border-radius: 9px;
-  padding: 11px;
+  padding: 12px 40px 12px 14px;
+  min-height: 44px;
+  max-width: 100%;
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 13px;
   color: #47634a;
-  background: white;
+  background-color: white;
+  cursor: pointer;
+}
+.admin-business-heading select:focus-visible {
+  outline: 2px solid #247542;
+  outline-offset: 3px;
 }
 .admin-finance {
   display: grid;
