@@ -4,6 +4,7 @@ import Icon from '../components/common/Icon';
 import Drawer from '../gestor/Drawer';
 import PainelNegocio from '../superadmin/PainelNegocio';
 import { PLANOS } from '../superadmin/negocio';
+import { CONFIG_FINANCEIRO } from '../superadmin/negocio';
 import { lerGestor, salvarGestor } from '../gestor/model';
 import {
   alterarAcesso,
@@ -23,6 +24,7 @@ export default function SuperAdmin() {
   const [dados, setDados] = useState(lerAdmin);
   const [busca, setBusca] = useState('');
   const [status, setStatus] = useState('todos');
+  const [aba, setAba] = useState('gestores');
   const [editor, setEditor] = useState(null);
   const [erro, setErro] = useState('');
   const [aviso, setAviso] = useState('');
@@ -157,7 +159,31 @@ export default function SuperAdmin() {
           </div>
         ))}
       </div>
-      <PainelNegocio contas={contas} />
+      <nav className="admin-tabs" aria-label="Seções da administração">
+        <button
+          aria-current={aba === 'gestores' ? 'page' : undefined}
+          onClick={() => setAba('gestores')}
+        >
+          Gestores
+        </button>
+        <button
+          aria-current={aba === 'financeiro' ? 'page' : undefined}
+          onClick={() => setAba('financeiro')}
+        >
+          Financeiro
+        </button>
+      </nav>
+      {aba === 'financeiro' && (
+        <PainelNegocio
+          contas={contas}
+          config={{ ...CONFIG_FINANCEIRO, ...dados.financeiro }}
+          onConfigChange={(financeiro) => {
+            const proximo = { ...lerAdmin(), financeiro };
+            salvarAdmin(proximo);
+            setDados(proximo);
+          }}
+        />
+      )}
       {aviso && (
         <p className="admin-success" role="status">
           {aviso}
@@ -168,138 +194,142 @@ export default function SuperAdmin() {
           {erro}
         </p>
       )}
-      <section className="admin-card">
-        <div className="admin-card-heading">
-          <div>
-            <h2>Gestores e estabelecimentos</h2>
-            <p>Uma conta por responsável, com limite de quadras definido por nós.</p>
+      {aba === 'gestores' && (
+        <section className="admin-card">
+          <div className="admin-card-heading">
+            <div>
+              <h2>Gestores e estabelecimentos</h2>
+              <p>Uma conta por responsável, com limite de quadras definido por nós.</p>
+            </div>
+            <small>Dados fictícios</small>
           </div>
-          <small>Dados fictícios</small>
-        </div>
-        <div className="admin-filters">
-          <label>
-            <Icon name="busca" size={18} />
-            <input
-              aria-label="Buscar gestores"
-              placeholder="Nome, e-mail ou estabelecimento"
-              value={busca}
-              onChange={(e) => setBusca(e.target.value)}
-            />
-          </label>
-          <select
-            aria-label="Situação do acesso"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <option value="todos">Todos os acessos</option>
-            <option value="ativa">Ativos</option>
-            <option value="revogada">Revogados</option>
-          </select>
-        </div>
-        <div className="admin-table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Gestor</th>
-                <th>Estabelecimento</th>
-                <th>Quadras / limite</th>
-                <th>Plano / destaque</th>
-                <th>Acesso</th>
-                <th>
-                  <span className="visually-hidden">Ações</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtradas.map((c) => (
-                <tr key={c.id}>
-                  <td>
-                    <div className="admin-person">
-                      <span>
-                        {c.nome
-                          .split(' ')
-                          .slice(0, 2)
-                          .map((n) => n[0])
-                          .join('')
-                          .toUpperCase()}
-                      </span>
-                      <div>
-                        <strong>{c.nome}</strong>
-                        <small>{c.email}</small>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <strong>{c.estabelecimento}</strong>
-                    {c.id === CONTA_DEMO_ID && <Link to="/gestor">Ver painel de exemplo ↗</Link>}
-                  </td>
-                  <td>
-                    <strong>
-                      {c.quadras} <span className="admin-muted">/ {c.limite}</span>
-                    </strong>
-                    <small>
-                      {c.quadras >= c.limite
-                        ? 'Limite atingido'
-                        : `${c.limite - c.quadras} disponível(is)`}
-                    </small>
-                  </td>
-                  <td>
-                    <strong>{PLANOS[c.plano || 'freemium']}</strong>
-                    <small>{c.patrocinado ? 'Patrocinado · contratado' : 'Sem patrocínio'}</small>
-                  </td>
-                  <td>
-                    <span className={`admin-status ${c.status}`}>
-                      {c.status === 'ativa' ? 'Ativo' : 'Revogado'}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="admin-actions">
-                      <button
-                        aria-label={`Editar gestor ${c.nome}`}
-                        onClick={() => abrir('cadastro', c)}
-                      >
-                        Editar
-                      </button>
-                      <button
-                        className={c.status === 'ativa' ? 'admin-danger-text' : ''}
-                        aria-label={`${c.status === 'ativa' ? 'Revogar' : 'Reativar'} acesso de ${c.nome}`}
-                        onClick={() => abrir(c.status === 'ativa' ? 'revogar' : 'reativar', c)}
-                      >
-                        {c.status === 'ativa' ? 'Revogar' : 'Reativar'}
-                      </button>
-                    </div>
-                  </td>
+          <div className="admin-filters">
+            <label>
+              <Icon name="busca" size={18} />
+              <input
+                aria-label="Buscar gestores"
+                placeholder="Nome, e-mail ou estabelecimento"
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+              />
+            </label>
+            <select
+              aria-label="Situação do acesso"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              <option value="todos">Todos os acessos</option>
+              <option value="ativa">Ativos</option>
+              <option value="revogada">Revogados</option>
+            </select>
+          </div>
+          <div className="admin-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Gestor</th>
+                  <th>Estabelecimento</th>
+                  <th>Quadras / limite</th>
+                  <th>Plano / destaque</th>
+                  <th>Acesso</th>
+                  <th>
+                    <span className="visually-hidden">Ações</span>
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        {!filtradas.length && (
-          <div className="admin-empty">
-            Nenhum gestor encontrado. Ajuste a busca ou crie uma conta.
+              </thead>
+              <tbody>
+                {filtradas.map((c) => (
+                  <tr key={c.id}>
+                    <td>
+                      <div className="admin-person">
+                        <span>
+                          {c.nome
+                            .split(' ')
+                            .slice(0, 2)
+                            .map((n) => n[0])
+                            .join('')
+                            .toUpperCase()}
+                        </span>
+                        <div>
+                          <strong>{c.nome}</strong>
+                          <small>{c.email}</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <strong>{c.estabelecimento}</strong>
+                      {c.id === CONTA_DEMO_ID && <Link to="/gestor">Ver painel de exemplo ↗</Link>}
+                    </td>
+                    <td>
+                      <strong>
+                        {c.quadras} <span className="admin-muted">/ {c.limite}</span>
+                      </strong>
+                      <small>
+                        {c.quadras >= c.limite
+                          ? 'Limite atingido'
+                          : `${c.limite - c.quadras} disponível(is)`}
+                      </small>
+                    </td>
+                    <td>
+                      <strong>{PLANOS[c.plano || 'freemium']}</strong>
+                      <small>{c.patrocinado ? 'Patrocinado · contratado' : 'Sem patrocínio'}</small>
+                    </td>
+                    <td>
+                      <span className={`admin-status ${c.status}`}>
+                        {c.status === 'ativa' ? 'Ativo' : 'Revogado'}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="admin-actions">
+                        <button
+                          aria-label={`Editar gestor ${c.nome}`}
+                          onClick={() => abrir('cadastro', c)}
+                        >
+                          Editar
+                        </button>
+                        <button
+                          className={c.status === 'ativa' ? 'admin-danger-text' : ''}
+                          aria-label={`${c.status === 'ativa' ? 'Revogar' : 'Reativar'} acesso de ${c.nome}`}
+                          onClick={() => abrir(c.status === 'ativa' ? 'revogar' : 'reativar', c)}
+                        >
+                          {c.status === 'ativa' ? 'Revogar' : 'Reativar'}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        )}
-      </section>
-      <section className="admin-card admin-history">
-        <h2>Últimas ações da equipe</h2>
-        {dados.historico.length ? (
-          <ul>
-            {dados.historico.slice(0, 5).map((r) => (
-              <li key={r.id}>
-                <Icon name="check" size={16} />
-                <span>
-                  <strong>{r.acao}</strong> · {r.nome}
-                </span>
-                <time dateTime={r.data}>{new Date(r.data).toLocaleString('pt-BR')}</time>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>
-            Criações e alterações aparecerão aqui. Nenhuma ação registrada nesta simulação ainda.
-          </p>
-        )}
-      </section>
+          {!filtradas.length && (
+            <div className="admin-empty">
+              Nenhum gestor encontrado. Ajuste a busca ou crie uma conta.
+            </div>
+          )}
+        </section>
+      )}
+      {aba === 'gestores' && (
+        <section className="admin-card admin-history">
+          <h2>Últimas ações da equipe</h2>
+          {dados.historico.length ? (
+            <ul>
+              {dados.historico.slice(0, 5).map((r) => (
+                <li key={r.id}>
+                  <Icon name="check" size={16} />
+                  <span>
+                    <strong>{r.acao}</strong> · {r.nome}
+                  </span>
+                  <time dateTime={r.data}>{new Date(r.data).toLocaleString('pt-BR')}</time>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>
+              Criações e alterações aparecerão aqui. Nenhuma ação registrada nesta simulação ainda.
+            </p>
+          )}
+        </section>
+      )}
       {editor && (
         <EditorAdmin
           key={`${editor.modo}-${editor.conta?.id || 'novo'}`}

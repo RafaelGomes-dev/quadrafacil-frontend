@@ -3,6 +3,66 @@
   padding-bottom: 60px;
   color: #203e2d;
 }
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 24px;
+  border-bottom: 1px solid #dce6dc;
+}
+.admin-tabs button {
+  border: 0;
+  background: transparent;
+  padding: 14px 22px;
+  cursor: pointer;
+  color: #71816f;
+  border-bottom: 3px solid transparent;
+  font-weight: 650;
+}
+.admin-tabs button[aria-current='page'] {
+  color: #247542;
+  border-bottom-color: #247542;
+}
+.admin-price-settings {
+  border: 1px solid #e0e8df;
+  border-radius: 10px;
+  padding: 16px;
+}
+.admin-price-settings summary {
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.admin-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 15px;
+  margin: 20px 0;
+}
+.admin-settings-grid label {
+  font-size: 12px;
+  color: #71816f;
+}
+.admin-settings-grid input {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border: 1px solid #dee7dc;
+  border-radius: 8px;
+  color: #203e2d;
+}
+.admin-net-finance {
+  margin-top: 18px;
+}
+.admin-plans strong {
+  font-size: clamp(21px, 2.3vw, 30px);
+  overflow-wrap: anywhere;
+}
+@media (max-width: 800px) {
+  .admin-settings-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 .admin-business {
   background: white;
   border: 1px solid #e0e8df;
