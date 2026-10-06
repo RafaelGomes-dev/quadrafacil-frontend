@@ -14,6 +14,7 @@ import {
   normalizarHorarios,
   intervaloDoHorario,
   parametrosDaReserva,
+  intervalosDaReserva,
 } from '../utils/horariosReserva';
 
 /** Resumo da reserva, escolha de pagamento e confirmação. */
@@ -135,9 +136,11 @@ function Reserva() {
               <span>
                 <Icon name="calendario" size={19} /> {formatarData(data)}
               </span>
-              <span>
-                <Icon name="relogio" size={19} /> {horariosSelecionados.join(' · ')}
-              </span>
+              {intervalosDaReserva(horariosSelecionados).map((intervalo) => (
+                <span key={intervalo}>
+                  <Icon name="relogio" size={19} /> {intervalo}
+                </span>
+              ))}
             </div>
             <p className="reserva-simulacao-aviso">
               Pagamento simulado via {pagamentoAprovado.metodo === 'pix' ? 'Pix' : 'cartão'}.

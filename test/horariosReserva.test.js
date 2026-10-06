@@ -4,6 +4,7 @@ import {
   normalizarHorarios,
   intervaloDoHorario,
   parametrosDaReserva,
+  intervalosDaReserva,
 } from '../src/utils/horariosReserva.js';
 
 test('aceita horários separados, ordena e elimina duplicatas e valores inválidos', () => {
@@ -25,4 +26,14 @@ test('preserva os horários em um link recarregável e suporta o formato antigo'
 test('mostra intervalos de uma hora, incluindo o último horário do dia', () => {
   assert.equal(intervaloDoHorario('14:00'), '14:00 às 15:00');
   assert.equal(intervaloDoHorario('23:00'), '23:00 às 24:00');
+});
+
+test('agrupa horas seguidas e mantém intervalos separados quando há uma pausa', () => {
+  assert.deepEqual(intervalosDaReserva(['15:00', '14:00', '17:00']), [
+    '14:00 às 16:00',
+    '17:00 às 18:00',
+  ]);
+  assert.deepEqual(intervalosDaReserva(['08:00', '09:00']), ['08:00 às 10:00']);
+  assert.deepEqual(intervalosDaReserva(['22:00', '23:00']), ['22:00 às 24:00']);
+  assert.deepEqual(intervalosDaReserva([]), []);
 });
