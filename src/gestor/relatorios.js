@@ -1,6 +1,9 @@
 import { horaNumero, somarDias } from './model.js';
 
 export const DIAS_CURTOS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+export function precoSugerido(base, percentual) {
+  return Math.round(Number(base) * (1 + Number(percentual) / 100) * 100) / 100;
+}
 // Histórico sintético separado da agenda, com padrões estáveis e denominador real de funcionamento.
 export function mapaOcupacao(quadras, semanas = 4) {
   const horas = Array.from({ length: 15 }, (_, i) => i + 8);
@@ -97,30 +100,24 @@ export function lancamentosDemo(dados, referencia) {
 }
 export function resumoFinanceiro(lancamentos) {
   const validos = lancamentos.filter((l) => ['paga', 'pendente'].includes(l.status));
-  const taxa = (l) =>
-    l.origem === 'QuadraFácil' && l.tipo === 'avulsa' ? Math.round(l.valor * 0.1) : 0;
   const soma = (lista, fn = (l) => l.valor) => lista.reduce((s, l) => s + fn(l), 0);
   const pagas = validos.filter((l) => l.status === 'paga');
   const pendentes = validos.filter((l) => l.status === 'pendente');
-  const bruto = soma(validos),
-    taxas = soma(validos, taxa);
+  const bruto = soma(validos);
   const repassePendente = pagas.filter(
     (l) => l.origem === 'QuadraFácil' && l.repasse === 'previsto'
   );
   const caixa = pagas.filter((l) => l.origem !== 'QuadraFácil' || l.repasse === 'repassado');
   return {
     bruto,
-    taxas,
-    liquido: bruto - taxas,
-    recebido: soma(caixa, (l) => l.valor - taxa(l)),
+    recebido: soma(caixa),
     pagamentosConfirmados: soma(pagas),
-    pendente: soma(pendentes, (l) => l.valor - taxa(l)),
-    repassePendente: soma(repassePendente, (l) => l.valor - taxa(l)),
+    pendente: soma(pendentes),
+    repassePendente: soma(repassePendente),
     mensalidades: soma(validos.filter((l) => l.tipo === 'mensalidade')),
     online: soma(validos.filter((l) => l.origem === 'QuadraFácil')),
     direto: soma(validos.filter((l) => l.origem !== 'QuadraFácil')),
     validos,
-    taxa,
   };
 }
 export const reaisCentavos = (valor) =>

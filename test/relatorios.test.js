@@ -1,6 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mapaOcupacao, lancamentosDemo, resumoFinanceiro } from '../src/gestor/relatorios.js';
+import {
+  mapaOcupacao,
+  lancamentosDemo,
+  resumoFinanceiro,
+  precoSugerido,
+} from '../src/gestor/relatorios.js';
 const quadra = {
   id: 1,
   nome: 'Quadra 1',
@@ -17,7 +22,7 @@ test('ocupação respeita funcionamento, quadras ativas e soma corretamente a ca
   assert.equal(mapa.ocupacao, Math.round((mapa.ocupadas / mapa.capacidade) * 100));
   assert.equal(mapaOcupacao([], 4).pico, undefined);
 });
-test('líquido do gestor desconta comissão só das avulsas online sem duplicar gateway', () => {
+test('receita do gestor preserva valor da quadra sem comissão ou desconto presencial', () => {
   const r = resumoFinanceiro([
     { valor: 10000, status: 'paga', origem: 'QuadraFácil', tipo: 'avulsa', repasse: 'repassado' },
     { valor: 20000, status: 'paga', origem: 'QuadraFácil', tipo: 'avulsa', repasse: 'previsto' },
@@ -28,14 +33,17 @@ test('líquido do gestor desconta comissão só das avulsas online sem duplicar 
     { valor: 90000, status: 'reembolsada', origem: 'QuadraFácil', tipo: 'avulsa' },
   ]);
   assert.equal(r.bruto, 165000);
-  assert.equal(r.taxas, 4000);
-  assert.equal(r.liquido, 161000);
-  assert.equal(r.recebido, 134000);
-  assert.equal(r.pendente, 9000);
-  assert.equal(r.repassePendente, 18000);
-  assert.equal(r.recebido + r.pendente + r.repassePendente, r.liquido);
+  assert.equal(r.recebido, 135000);
+  assert.equal(r.pendente, 10000);
+  assert.equal(r.repassePendente, 20000);
+  assert.equal(r.recebido + r.pendente + r.repassePendente, r.bruto);
   assert.equal(r.mensalidades, 120000);
   assert.equal(r.online + r.direto, r.bruto);
+});
+test('prévia de desconto e reajuste arredonda para centavos', () => {
+  assert.equal(precoSugerido(180, -20), 144);
+  assert.equal(precoSugerido(120, 10), 132);
+  assert.equal(precoSugerido(99.99, 10), 109.99);
 });
 test('mensalistas geram um lançamento mensal, não um por ocorrência da agenda', () => {
   const dados = {

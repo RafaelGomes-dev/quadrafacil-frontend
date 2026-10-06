@@ -39,10 +39,9 @@ export default function Financeiro() {
   const datas = [...new Set(lancamentos.map((l) => l.data))].sort();
   const serie = datas.map((data) => ({
     data,
-    valor: resumoFinanceiro(lancamentos.filter((l) => l.data === data)).liquido,
+    valor: resumoFinanceiro(lancamentos.filter((l) => l.data === data)).bruto,
   }));
   const maior = Math.max(1, ...serie.map((d) => d.valor));
-  const taxaDetalhe = detalhe ? r.taxa(detalhe) : 0;
   return (
     <>
       <div className="g-page-heading">
@@ -107,20 +106,19 @@ export default function Financeiro() {
       <div className="r-finance-hero">
         <div>
           <span>
-            LÍQUIDO PREVISTO · {formatarData(de)} A {formatarData(referencia)}
+            RECEITA PREVISTA · {formatarData(de)} A {formatarData(referencia)}
           </span>
-          <strong>{reaisCentavos(r.liquido)}</strong>
+          <strong>{reaisCentavos(r.bruto)}</strong>
           <p>
-            Reservas e mensalidades válidas, após a comissão da plataforma. Inclui pagamentos
-            pendentes.
+            Valor das quadras e mensalidades, sem desconto de comissão. Inclui pagamentos pendentes.
           </p>
         </div>
         <div className="r-finance-equation">
           <span>
-            Receita bruta <b>{reaisCentavos(r.bruto)}</b>
+            Lançamentos válidos <b>{r.validos.length}</b>
           </span>
           <span>
-            Comissão QuadraFácil <b>− {reaisCentavos(r.taxas)}</b>
+            Mensalidades incluídas <b>{reaisCentavos(r.mensalidades)}</b>
           </span>
         </div>
       </div>
@@ -133,7 +131,7 @@ export default function Financeiro() {
         <Metric
           label="A receber dos clientes"
           value={reaisCentavos(r.pendente)}
-          note="Valor líquido dos pagamentos pendentes"
+          note="Valor das quadras com pagamento pendente"
         />
         <Metric
           label="Repasse previsto"
@@ -146,7 +144,7 @@ export default function Financeiro() {
           <div className="r-card-title">
             <div>
               <h2>Receita ao longo do período</h2>
-              <p>Valor líquido previsto por dia, com os filtros selecionados.</p>
+              <p>Receita prevista por dia, com os filtros selecionados.</p>
             </div>
           </div>
           {serie.length ? (
@@ -154,7 +152,7 @@ export default function Financeiro() {
               <div
                 className="r-bar-chart"
                 role="img"
-                aria-label="Gráfico de receita líquida por dia"
+                aria-label="Gráfico de receita prevista por dia"
               >
                 <div className="r-chart-top">Máximo: {reaisCentavos(maior)}</div>
                 <div className="r-chart-bars">
@@ -214,9 +212,7 @@ export default function Financeiro() {
               <tr>
                 <th>Cliente / data</th>
                 <th>Quadra / origem</th>
-                <th>Bruto</th>
-                <th>Taxa</th>
-                <th>Líquido previsto</th>
+                <th>Valor da quadra</th>
                 <th>Pagamento</th>
                 <th>Repasse</th>
               </tr>
@@ -238,9 +234,10 @@ export default function Financeiro() {
                       {l.quadra}
                       <small>{l.tipo === 'mensalidade' ? 'Mensalidade · direto' : l.origem}</small>
                     </td>
-                    <td>{reaisCentavos(l.valor)}</td>
-                    <td>{valido ? reaisCentavos(r.taxa(l)) : '—'}</td>
-                    <td>{valido ? reaisCentavos(l.valor - r.taxa(l)) : '—'}</td>
+                    <td>
+                      {reaisCentavos(l.valor)}
+                      {!valido && <small>Excluído dos totais</small>}
+                    </td>
                     <td>
                       <span className={`r-status ${l.status}`}>{STATUS[l.status]}</span>
                       <small>{l.metodo}</small>
@@ -265,11 +262,11 @@ export default function Financeiro() {
         )}
       </section>
       <p className="r-footnote">
-        Hipótese do protótipo: comissão de 10% somente sobre reservas avulsas pela plataforma;
-        gateway já coberto por essa comissão, sem desconto duplicado no gestor. Diretos e
-        mensalidades não têm comissão nesta simulação. Canceladas e reembolsadas são excluídas dos
-        totais. Assinatura do plano, tributos e outros custos operacionais não são descontados:
-        líquido não significa lucro.
+        Hipótese desta tela: o gestor recebe o valor da quadra; a taxa de serviço do jogador é
+        separada e não reduz esta receita. Não simulamos comissão a cobrar por pagamentos
+        presenciais. Canceladas e reembolsadas são excluídas dos totais. Tributos, planos e custos
+        operacionais não são descontados: receita não significa lucro. O checkout ainda não simula
+        essa taxa adicional do jogador.
       </p>
       {detalhe && (
         <Drawer
@@ -290,18 +287,12 @@ export default function Financeiro() {
               <dd>{detalhe.tipo === 'mensalidade' ? 'Mensalidade' : 'Reserva avulsa'}</dd>
               <dt>Forma de pagamento</dt>
               <dd>{detalhe.metodo}</dd>
-              <dt>Valor bruto</dt>
+              <dt>Valor da quadra</dt>
               <dd>{reaisCentavos(detalhe.valor)}</dd>
-              <dt>Comissão estimada</dt>
+              <dt>Receita prevista</dt>
               <dd>
                 {['paga', 'pendente'].includes(detalhe.status)
-                  ? reaisCentavos(taxaDetalhe)
-                  : 'Não aplicável'}
-              </dd>
-              <dt>Líquido previsto</dt>
-              <dd>
-                {['paga', 'pendente'].includes(detalhe.status)
-                  ? reaisCentavos(detalhe.valor - taxaDetalhe)
+                  ? reaisCentavos(detalhe.valor)
                   : 'Excluído dos totais'}
               </dd>
             </dl>
