@@ -1,5 +1,6 @@
 import api from './api';
 import { quadraLocal, reservarLocal } from './gestorDemo';
+import { quadraCatalogo, reservarCatalogo } from './catalogoDemo';
 
 /**
  * Lista reservas, opcionalmente filtradas por quadra.
@@ -23,6 +24,8 @@ export async function listarReservas(filtros = {}) {
  * @returns {Promise<object>} A reserva criada.
  */
 export async function criarReserva(dadosReserva) {
+  const exemplo = quadraCatalogo(dadosReserva.quadraId);
+  if (exemplo) return reservarCatalogo(dadosReserva, exemplo);
   if (quadraLocal(dadosReserva.quadraId)) {
     const ocupados = String(dadosReserva.quadraId).startsWith('local-')
       ? []

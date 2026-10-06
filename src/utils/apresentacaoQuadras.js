@@ -28,7 +28,7 @@ export function rotuloDoEsporte(esporte) {
 }
 
 export function quadraPatrocinada(quadra) {
-  return QUADRAS_PATROCINADAS.has(Number(quadra.id));
+  return Boolean(quadra.patrocinado) || QUADRAS_PATROCINADAS.has(Number(quadra.id));
 }
 
 export function ordenarQuadras(quadras) {

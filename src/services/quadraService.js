@@ -1,6 +1,7 @@
 import api from './api';
 import { cotarBusca, gradeLocal, mesclarQuadras, quadraLocal } from './gestorDemo';
 import { compativel } from '../utils/estabelecimentos';
+import { quadrasCatalogo, quadraCatalogo, gradeCatalogo } from './catalogoDemo';
 
 /**
  * Busca quadras aplicando filtros de busca (todos opcionais).
@@ -17,7 +18,9 @@ import { compativel } from '../utils/estabelecimentos';
 export async function listarQuadras(filtros = {}) {
   const resposta = await api.get('/quadras');
   const estruturais = { ...filtros, precoMin: '', precoMax: '' };
-  let quadras = mesclarQuadras(resposta.data).filter((q) => compativel(q, estruturais));
+  let quadras = [...mesclarQuadras(resposta.data), ...quadrasCatalogo()].filter((q) =>
+    compativel(q, estruturais)
+  );
   if (filtros.data) {
     const livres = await Promise.all(
       quadras.map(async (q) => ({ q, grade: await buscarHorariosDaQuadra(q.id, filtros.data) }))
@@ -54,6 +57,8 @@ export async function buscarEstabelecimento(id) {
  * @returns {Promise<object>} A quadra encontrada.
  */
 export async function buscarQuadraPorId(quadraId) {
+  const exemplo = quadraCatalogo(quadraId);
+  if (exemplo) return exemplo;
   const local = quadraLocal(quadraId);
   if (local) return local;
   const resposta = await api.get(`/quadras/${quadraId}`);
@@ -67,6 +72,7 @@ export async function buscarQuadraPorId(quadraId) {
  * @returns {Promise<{horariosLivres: string[], horariosOcupados: string[]}>}
  */
 export async function buscarHorariosDaQuadra(quadraId, data) {
+  if (quadraCatalogo(quadraId)) return gradeCatalogo(quadraId, data);
   const local = quadraLocal(quadraId);
   if (local) {
     const ocupados = String(quadraId).startsWith('local-')
