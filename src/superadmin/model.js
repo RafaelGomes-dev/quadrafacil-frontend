@@ -76,3 +76,6 @@ export function salvarAdmin(dados) {
 export function contaDemo() {
   return lerAdmin().contas.find((c) => c.id === CONTA_DEMO_ID);
 }
+export function podeCadastrarQuadra(conta, quantidade) {
+  return Boolean(conta?.status === 'ativa' && quantidade < Number(conta.limite));
+}

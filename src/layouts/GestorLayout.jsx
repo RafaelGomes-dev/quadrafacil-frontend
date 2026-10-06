@@ -1,4 +1,6 @@
 import { NavLink, Outlet, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { contaDemo } from '../superadmin/model';
 import { GestorProvider } from '../gestor/GestorContext';
 import { useGestor } from '../gestor/context';
 import Icon from '../components/common/Icon';
@@ -77,6 +79,31 @@ function Estrutura() {
   );
 }
 export default function GestorLayout() {
+  const [conta, setConta] = useState(contaDemo);
+  useEffect(() => {
+    const atualizar = () => setConta(contaDemo());
+    window.addEventListener('storage', atualizar);
+    window.addEventListener('quadrafacil-admin', atualizar);
+    return () => {
+      window.removeEventListener('storage', atualizar);
+      window.removeEventListener('quadrafacil-admin', atualizar);
+    };
+  }, []);
+  if (conta?.status === 'revogada')
+    return (
+      <div className="container pagina-institucional">
+        <span className="sobretitulo">ACESSO DO GESTOR · SIMULAÇÃO</span>
+        <h1>Acesso revogado pela equipe.</h1>
+        <p>
+          O painel está indisponível nesta demonstração. As quadras e reservas foram preservadas.
+        </p>
+        <p>
+          <strong>Motivo:</strong> {conta.motivo}
+        </p>
+        <Link to="/user">Voltar ao site</Link>
+        <p>Não há autenticação real neste protótipo.</p>
+      </div>
+    );
   return (
     <GestorProvider>
       <Estrutura />

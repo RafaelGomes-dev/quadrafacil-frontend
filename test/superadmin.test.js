@@ -5,6 +5,7 @@ import {
   validarConta,
   alterarAcesso,
   CONTA_DEMO_ID,
+  podeCadastrarQuadra,
 } from '../src/superadmin/model.js';
 test('cadastro valida identificação, e-mail único e limite inteiro', () => {
   const contas = contasIniciais().contas;
@@ -33,4 +34,10 @@ test('revogação exige motivo, mantém dados e permite reativação', () => {
   assert.equal(revogada.contas[0].quadras, dados.contas[0].quadras);
   assert.equal(dados.contas[0].status, 'ativa');
   assert.equal(alterarAcesso(revogada, CONTA_DEMO_ID, 'ativa', '', {}).contas[0].motivo, '');
+});
+test('limites impedem novas quadras sem excluir as existentes', () => {
+  assert.equal(podeCadastrarQuadra({ status: 'ativa', limite: 2 }, 1), true);
+  assert.equal(podeCadastrarQuadra({ status: 'ativa', limite: 2 }, 2), false);
+  assert.equal(podeCadastrarQuadra({ status: 'ativa', limite: 2 }, 3), false);
+  assert.equal(podeCadastrarQuadra({ status: 'revogada', limite: 4 }, 1), false);
 });

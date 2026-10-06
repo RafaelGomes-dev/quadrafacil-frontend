@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { contaDemo, podeCadastrarQuadra } from '../superadmin/model';
 import { useSearchParams } from 'react-router-dom';
 import { useGestor } from './context';
 import Drawer from './Drawer';
@@ -32,6 +33,7 @@ const ABAS = [
 ];
 export default function Configuracoes() {
   const { dados, atualizar, externas } = useGestor();
+  const conta = contaDemo();
   const [params, setParams] = useSearchParams();
   const aba = ABAS.some((a) => a[0] === params.get('aba')) ? params.get('aba') : 'quadras';
   const [editor, setEditor] = useState(() =>
@@ -55,7 +57,11 @@ export default function Configuracoes() {
           <p>Cuide dos detalhes que fazem a operação funcionar.</p>
         </div>
         {aba !== 'estabelecimento' && (
-          <button className="g-btn g-btn-primary" onClick={() => setEditor({ tipo: aba })}>
+          <button
+            className="g-btn g-btn-primary"
+            disabled={aba === 'quadras' && !podeCadastrarQuadra(conta, dados.quadras.length)}
+            onClick={() => setEditor({ tipo: aba })}
+          >
             <Icon name="mais" />
             {aba === 'quadras'
               ? 'Nova quadra'
@@ -79,12 +85,23 @@ export default function Configuracoes() {
       </nav>
       {aba === 'quadras' && (
         <>
+          {!podeCadastrarQuadra(conta, dados.quadras.length) && (
+            <div className="g-info-banner">
+              <Icon name="escudo" />
+              <p>
+                Limite de quadras atingido. Você pode editar as existentes; para cadastrar outra,
+                solicite à equipe um novo limite.
+              </p>
+            </div>
+          )}
           <div className="g-section-heading">
             <div>
               <h2>Os espaços que você administra</h2>
               <p>Informações, fotos e funcionamento de cada quadra.</p>
             </div>
-            <span className="g-badge g-badge-gray">{dados.quadras.length} quadras cadastradas</span>
+            <span className="g-badge g-badge-gray">
+              {dados.quadras.length} / {conta.limite} quadras permitidas
+            </span>
           </div>
           <div className="g-courts-grid">
             {dados.quadras.map((q) => (
@@ -461,6 +478,10 @@ function EditorConfiguracao({ editor, onClose, notify, dados, atualizar, externa
     setErro('');
     try {
       if (tipo === 'quadras') {
+        if (!item && !podeCadastrarQuadra(contaDemo(), dados.quadras.length))
+          return setErro(
+            'Limite de quadras atingido ou acesso revogado. Solicite uma alteração à equipe QuadraFácil.'
+          );
         if (
           horaNumero(f.horarioFuncionamento.fechamento) <=
           horaNumero(f.horarioFuncionamento.abertura)

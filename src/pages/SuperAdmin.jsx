@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../components/common/Icon';
 import Drawer from '../gestor/Drawer';
-import { lerGestor } from '../gestor/model';
+import { lerGestor, salvarGestor } from '../gestor/model';
 import {
   alterarAcesso,
   CONTA_DEMO_ID,
@@ -100,6 +100,11 @@ export default function SuperAdmin() {
           historico: [registro, ...atual.historico].slice(0, 20),
         };
       }
+      if (modo === 'cadastro' && conta?.id === CONTA_DEMO_ID && gestorDemo)
+        salvarGestor({
+          ...gestorDemo,
+          estabelecimento: { ...gestorDemo.estabelecimento, nome: form.estabelecimento.trim() },
+        });
       salvarAdmin(proximo);
       setDados(proximo);
       setEditor(null);
