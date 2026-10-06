@@ -22,6 +22,16 @@ test('publica os 12 estabelecimentos de exemplo sem misturar suas quadras', () =
 test('não publica espaços de gestores revogados', () => {
   assert.equal(gerarQuadrasCatalogo([{ ...GESTORES_ADICIONAIS[0], status: 'revogada' }]).length, 0);
 });
+test('revogar um gestor não muda bairro, preço ou cobertura das outras quadras', () => {
+  const inicial = gerarQuadrasCatalogo(GESTORES_ADICIONAIS);
+  const atualizado = gerarQuadrasCatalogo(
+    GESTORES_ADICIONAIS.map((c, i) => (i === 0 ? { ...c, status: 'revogada' } : c))
+  );
+  assert.deepEqual(
+    atualizado,
+    inicial.filter((q) => q.estabelecimentoId !== 'catalogo-demo-ana')
+  );
+});
 test('reserva e pagamento mock do catálogo preservam horário e valor sem afetar outra quadra', () => {
   const s = storage();
   const q = gerarQuadrasCatalogo(GESTORES_ADICIONAIS)[0];

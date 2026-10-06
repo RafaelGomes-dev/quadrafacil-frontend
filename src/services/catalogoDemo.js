@@ -18,32 +18,34 @@ const BAIRROS = [
 /** Espaços fictícios publicados pelos gestores de exemplo, separados da Arena Batel. */
 export function gerarQuadrasCatalogo(contas) {
   return contas
-    .filter((c) => c.id.startsWith('demo-') && c.status === 'ativa')
+    .filter((c) => c.id.startsWith('demo-'))
     .flatMap((c, i) =>
-      Array.from({ length: Number(c.quadras) || 0 }, (_, n) => ({
-        id: `catalogo-${c.id}-${n + 1}`,
-        estabelecimentoId: `catalogo-${c.id}`,
-        estabelecimentoNome: c.estabelecimento,
-        nome: `Quadra ${n + 1}`,
-        esporte: 'society',
-        bairro: BAIRROS[i % BAIRROS.length],
-        cidade: 'Curitiba',
-        endereco: `Endereço fictício · ${BAIRROS[i % BAIRROS.length]}, Curitiba`,
-        precoHora: 100 + ((i + n) % 7) * 15,
-        piso: 'Grama sintética',
-        patrocinado: Boolean(c.patrocinado),
-        descricao:
-          'Espaço fictício de demonstração, com quadras de society para reunir seu time. Fotos, preços e disponibilidade ilustrativos.',
-        fotos: [],
-        ativa: true,
-        estrutura: {
-          coberta: (i + n) % 2 === 0,
-          vestiario: true,
-          estacionamento: i % 3 !== 0,
-          iluminacao: true,
-        },
-        horarioFuncionamento: { abertura: '08:00', fechamento: '23:00' },
-      }))
+      c.status !== 'ativa'
+        ? []
+        : Array.from({ length: Number(c.quadras) || 0 }, (_, n) => ({
+            id: `catalogo-${c.id}-${n + 1}`,
+            estabelecimentoId: `catalogo-${c.id}`,
+            estabelecimentoNome: c.estabelecimento,
+            nome: `Quadra ${n + 1}`,
+            esporte: 'society',
+            bairro: BAIRROS[i % BAIRROS.length],
+            cidade: 'Curitiba',
+            endereco: `Endereço fictício · ${BAIRROS[i % BAIRROS.length]}, Curitiba`,
+            precoHora: 100 + ((i + n) % 7) * 15,
+            piso: 'Grama sintética',
+            patrocinado: Boolean(c.patrocinado),
+            descricao:
+              'Espaço fictício de demonstração, com quadras de society para reunir seu time. Fotos, preços e disponibilidade ilustrativos.',
+            fotos: [],
+            ativa: true,
+            estrutura: {
+              coberta: (i + n) % 2 === 0,
+              vestiario: true,
+              estacionamento: i % 3 !== 0,
+              iluminacao: true,
+            },
+            horarioFuncionamento: { abertura: '08:00', fechamento: '23:00' },
+          }))
     );
 }
 export const quadrasCatalogo = () => gerarQuadrasCatalogo(lerAdmin().contas);
