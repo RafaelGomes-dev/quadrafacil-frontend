@@ -1,6 +1,6 @@
 import api from './api';
 import { cotarBusca, gradeLocal, mesclarQuadras, quadraLocal } from './gestorDemo';
-import { lerGestor } from '../gestor/model';
+import { compativel } from '../utils/estabelecimentos';
 
 /**
  * Busca quadras aplicando filtros de busca (todos opcionais).
@@ -15,24 +15,10 @@ import { lerGestor } from '../gestor/model';
  * @returns {Promise<object[]>} Lista de quadras encontradas.
  */
 export async function listarQuadras(filtros = {}) {
-  const parametrosLimpos = Object.fromEntries(
-    Object.entries(filtros).filter(([, valor]) => valor !== undefined && valor !== '')
-  );
-  if (!lerGestor()) {
-    const resposta = await api.get('/quadras', { params: parametrosLimpos });
-    return resposta.data;
-  }
   const resposta = await api.get('/quadras');
   let quadras = mesclarQuadras(resposta.data)
     .map((q) => cotarBusca(q, filtros.data, filtros.horario))
-    .filter(
-      (q) =>
-        (!filtros.cidade || q.cidade.toLowerCase().includes(filtros.cidade.toLowerCase())) &&
-        (!filtros.bairro || q.bairro.toLowerCase().includes(filtros.bairro.toLowerCase())) &&
-        (!filtros.esporte || q.esporte === filtros.esporte) &&
-        (!filtros.precoMin || Number(q.precoBuscado ?? q.precoHora) >= Number(filtros.precoMin)) &&
-        (!filtros.precoMax || Number(q.precoBuscado ?? q.precoHora) <= Number(filtros.precoMax))
-    );
+    .filter((q) => compativel(q, filtros));
   if (filtros.data && filtros.horario) {
     const livres = await Promise.all(
       quadras.map(async (q) => ({ q, grade: await buscarHorariosDaQuadra(q.id, filtros.data) }))
@@ -42,6 +28,21 @@ export async function listarQuadras(filtros = {}) {
       .map(({ q }) => q);
   }
   return quadras;
+}
+
+export async function buscarEstabelecimento(id) {
+  const quadras = await listarQuadras();
+  const referencia = quadras.find(
+    (q) => String(q.id) === String(id) || (q.estabelecimentoId || `quadra-${q.id}`) === id
+  );
+  if (!referencia) throw new Error('Estabelecimento não encontrado');
+  const grupo = referencia.estabelecimentoId || `quadra-${referencia.id}`;
+  return {
+    ...referencia,
+    nome: referencia.estabelecimentoNome || referencia.nome,
+    quadras: quadras.filter((q) => (q.estabelecimentoId || `quadra-${q.id}`) === grupo),
+    id: grupo,
+  };
 }
 
 /**

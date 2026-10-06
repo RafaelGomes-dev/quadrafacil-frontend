@@ -41,27 +41,19 @@ const court = (
 export function dadosIniciais() {
   const data = hoje();
   const quadras = [
-    court(1, 'Arena Batel Society', 'society', 'Batel', 'Rua Comendador Araújo, 540', 180, false),
+    court(1, 'Quadra 1', 'society', 'Batel', 'Rua Comendador Araújo, 540', 180, false),
     court(
       2,
-      'Quadra Boa Vista Futsal',
-      'futsal',
-      'Boa Vista',
-      'Av. Paraná, 2100',
+      'Quadra 2',
+      'society',
+      'Batel',
+      'Rua Comendador Araújo, 540',
       120,
       true,
       '09:00',
       '22:00'
     ),
-    court(
-      4,
-      'Beach Sports Água Verde',
-      'beach tennis',
-      'Água Verde',
-      'Rua Francisco Rocha, 300',
-      90,
-      false
-    ),
+    court(4, 'Quadra 3', 'beach tennis', 'Batel', 'Rua Comendador Araújo, 540', 90, false),
   ];
   const nomes = [
     'Lucas Almeida',
@@ -109,7 +101,14 @@ export function dadosIniciais() {
     valor: 0,
   });
   return {
-    estabelecimento: { nome: 'Espaços Curitiba', contato: '(41) 3333-0000', cidade: 'Curitiba' },
+    estabelecimento: {
+      id: 'arena-batel',
+      nome: 'Arena Batel',
+      contato: '(41) 3333-0000',
+      cidade: 'Curitiba',
+      bairro: 'Batel',
+      endereco: 'Rua Comendador Araújo, 540',
+    },
     quadras,
     eventos,
     regras: [],
@@ -134,7 +133,34 @@ export function dadosIniciais() {
 
 export function lerGestor() {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || null;
+    const dados = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (!dados) return null;
+    if (!dados.estabelecimento.id) {
+      const base = dados.quadras.find((q) => Number(q.id) === 1) || dados.quadras[0];
+      dados.estabelecimento = {
+        ...dados.estabelecimento,
+        id: 'arena-batel',
+        bairro: base?.bairro,
+        endereco: base?.endereco,
+        nome:
+          dados.estabelecimento.nome === 'Espaços Curitiba'
+            ? 'Arena Batel'
+            : dados.estabelecimento.nome,
+      };
+      const antigos = ['Arena Batel Society', 'Quadra Boa Vista Futsal', 'Beach Sports Água Verde'];
+      dados.quadras = dados.quadras.map((q) =>
+        antigos.includes(q.nome)
+          ? {
+              ...q,
+              nome: `Quadra ${q.id === 4 ? 3 : q.id}`,
+              esporte: q.id === 2 ? 'society' : q.esporte,
+              bairro: base?.bairro,
+              endereco: base?.endereco,
+            }
+          : q
+      );
+    }
+    return dados;
   } catch {
     return null;
   }

@@ -14,7 +14,7 @@ const OPCOES_DE_ESPORTE = [
 
 const FILTROS_PADRAO = {
   bairro: '',
-  esporte: '',
+  esporte: 'society',
   data: '',
   horario: '',
   coberta: '',

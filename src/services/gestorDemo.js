@@ -7,15 +7,31 @@ import {
   lerGestor,
   precoNoHorario,
   salvarGestor,
+  dadosIniciais,
 } from '../gestor/model';
 export function quadraLocal(id) {
-  return lerGestor()?.quadras.find((q) => String(q.id) === String(id));
+  const dados = lerGestor();
+  const q = dados?.quadras.find((q) => String(q.id) === String(id));
+  return q ? identificar(q, dados.estabelecimento) : null;
+}
+function identificar(q, e) {
+  return {
+    ...q,
+    estabelecimentoId: e.id,
+    estabelecimentoNome: e.nome,
+    endereco: e.endereco || q.endereco,
+    bairro: e.bairro || q.bairro,
+    cidade: e.cidade || q.cidade,
+  };
 }
 export function mesclarQuadras(lista) {
-  const dados = lerGestor();
-  if (!dados) return lista;
+  let dados = lerGestor();
+  if (!dados) {
+    dados = dadosIniciais();
+    salvarGestor(dados);
+  }
   const mapa = new Map(lista.map((q) => [String(q.id), q]));
-  dados.quadras.forEach((q) => mapa.set(String(q.id), q));
+  dados.quadras.forEach((q) => mapa.set(String(q.id), identificar(q, dados.estabelecimento)));
   return [...mapa.values()].filter((q) => q.ativa !== false);
 }
 export function gradeLocal(quadra, data, ocupadosApi = []) {
