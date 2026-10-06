@@ -12,6 +12,11 @@ import {
 } from '../superadmin/model';
 import '../styles/superadmin.css';
 
+// Chamado somente ao confirmar uma ação, nunca durante a renderização.
+function metadadosDaAcao() {
+  return { id: crypto.randomUUID(), data: new Date().toISOString() };
+}
+
 export default function SuperAdmin() {
   const [dados, setDados] = useState(lerAdmin);
   const [busca, setBusca] = useState('');
@@ -53,8 +58,7 @@ export default function SuperAdmin() {
     const conta = editor.conta;
     const modo = editor.modo;
     const registro = {
-      id: crypto.randomUUID(),
-      data: new Date().toISOString(),
+      ...metadadosDaAcao(),
       nome: form?.nome || conta.nome,
       acao:
         modo === 'revogar'
