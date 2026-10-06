@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -9,8 +9,6 @@ const AREAS = {
     links: [
       { caminho: '/user', rotulo: 'Início', end: true },
       { caminho: '/user/quadras', rotulo: 'Quadras' },
-      { caminho: '/user/sobre', rotulo: 'Sobre' },
-      { caminho: '/user/contato', rotulo: 'Contato' },
       { caminho: '/gestor', rotulo: 'Área do gestor', end: true },
     ],
   },
@@ -36,14 +34,16 @@ const AREAS = {
 /** Cada público compartilha a estrutura, mas tem menu e endereço próprios. */
 function AreaLayout({ area }) {
   const config = AREAS[area];
+  const { pathname } = useLocation();
+  const comBarraReserva = area === 'user' && /^\/user\/quadras\/[^/]+$/.test(pathname);
 
   return (
-    <div className={`area-shell area-${area}`}>
+    <div className={`area-shell area-${area}${comBarraReserva ? ' com-barra-reserva' : ''}`}>
       <Header homePath={config.homePath} areaLabel={config.label} links={config.links} />
       <main className="conteudo-principal">
         <Outlet />
       </main>
-      <Footer />
+      <Footer area={area} />
     </div>
   );
 }

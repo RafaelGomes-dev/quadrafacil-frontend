@@ -8,6 +8,7 @@ import { buscarHorariosDaQuadra, buscarQuadraPorId } from '../services/quadraSer
 import { formatarDataLocalISO } from '../utils/data';
 import { formatarData, formatarPreco } from '../utils/formatadores';
 import { fotoDaQuadra, rotuloDoEsporte } from '../utils/apresentacaoQuadras';
+import { normalizarHorarios, parametrosDaReserva } from '../utils/horariosReserva';
 
 const ITENS_DE_ESTRUTURA = [
   { chave: 'vestiario', rotulo: 'Vestiário' },
@@ -23,14 +24,14 @@ function QuadraDetalhe() {
   const [parametrosDeBusca] = useSearchParams();
   const dataMinima = formatarDataLocalISO();
   const dataDaBusca = parametrosDeBusca.get('data');
-  const horarioDaBusca = parametrosDeBusca.get('horario');
+  const horariosDaBusca = parametrosDeBusca.getAll('horario').join(',');
 
   const [quadra, setQuadra] = useState(null);
   const [dataEscolhida, setDataEscolhida] = useState(
     dataDaBusca && dataDaBusca >= dataMinima ? dataDaBusca : dataMinima
   );
   const [horarios, setHorarios] = useState({ horariosLivres: [], horariosOcupados: [] });
-  const [horarioSelecionado, setHorarioSelecionado] = useState('');
+  const [horariosSelecionados, setHorariosSelecionados] = useState([]);
   const [estaCarregando, setEstaCarregando] = useState(true);
   const [erroDaQuadra, setErroDaQuadra] = useState('');
   const [erroDosHorarios, setErroDosHorarios] = useState('');
@@ -55,14 +56,18 @@ function QuadraDetalhe() {
     let cancelado = false;
     setEstaCarregando(true);
     setErroDosHorarios('');
-    setHorarioSelecionado('');
+    setHorariosSelecionados([]);
 
     buscarHorariosDaQuadra(id, dataEscolhida)
       .then((grade) => {
         if (!cancelado) {
           setHorarios(grade);
-          if (dataEscolhida === dataDaBusca && grade.horariosLivres.includes(horarioDaBusca)) {
-            setHorarioSelecionado(horarioDaBusca);
+          if (dataEscolhida === dataDaBusca) {
+            setHorariosSelecionados(
+              normalizarHorarios(horariosDaBusca.split(',')).filter((h) =>
+                grade.horariosLivres.includes(h)
+              )
+            );
           }
         }
       })
@@ -77,12 +82,18 @@ function QuadraDetalhe() {
     return () => {
       cancelado = true;
     };
-  }, [id, dataEscolhida, dataDaBusca, horarioDaBusca]);
+  }, [id, dataEscolhida, dataDaBusca, horariosDaBusca]);
+
+  function alternarHorario(horario) {
+    setHorariosSelecionados((atuais) =>
+      atuais.includes(horario)
+        ? atuais.filter((item) => item !== horario)
+        : normalizarHorarios([...atuais, horario])
+    );
+  }
 
   function irParaReserva() {
-    navegar(`/user/reserva?quadraId=${id}&data=${dataEscolhida}&horario=${horarioSelecionado}`, {
-      state: { quadraId: id, data: dataEscolhida, horario: horarioSelecionado },
-    });
+    navegar(`/user/reserva?${parametrosDaReserva(id, dataEscolhida, horariosSelecionados)}`);
   }
 
   if (erroDaQuadra && !quadra) {
@@ -165,8 +176,11 @@ function QuadraDetalhe() {
 
             <section className="detalhe-secao detalhe-secao-horarios">
               <span className="sobretitulo">SUA PRÓXIMA PARTIDA</span>
-              <h2>Escolha o horário</h2>
-              <p>Os horários disponíveis para o dia selecionado aparecem logo abaixo.</p>
+              <h2>Escolha seus horários</h2>
+              <p>
+                Selecione um ou mais horários, seguidos ou separados. Cada horário corresponde a 1
+                hora de quadra.
+              </p>
               <label className="detalhe-campo-data">
                 <Icon name="calendario" size={20} />
                 <span>Data do jogo</span>
@@ -194,11 +208,13 @@ function QuadraDetalhe() {
                 <SeletorHorario
                   horariosLivres={horarios.horariosLivres}
                   horariosOcupados={horarios.horariosOcupados}
-                  horarioSelecionado={horarioSelecionado}
-                  onSelecionarHorario={setHorarioSelecionado}
+                  horariosSelecionados={horariosSelecionados}
+                  onSelecionarHorario={alternarHorario}
                 />
               )}
-              <p className="detalhe-legenda-horarios">Horários em cinza já estão ocupados.</p>
+              <p className="detalhe-legenda-horarios">
+                Toque novamente para desmarcar. Horários em cinza já estão ocupados.
+              </p>
             </section>
           </div>
 
@@ -210,10 +226,20 @@ function QuadraDetalhe() {
               <Icon name="calendario" size={19} /> {formatarData(dataEscolhida)}
             </div>
             <div className="detalhe-resumo-linha">
-              <Icon name="relogio" size={19} /> {horarioSelecionado || 'Selecione um horário'}
+              <Icon name="relogio" size={19} />{' '}
+              {horariosSelecionados.join(' · ') || 'Selecione seus horários'}
             </div>
+            {horariosSelecionados.length > 0 && (
+              <div className="detalhe-total">
+                <span>
+                  {horariosSelecionados.length}{' '}
+                  {horariosSelecionados.length === 1 ? 'hora' : 'horas'} selecionadas
+                </span>
+                <strong>{formatarPreco(quadra.precoHora * horariosSelecionados.length)}</strong>
+              </div>
+            )}
             <Button
-              disabled={!horarioSelecionado || estaCarregando || Boolean(erroDosHorarios)}
+              disabled={!horariosSelecionados.length || estaCarregando || Boolean(erroDosHorarios)}
               onClick={irParaReserva}
             >
               Continuar <Icon name="seta" size={19} />
@@ -225,16 +251,16 @@ function QuadraDetalhe() {
 
       <div className="detalhe-cta-mobile">
         <div>
-          <strong>{formatarPreco(quadra.precoHora)}</strong>
-          <span> / hora</span>
+          <strong>{formatarPreco(quadra.precoHora * (horariosSelecionados.length || 1))}</strong>
+          <span>{horariosSelecionados.length ? ' no total' : ' / hora'}</span>
           <small>
-            {horarioSelecionado
-              ? `${formatarData(dataEscolhida)} às ${horarioSelecionado}`
-              : 'Escolha um horário'}
+            {horariosSelecionados.length
+              ? `${formatarData(dataEscolhida)} · ${horariosSelecionados.length} ${horariosSelecionados.length === 1 ? 'horário' : 'horários'}`
+              : 'Escolha seus horários'}
           </small>
         </div>
         <Button
-          disabled={!horarioSelecionado || estaCarregando || Boolean(erroDosHorarios)}
+          disabled={!horariosSelecionados.length || estaCarregando || Boolean(erroDosHorarios)}
           onClick={irParaReserva}
         >
           Continuar

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Button from '../components/common/Button';
 import Icon from '../components/common/Icon';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -10,22 +10,40 @@ import { processarPagamento } from '../services/pagamentoService';
 import { normalizarTelefone, validarDadosDoCliente } from '../utils/reserva';
 import { formatarData, formatarPreco } from '../utils/formatadores';
 import { fotoDaQuadra, rotuloDoEsporte } from '../utils/apresentacaoQuadras';
+import {
+  normalizarHorarios,
+  intervaloDoHorario,
+  parametrosDaReserva,
+} from '../utils/horariosReserva';
 
 /** Resumo da reserva, escolha de pagamento e confirmação. */
 function Reserva() {
   const { state, search } = useLocation();
+  const navegar = useNavigate();
   const parametros = new URLSearchParams(search);
   const quadraId = state?.quadraId || parametros.get('quadraId');
   const data = state?.data || parametros.get('data');
-  const horario = state?.horario || parametros.get('horario');
+  const [horariosSelecionados, setHorariosSelecionados] = useState(() =>
+    normalizarHorarios(state?.horarios || state?.horario || parametros.getAll('horario'))
+  );
   const [quadra, setQuadra] = useState(null);
   const [nomeCliente, setNomeCliente] = useState('');
   const [telefoneCliente, setTelefoneCliente] = useState('');
   const [metodoDePagamento, setMetodoDePagamento] = useState('pix');
-  const [reservaCriada, setReservaCriada] = useState(null);
+  const progresso = useRef({});
+  const [reservaIniciada, setReservaIniciada] = useState(false);
   const [pagamentoAprovado, setPagamentoAprovado] = useState(null);
   const [mensagemDeErro, setMensagemDeErro] = useState('');
   const [estaProcessando, setEstaProcessando] = useState(false);
+
+  function removerHorario(horario) {
+    const restantes = horariosSelecionados.filter((item) => item !== horario);
+    setHorariosSelecionados(restantes);
+    navegar(`/user/reserva?${parametrosDaReserva(quadraId, data, restantes)}`, {
+      replace: true,
+      state: null,
+    });
+  }
 
   useEffect(() => {
     if (!quadraId) return;
@@ -37,7 +55,7 @@ function Reserva() {
       });
   }, [quadraId]);
 
-  if (!quadraId || !data || !horario) {
+  if (!quadraId || !data || !horariosSelecionados.length) {
     return (
       <div className="container reserva-sem-selecao">
         <h1>Escolha seu próximo jogo</h1>
@@ -60,30 +78,40 @@ function Reserva() {
     setEstaProcessando(true);
 
     try {
-      let reserva = reservaCriada;
-      if (!reserva) {
-        reserva = await criarReserva({
-          quadraId,
-          nomeCliente: nomeCliente.trim(),
-          telefoneCliente: normalizarTelefone(telefoneCliente),
-          data,
-          horario,
-        });
-        setReservaCriada(reserva);
+      // A API atual trabalha com um horário por reserva. Mantemos o progresso
+      // para uma repetição não criar nem pagar novamente itens já concluídos.
+      for (const horario of horariosSelecionados) {
+        let item = progresso.current[horario];
+        if (!item) {
+          const reserva = await criarReserva({
+            quadraId,
+            nomeCliente: nomeCliente.trim(),
+            telefoneCliente: normalizarTelefone(telefoneCliente),
+            data,
+            horario,
+          });
+          item = { reserva };
+          progresso.current[horario] = item;
+          setReservaIniciada(true);
+        }
+        if (!item.pagamento) {
+          item.pagamento = await processarPagamento({
+            reservaId: item.reserva.id,
+            metodo: metodoDePagamento,
+          });
+        }
       }
-
-      const pagamento = await processarPagamento({
-        reservaId: reserva.id,
-        metodo: metodoDePagamento,
-      });
-      setPagamentoAprovado(pagamento);
+      setPagamentoAprovado({ metodo: metodoDePagamento });
     } catch (erro) {
       console.error('Falha ao criar reserva:', erro);
       const mensagemDaApi = erro.response?.data?.error;
-      setMensagemDeErro(
+      const concluidos = Object.values(progresso.current).filter((item) => item.pagamento).length;
+      const detalhe =
         erro.response?.status === 409
-          ? 'Este horário acabou de ser reservado por outra pessoa. Escolha outro horário.'
-          : mensagemDaApi || 'Não foi possível concluir a simulação. Tente novamente.'
+          ? 'Um dos horários já foi reservado. Volte à quadra para revisar a seleção.'
+          : mensagemDaApi || 'Não foi possível concluir a simulação. Tente novamente.';
+      setMensagemDeErro(
+        concluidos ? `${concluidos} horário(s) já confirmado(s). ${detalhe}` : detalhe
       );
     } finally {
       setEstaProcessando(false);
@@ -108,7 +136,7 @@ function Reserva() {
                 <Icon name="calendario" size={19} /> {formatarData(data)}
               </span>
               <span>
-                <Icon name="relogio" size={19} /> {horario}
+                <Icon name="relogio" size={19} /> {horariosSelecionados.join(' · ')}
               </span>
             </div>
             <p className="reserva-simulacao-aviso">
@@ -129,7 +157,7 @@ function Reserva() {
       <div className="container">
         <Link
           className="detalhe-voltar"
-          to={`/user/quadras/${quadraId}?data=${data}&horario=${horario}`}
+          to={`/user/quadras/${quadraId}?${parametrosDaReserva(quadraId, data, horariosSelecionados)}`}
         >
           <Icon name="voltar" size={18} /> Voltar à quadra
         </Link>
@@ -242,8 +270,9 @@ function Reserva() {
                   <div>
                     <Icon name="relogio" size={20} />
                     <span>
-                      <small>Horário</small>
-                      {horario} às {String(Number(horario.slice(0, 2)) + 1).padStart(2, '0')}:00
+                      <small>Horários selecionados</small>
+                      {horariosSelecionados.length}{' '}
+                      {horariosSelecionados.length === 1 ? 'hora' : 'horas'} de quadra
                     </span>
                   </div>
                   <div>
@@ -254,11 +283,35 @@ function Reserva() {
                     </span>
                   </div>
                 </div>
+                <ul className="reserva-itens">
+                  {horariosSelecionados.map((horario) => (
+                    <li key={horario}>
+                      <span>
+                        <strong>{intervaloDoHorario(horario)}</strong>
+                        <small>1 hora · {formatarPreco(quadra.precoHora)}</small>
+                      </span>
+                      <button
+                        type="button"
+                        aria-label={`Remover horário ${horario}`}
+                        disabled={
+                          estaProcessando || reservaIniciada || horariosSelecionados.length === 1
+                        }
+                        onClick={() => removerHorario(horario)}
+                      >
+                        ×
+                      </button>
+                    </li>
+                  ))}
+                </ul>
                 <div className="reserva-resumo-total">
                   <span>Total da reserva</span>
-                  <strong>{formatarPreco(quadra.precoHora)}</strong>
+                  <strong>{formatarPreco(quadra.precoHora * horariosSelecionados.length)}</strong>
                 </div>
-                <small>1 hora de quadra · valor demonstrativo</small>
+                <small>
+                  {horariosSelecionados.length}{' '}
+                  {horariosSelecionados.length === 1 ? 'hora' : 'horas'} de quadra · valor
+                  demonstrativo
+                </small>
               </>
             ) : (
               <LoadingSpinner mensagem="Carregando resumo..." />

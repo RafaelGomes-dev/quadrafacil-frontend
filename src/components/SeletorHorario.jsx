@@ -4,13 +4,13 @@
  * @param {object} props
  * @param {string[]} props.horariosLivres
  * @param {string[]} props.horariosOcupados
- * @param {string} props.horarioSelecionado
+ * @param {string[]} props.horariosSelecionados
  * @param {(horario: string) => void} props.onSelecionarHorario
  */
 function SeletorHorario({
   horariosLivres,
   horariosOcupados,
-  horarioSelecionado,
+  horariosSelecionados = [],
   onSelecionarHorario,
 }) {
   const todosOsHorarios = [...horariosLivres, ...horariosOcupados].sort();
@@ -23,7 +23,7 @@ function SeletorHorario({
     <div className="grade-horarios">
       {todosOsHorarios.map((horario) => {
         const estaOcupado = horariosOcupados.includes(horario);
-        const estaSelecionado = horario === horarioSelecionado;
+        const estaSelecionado = horariosSelecionados.includes(horario);
 
         return (
           <button

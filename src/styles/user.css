@@ -4,6 +4,12 @@
   flex-direction: column;
 }
 .area-user {
+  --cor-primaria: #247542;
+  --cor-primaria-hover: #165a31;
+  --cor-texto: #173b2a;
+  --cor-fundo: #fbfcf9;
+  --cor-superficie: #fff;
+  --cor-suave: #f0f6ed;
   background: #fbfcf9;
   color: #183127;
 }
@@ -87,9 +93,9 @@
   color: #17643b;
 }
 .area-user .rodape {
-  background: #173b2a;
-  color: #dce9de;
-  padding: 26px 0;
+  background: var(--cor-primaria);
+  color: #fff;
+  padding: 38px 0 22px;
 }
 .area-user .rodape p {
   margin: 0;
@@ -247,7 +253,7 @@
   padding: 12px 20px;
   border: 0;
   border-radius: 13px;
-  background: #247542;
+  background: var(--cor-primaria);
   color: #fff;
   cursor: pointer;
   font-size: 0.98rem;
@@ -257,7 +263,7 @@
     transform 0.2s;
 }
 .area-user .busca-enviar:hover {
-  background: #165a31;
+  background: var(--cor-primaria-hover);
   transform: translateY(-1px);
 }
 .area-user .busca-rodape {
@@ -722,8 +728,8 @@
 }
 .area-user .horario-selecionado,
 .area-user .horario-selecionado:hover {
-  border-color: #20713d;
-  background: #20713d;
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria);
   color: #fff;
 }
 .area-user .detalhe-legenda-horarios {
@@ -806,6 +812,114 @@
 .area-user .detalhe-cta-mobile .botao {
   min-width: 122px;
   padding: 11px 13px;
+}
+
+.area-user .botao-primary {
+  background: var(--cor-primaria);
+  border-color: var(--cor-primaria);
+  color: #fff;
+}
+.area-user .botao-primary:hover:not(:disabled) {
+  background: var(--cor-primaria-hover);
+  border-color: var(--cor-primaria-hover);
+}
+.area-user .rodape-topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+.area-user .rodape-marca strong {
+  font-size: 1.5rem;
+  letter-spacing: -0.04em;
+}
+.area-user .rodape-marca p {
+  margin: 5px 0 12px;
+}
+.area-user .rodape small {
+  color: #dbebdf;
+}
+.area-user .rodape nav {
+  display: grid;
+  gap: 12px;
+}
+.area-user .rodape a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+.area-user .rodape a:hover {
+  text-decoration: underline;
+}
+.area-user .rodape-base {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid #ffffff30;
+  margin-top: 28px;
+  padding-top: 20px;
+  font-size: 0.8rem;
+}
+.area-user .detalhe-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 16px 0 5px;
+  color: var(--cor-texto);
+  font-size: 0.88rem;
+}
+.area-user .detalhe-total strong {
+  font-size: 1.15rem;
+  white-space: nowrap;
+}
+.area-user .reserva-itens {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+}
+.area-user .reserva-itens li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 13px 0;
+  border-bottom: 1px solid #e9eee8;
+}
+.area-user .reserva-itens li span {
+  display: grid;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+.area-user .reserva-itens small {
+  color: #738675;
+}
+.area-user .reserva-itens button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #e2eae0;
+  background: #fff;
+  color: #476052;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+.area-user .reserva-itens button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+@media (max-width: 979px) {
+  .area-user.com-barra-reserva .rodape {
+    display: none;
+  }
+  .area-user.com-barra-reserva {
+    background: #fbfcf9;
+    padding-bottom: calc(78px + env(safe-area-inset-bottom));
+  }
+  .area-user.com-barra-reserva .pagina-quadra-detalhe {
+    padding-bottom: 20px;
+  }
 }
 
 /* Checkout simulado */
